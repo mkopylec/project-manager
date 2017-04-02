@@ -11,7 +11,7 @@ Using the application they can add projects, monitor their progress and assign t
 ## Steps to implement
 Each branch of the repository represents an already implemented step.
 The task is to implement each step using Domain-Driven Design rules, so the unit tests can successfully pass.
-Checkout the `master` branch.
+Checkout the _master_ branch.
 Get known with the starting code, it contains the parts that are not focused on Domain-Driven Design modelling but are necessary for application to work properly.
 
 ### Step 1 - Create a team
@@ -21,9 +21,9 @@ To manage teams more efficient the user will need an information on how busy a t
 To fulfil this requirement the application must display **how many projects a team is currently implementing**.
 
 ##### To do
-Checkout the `step-1-start` branch.
+Checkout the _step-1-start_ branch.
 Implement the `TeamsEndpoint.createTeam(...)` method, so the unit tests can successfully pass.
-Compare your solution with the `step-1-done` branch.
+Compare your solution with the _step-1-done_ branch.
 
 ### Step 2 - Assign an employee to a team
 Every team consists of **members** that are company's **employees**.
@@ -31,6 +31,6 @@ It is important for a team member that, besides of having a **first** and **last
 Job position can be one of: developer, scrum master or product owner.
 
 ##### To do
-Checkout the `step-2-start` branch.
+Checkout the _step-2-start_ branch.
 Implement the `TeamsEndpoint.addMemberToTeam(...)` method, so the unit tests can successfully pass.
-Compare your solution with the `step-2-done` branch.
+Compare your solution with the _step-2-done_ branch.
