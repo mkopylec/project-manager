@@ -23,8 +23,16 @@ abstract class BasicSpec extends Specification {
         return sendRequest(uri, GET, null, responseBodyType)
     }
 
+    protected ResponseEntity post(String uri, Object requestBody) {
+        return sendRequest(uri, POST, requestBody, Object)
+    }
+
     protected <T> ResponseEntity<T> post(String uri, Object requestBody, Class<T> responseBodyType) {
         return sendRequest(uri, POST, requestBody, responseBodyType)
+    }
+
+    protected ResponseEntity put(String uri, Object requestBody) {
+        return sendRequest(uri, PUT, requestBody, Object)
     }
 
     protected <T> ResponseEntity<T> put(String uri, Object requestBody, Class<T> responseBodyType) {
@@ -32,7 +40,7 @@ abstract class BasicSpec extends Specification {
     }
 
     private <T> ResponseEntity<T> sendRequest(String uri, HttpMethod method, Object requestBody, Class<T> responseBodyType) {
-        def entity = new HttpEntity<Object>(requestBody)
+        def entity = new HttpEntity<>(requestBody)
         return restTemplate.exchange(uri, method, entity, responseBodyType)
     }
 }
