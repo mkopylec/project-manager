@@ -23,8 +23,16 @@ abstract class BasicSpec extends Specification {
         return sendRequest(uri, GET, null, responseBodyType)
     }
 
+    protected <T> ResponseEntity<T> post(String uri, Object requestBody) {
+        return sendRequest(uri, POST, requestBody, String)
+    }
+
     protected <T> ResponseEntity<T> post(String uri, Object requestBody, Class<T> responseBodyType) {
         return sendRequest(uri, POST, requestBody, responseBodyType)
+    }
+
+    protected <T> ResponseEntity<T> put(String uri, Object requestBody) {
+        return sendRequest(uri, PUT, requestBody, String)
     }
 
     protected <T> ResponseEntity<T> put(String uri, Object requestBody, Class<T> responseBodyType) {
