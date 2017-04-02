@@ -1,0 +1,38 @@
+package com.github.mkopylec.projectmanager
+
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.web.client.TestRestTemplate
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpMethod
+import org.springframework.http.ResponseEntity
+import spock.lang.Specification
+
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import static org.springframework.http.HttpMethod.GET
+import static org.springframework.http.HttpMethod.POST
+import static org.springframework.http.HttpMethod.PUT
+
+@SpringBootTest(webEnvironment = RANDOM_PORT)
+abstract class BasicSpec extends Specification {
+
+    @Autowired
+    private TestRestTemplate restTemplate
+
+    protected <T> ResponseEntity<T> get(String uri, Class<T> responseBodyType) {
+        return sendRequest(uri, GET, null, responseBodyType)
+    }
+
+    protected <T> ResponseEntity<T> post(String uri, Object requestBody, Class<T> responseBodyType) {
+        return sendRequest(uri, POST, requestBody, responseBodyType)
+    }
+
+    protected <T> ResponseEntity<T> put(String uri, Object requestBody, Class<T> responseBodyType) {
+        return sendRequest(uri, PUT, requestBody, responseBodyType)
+    }
+
+    private <T> ResponseEntity<T> sendRequest(String uri, HttpMethod method, Object requestBody, Class<T> responseBodyType) {
+        def entity = new HttpEntity<Object>(requestBody)
+        return restTemplate.exchange(uri, method, entity, responseBodyType)
+    }
+}
