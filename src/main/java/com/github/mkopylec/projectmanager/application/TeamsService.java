@@ -2,6 +2,7 @@ package com.github.mkopylec.projectmanager.application;
 
 import com.github.mkopylec.projectmanager.api.TeamsEndpoint;
 import com.github.mkopylec.projectmanager.api.dto.NewTeam;
+import com.github.mkopylec.projectmanager.domain.team.Team;
 import com.github.mkopylec.projectmanager.domain.team.TeamFactory;
 import com.github.mkopylec.projectmanager.domain.team.TeamRepository;
 
@@ -20,6 +21,7 @@ class TeamsService implements TeamsEndpoint {
 
     @Override
     public void createTeam(NewTeam newTeam) {
-        teamFactory.createTeam(newTeam.getName());
+        Team team = teamFactory.createTeam(newTeam.getName());
+        teamRepository.save(team);
     }
 }
