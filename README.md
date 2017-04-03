@@ -23,7 +23,7 @@ To fulfil this requirement the application must display **how many projects a te
 ##### To do
 Checkout the _step-1-start_ branch.
 Implement the `TeamsEndpoint.createTeam(...)` method, so the unit tests can successfully pass.
-Compare your solution with the _step-1-done_ branch.
+Compare your solution with the _step-1-finish_ branch.
 
 ### Step 2 - Assign an employee to a team
 Every team consists of **members** that are company's **employees**.
@@ -33,4 +33,4 @@ Job position can be one of: developer, scrum master or product owner.
 ##### To do
 Checkout the _step-2-start_ branch.
 Implement the `TeamsEndpoint.addMemberToTeam(...)` method, so the unit tests can successfully pass.
-Compare your solution with the _step-2-done_ branch.
+Compare your solution with the _step-2-finish_ branch.
