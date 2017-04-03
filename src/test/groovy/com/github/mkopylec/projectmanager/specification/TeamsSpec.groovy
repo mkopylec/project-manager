@@ -30,6 +30,7 @@ class TeamsSpec extends BasicSpec {
 
         then:
         response.statusCode == BAD_REQUEST
+        response.body.code == 'EMPTY_TEAM_NAME'
 
         where:
         name << [null, '', '  ']
