@@ -2,7 +2,9 @@ package com.github.mkopylec.projectmanager.specification
 
 import com.github.mkopylec.projectmanager.BasicSpec
 import com.github.mkopylec.projectmanager.api.dto.NewTeam
+import spock.lang.Unroll
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST
 import static org.springframework.http.HttpStatus.CREATED
 
 class TeamsSpec extends BasicSpec {
@@ -16,5 +18,20 @@ class TeamsSpec extends BasicSpec {
 
         then:
         response.statusCode == CREATED
+    }
+
+    @Unroll
+    def "Should not create new team with empty name"() {
+        given:
+        def newTeam = new NewTeam(name: name)
+
+        when:
+        def response = post('/teams', newTeam)
+
+        then:
+        response.statusCode == BAD_REQUEST
+
+        where:
+        name << [null, '', '  ']
     }
 }
