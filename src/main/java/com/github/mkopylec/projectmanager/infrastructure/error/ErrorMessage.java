@@ -1,14 +1,16 @@
 package com.github.mkopylec.projectmanager.infrastructure.error;
 
+import com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode;
+
 class ErrorMessage {
 
-    private final String code;
+    private final ErrorCode code;
 
-    ErrorMessage(String code) {
+    ErrorMessage(ErrorCode code) {
         this.code = code;
     }
 
-    public String getCode() {
+    public ErrorCode getCode() {
         return code;
     }
 }
