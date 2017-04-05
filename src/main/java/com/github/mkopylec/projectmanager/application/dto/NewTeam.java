@@ -1,4 +1,4 @@
-package com.github.mkopylec.projectmanager.api.dto;
+package com.github.mkopylec.projectmanager.application.dto;
 
 public class NewTeam {
 

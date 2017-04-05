@@ -1,7 +1,7 @@
 package com.github.mkopylec.projectmanager.specification
 
 import com.github.mkopylec.projectmanager.BasicSpec
-import com.github.mkopylec.projectmanager.api.dto.NewTeam
+import com.github.mkopylec.projectmanager.application.dto.NewTeam
 import spock.lang.Unroll
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST
