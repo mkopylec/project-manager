@@ -35,4 +35,15 @@ class TeamSpecification extends BasicSpecification {
         where:
         name << [null, '', '  ']
     }
+
+    def "Should add member to an existing team"() {
+        given:
+        def newTeam = new NewTeam(name: 'Team 1')
+        post('/teams', newTeam)
+        when:
+        def response = post('/teams', newTeam)
+
+        then:
+        response.statusCode == CREATED
+    }
 }

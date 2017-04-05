@@ -2,7 +2,9 @@ package com.github.mkopylec.projectmanager.api;
 
 import com.github.mkopylec.projectmanager.application.TeamService;
 import com.github.mkopylec.projectmanager.application.dto.NewTeam;
+import com.github.mkopylec.projectmanager.application.dto.NewTeamMember;
 
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,5 +27,11 @@ class TeamController {
     @PostMapping
     public void createTeam(@RequestBody NewTeam newTeam) {
         teamService.createTeam(newTeam);
+    }
+
+    @ResponseStatus(CREATED)
+    @PostMapping("/{teamName}/members")
+    public void createTeam(@PathVariable String teamName, @RequestBody NewTeamMember newTeamMember) {
+
     }
 }
