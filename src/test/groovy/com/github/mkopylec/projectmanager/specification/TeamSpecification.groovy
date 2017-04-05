@@ -21,7 +21,7 @@ class TeamSpecification extends BasicSpecification {
     }
 
     @Unroll
-    def "Should not create a new team with empty name"() {
+    def "Should not create an unnamed new team"() {
         given:
         def newTeam = new NewTeam(name: name)
 
@@ -36,7 +36,7 @@ class TeamSpecification extends BasicSpecification {
         name << [null, '', '  ']
     }
 
-    def "Should not create a new team when a team with the same name already exists"() {
+    def "Should not create a new team that already exists"() {
         given:
         def newTeam = new NewTeam(name: 'Team 2')
         post('/teams', newTeam)
