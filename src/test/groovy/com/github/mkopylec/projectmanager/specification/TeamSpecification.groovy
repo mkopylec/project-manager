@@ -37,7 +37,7 @@ class TeamSpecification extends BasicSpecification {
         name << [null, '', '  ']
     }
 
-    def "Should not create a new team that already exists"() {
+    def "Should not create a team that already exists"() {
         given:
         def newTeam = new NewTeam(name: 'Team 2')
         post('/teams', newTeam)
