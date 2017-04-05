@@ -6,6 +6,7 @@ import com.github.mkopylec.projectmanager.application.dto.NewTeamMember
 import spock.lang.Unroll
 
 import static org.springframework.http.HttpStatus.CREATED
+import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 
 class TeamSpecification extends BasicSpecification {
@@ -160,7 +161,7 @@ class TeamSpecification extends BasicSpecification {
         def response = post('/teams/Team 9/members', member)
 
         then:
-        response.statusCode == UNPROCESSABLE_ENTITY
+        response.statusCode == NOT_FOUND
         response.body.code == 'NONEXISTENT_TEAM'
     }
 }
