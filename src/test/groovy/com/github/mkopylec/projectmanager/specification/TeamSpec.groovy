@@ -7,7 +7,7 @@ import spock.lang.Unroll
 import static org.springframework.http.HttpStatus.BAD_REQUEST
 import static org.springframework.http.HttpStatus.CREATED
 
-class TeamsSpec extends BasicSpec {
+class TeamSpec extends BasicSpec {
 
     def "Should create new team"() {
         given:

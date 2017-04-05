@@ -12,7 +12,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequestMapping("/teams")
-class TeamsController {
+class TeamController {
 
     @ResponseStatus(CREATED)
     @PostMapping
