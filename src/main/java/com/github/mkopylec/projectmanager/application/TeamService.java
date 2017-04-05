@@ -25,7 +25,7 @@ public class TeamService {
     public void createTeam(@RequestBody NewTeam newTeam) {
         Team team = teamFactory.createTeam(newTeam.getName());
         when(teamRepository.existsByName(team.getName()))
-                .thenInvalidEntity(TEAM_ALREADY_EXISTS, "Error creating team named '" + team.getName() + "'");
+                .thenEntityAlreadyExists(TEAM_ALREADY_EXISTS, "Error creating team named '" + team.getName() + "'");
         teamRepository.save(team);
     }
 }
