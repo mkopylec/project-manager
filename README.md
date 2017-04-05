@@ -9,7 +9,7 @@ The application is directed to project managers.
 Using the application they can add projects, monitor their progress and assign teams to work on the projects.
 
 ## Steps to implement
-Each branch of the repository represents an already implemented step.
+Each branch of the repository represents a subsequent step of the overall task.
 The task is to implement each step using Domain-Driven Design rules, so the unit tests can successfully pass.
 Checkout the _master_ branch.
 Get known with the starting code, it contains the parts that are not focused on Domain-Driven Design modelling but are necessary for application to work properly.
