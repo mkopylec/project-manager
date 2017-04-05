@@ -20,7 +20,7 @@ import static org.springframework.http.HttpMethod.POST
 import static org.springframework.http.HttpMethod.PUT
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-abstract class BasicSpec extends Specification {
+abstract class BasicSpecification extends Specification {
 
     @Rule
     public WireMockRule reportingService = new WireMockRule(8081)
