@@ -2,6 +2,7 @@ package com.github.mkopylec.projectmanager.specification
 
 import com.github.mkopylec.projectmanager.BasicSpecification
 import com.github.mkopylec.projectmanager.application.dto.NewTeam
+import com.github.mkopylec.projectmanager.application.dto.NewTeamMember
 import spock.lang.Unroll
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -47,5 +48,32 @@ class TeamSpecification extends BasicSpecification {
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
         response.body.code == 'TEAM_ALREADY_EXISTS'
+    }
+
+    def "Should add a new member to a team"() {
+        given:
+        def newTeam = new NewTeam(name: 'Team 3')
+        post('/teams', newTeam)
+        def member = new NewTeamMember(firstName: 'Mariusz', lastName: 'Kopylec', jobPosition: 'developer')
+
+        when:
+        def response = post('/teams/Team 3/members', member)
+
+        then:
+        response.statusCode == CREATED
+    }
+
+    @Unroll
+    def "Should not a new member to a team with empty first name"() {
+        given:
+        def newTeam = new NewTeam(name: 'Team 3')
+        post('/teams', newTeam)
+        def member = new NewTeamMember(firstName: 'Mariusz', lastName: 'Kopylec', jobPosition: 'developer')
+
+        when:
+        def response = post('/teams/Team 3/members', member)
+
+        then:
+        response.statusCode == CREATED
     }
 }
