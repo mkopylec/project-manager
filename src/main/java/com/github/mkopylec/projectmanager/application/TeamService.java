@@ -8,6 +8,9 @@ import com.github.mkopylec.projectmanager.domain.team.TeamRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.TEAM_ALREADY_EXISTS;
+import static com.github.mkopylec.projectmanager.domain.exceptions.PreCondition.when;
+
 @Service
 public class TeamService {
 
@@ -21,6 +24,7 @@ public class TeamService {
 
     public void createTeam(@RequestBody NewTeam newTeam) {
         Team team = teamFactory.createTeam(newTeam.getName());
+        when(teamRepository.existsByName(team.getName())).thenInvalidEntity(TEAM_ALREADY_EXISTS, "Error creating team named '" + team.getName() + "'");
         teamRepository.save(team);
     }
 }

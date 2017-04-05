@@ -1,34 +1,23 @@
 package com.github.mkopylec.projectmanager.domain.exceptions;
 
-public class DomainException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public abstract class DomainException extends RuntimeException {
 
     private final ErrorCode code;
+    private final HttpStatus status;
 
-    DomainException(String message, ErrorCode code) {
+    DomainException(String message, ErrorCode code, HttpStatus status) {
         super(message);
         this.code = code;
+        this.status = status;
     }
 
     public ErrorCode getCode() {
         return code;
     }
 
-    public static Condition when(boolean condition) {
-        return new Condition(condition);
-    }
-
-    public static class Condition {
-
-        private final boolean condition;
-
-        Condition(boolean condition) {
-            this.condition = condition;
-        }
-
-        public void thenThrow(ErrorCode code, String message) {
-            if (condition) {
-                throw new DomainException(message, code);
-            }
-        }
+    public HttpStatus getStatus() {
+        return status;
     }
 }
