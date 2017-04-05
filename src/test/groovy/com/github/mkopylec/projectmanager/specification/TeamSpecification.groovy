@@ -4,12 +4,12 @@ import com.github.mkopylec.projectmanager.BasicSpecification
 import com.github.mkopylec.projectmanager.application.dto.NewTeam
 import spock.lang.Unroll
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST
 import static org.springframework.http.HttpStatus.CREATED
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 
 class TeamSpecification extends BasicSpecification {
 
-    def "Should create new team"() {
+    def "Should create a new team"() {
         given:
         def newTeam = new NewTeam(name: 'Team 1')
 
@@ -21,7 +21,7 @@ class TeamSpecification extends BasicSpecification {
     }
 
     @Unroll
-    def "Should not create new team with empty name"() {
+    def "Should not create a new team with empty name"() {
         given:
         def newTeam = new NewTeam(name: name)
 
@@ -29,21 +29,23 @@ class TeamSpecification extends BasicSpecification {
         def response = post('/teams', newTeam)
 
         then:
-        response.statusCode == BAD_REQUEST
+        response.statusCode == UNPROCESSABLE_ENTITY
         response.body.code == 'EMPTY_TEAM_NAME'
 
         where:
         name << [null, '', '  ']
     }
 
-    def "Should add member to an existing team"() {
+    def "Should not create a new team when a team with the same name already exists"() {
         given:
-        def newTeam = new NewTeam(name: 'Team 1')
+        def newTeam = new NewTeam(name: 'Team 2')
         post('/teams', newTeam)
+
         when:
         def response = post('/teams', newTeam)
 
         then:
-        response.statusCode == CREATED
+        response.statusCode == UNPROCESSABLE_ENTITY
+        response.body.code == 'TEAM_ALREADY_EXISTS'
     }
 }

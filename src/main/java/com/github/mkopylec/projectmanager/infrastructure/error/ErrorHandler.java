@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.UNEXPECTED_ERROR;
 import static org.slf4j.LoggerFactory.getLogger;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.ResponseEntity.status;
 
@@ -24,8 +23,8 @@ class ErrorHandler {
 
     @ExceptionHandler(DomainException.class)
     public ResponseEntity<ErrorMessage> handleDomainException(DomainException ex, HttpServletRequest request) {
-        log.warn(createLog(request, BAD_REQUEST, ex.getCode(), ex.getMessage()));
-        return status(BAD_REQUEST)
+        log.warn(createLog(request, ex.getStatus(), ex.getCode(), ex.getMessage()));
+        return status(ex.getStatus())
                 .body(new ErrorMessage(ex.getCode()));
     }
 

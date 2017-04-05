@@ -6,8 +6,13 @@ import com.github.mkopylec.projectmanager.domain.team.TeamRepository;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
+
 @Repository
 class TeamDao implements TeamRepository {
+
+    private static final String TEAMS_COLLECTION = "teams";
 
     private final MongoTemplate mongo;
 
@@ -16,7 +21,12 @@ class TeamDao implements TeamRepository {
     }
 
     @Override
+    public boolean existsByName(String name) {
+        return mongo.exists(query(where("_id").is(name)), TEAMS_COLLECTION);
+    }
+
+    @Override
     public void save(Team team) {
-        mongo.save(team, "teams");
+        mongo.save(team, TEAMS_COLLECTION);
     }
 }
