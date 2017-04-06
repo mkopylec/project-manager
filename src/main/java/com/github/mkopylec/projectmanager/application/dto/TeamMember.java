@@ -1,6 +1,6 @@
 package com.github.mkopylec.projectmanager.application.dto;
 
-public class NewTeamMember {
+public class TeamMember {
 
     private String firstName;
     private String lastName;
