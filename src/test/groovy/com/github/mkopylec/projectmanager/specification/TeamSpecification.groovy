@@ -7,19 +7,34 @@ import spock.lang.Unroll
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
+import static org.springframework.http.HttpStatus.OK
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 
 class TeamSpecification extends BasicSpecification {
 
-    def "Should create a new team"() {
+    def "Should create new team and browse it"() {
         given:
-        def newTeam = new NewTeam(name: 'Team 1')
+        def newTeam1 = new NewTeam(name: 'Team 1')
 
         when:
-        def response = post('/teams', newTeam)
+        def response = post('/teams', newTeam1)
 
         then:
         response.statusCode == CREATED
+
+        when:
+        response = get('/teams', List)
+
+        then:
+        response.statusCode == OK
+        response.body != null
+        response.body.size() == 1
+        with(response.body[0]) {
+            name == 'Team 3'
+            currentlyImplementedProjects == 0
+            busy == false
+            members == []
+        }
     }
 
     @Unroll
@@ -51,7 +66,7 @@ class TeamSpecification extends BasicSpecification {
         response.body.code == 'TEAM_ALREADY_EXISTS'
     }
 
-    def "Should add a new member to a team"() {
+    def "Should add a new member to a team and browse him"() {
         given:
         def newTeam = new NewTeam(name: 'Team 3')
         post('/teams', newTeam)
@@ -62,10 +77,25 @@ class TeamSpecification extends BasicSpecification {
 
         then:
         response.statusCode == CREATED
+
+        when:
+        response = get('/teams', List)
+
+        then:
+        response.statusCode == OK
+        response.body != null
+        response.body.size() == 1
+        with(response.body[0].members) {
+            members != null
+            members.size() == 1
+            members[0].firstName == 'Mariusz'
+            members[0].lastName == 'Kopylec'
+            members[0].jobPosition == 'developer'
+        }
     }
 
     @Unroll
-    def "Should add a new member with '#jobPosition' job position to a team"() {
+    def "Should add a new member with '#jobPosition' job position to a team and browse it"() {
         given:
         def newTeam = new NewTeam(name: 'Team 4')
         post('/teams', newTeam)
@@ -77,8 +107,27 @@ class TeamSpecification extends BasicSpecification {
         then:
         response.statusCode == CREATED
 
+        when:
+        response = get('/teams', List)
+
+        then:
+        response.statusCode == OK
+        response.body != null
+        response.body.size() == 1
+        with(response.body[0].members) {
+            members != null
+            members.size() == 1
+            members[0].jobPosition == browsedJobPosition
+        }
+
         where:
-        jobPosition << ['developer', 'DEVELOPER', 'product owner', 'Product Owner', 'product_owner', 'PRODUCT_OWNER']
+        jobPosition     | browsedJobPosition
+        'developer'     | 'developer'
+        'DEVELOPER'     | 'developer'
+        'product owner' | 'product owner'
+        'Product Owner' | 'product owner'
+        'product_owner' | 'product owner'
+        'PRODUCT_OWNER' | 'product owner'
     }
 
     @Unroll
