@@ -5,6 +5,7 @@ import com.github.mkopylec.projectmanager.application.dto.NewTeamMember;
 import com.github.mkopylec.projectmanager.domain.team.Team;
 import com.github.mkopylec.projectmanager.domain.team.TeamFactory;
 import com.github.mkopylec.projectmanager.domain.team.TeamRepository;
+import com.github.mkopylec.projectmanager.domain.values.Employee;
 import com.github.mkopylec.projectmanager.domain.values.JobPosition;
 
 import org.springframework.stereotype.Service;
@@ -33,7 +34,7 @@ public class TeamService {
         teamRepository.save(team);
     }
 
-    public void createTeam(String teamName, NewTeamMember newTeamMember) {
+    public void addMemberToTeam(String teamName, NewTeamMember newTeamMember) {
         String position = newTeamMember.getJobPosition();
         JobPosition jobPosition = createJobPosition(position);
         when(jobPosition == null)
@@ -41,5 +42,7 @@ public class TeamService {
         Team team = teamRepository.findByName(teamName);
         when(team == null)
                 .thenMissingEntity(NONEXISTENT_TEAM, "Error adding member to '" + teamName + "' team");
+        Employee member = new Employee(newTeamMember.getFirstName(), newTeamMember.getLastName(), jobPosition);
+        team.addMember(member);
     }
 }
