@@ -5,11 +5,15 @@ import com.github.mkopylec.projectmanager.application.dto.NewTeamMember;
 import com.github.mkopylec.projectmanager.domain.team.Team;
 import com.github.mkopylec.projectmanager.domain.team.TeamFactory;
 import com.github.mkopylec.projectmanager.domain.team.TeamRepository;
+import com.github.mkopylec.projectmanager.domain.values.JobPosition;
 
 import org.springframework.stereotype.Service;
 
+import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.INVALID_MEMBER_JOB_POSITION;
+import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.NONEXISTENT_TEAM;
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.TEAM_ALREADY_EXISTS;
 import static com.github.mkopylec.projectmanager.domain.exceptions.PreCondition.when;
+import static com.github.mkopylec.projectmanager.domain.values.JobPosition.createJobPosition;
 
 @Service
 public class TeamService {
@@ -30,6 +34,12 @@ public class TeamService {
     }
 
     public void createTeam(String teamName, NewTeamMember newTeamMember) {
-
+        String position = newTeamMember.getJobPosition();
+        JobPosition jobPosition = createJobPosition(position);
+        when(jobPosition == null)
+                .thenInvalidValue(INVALID_MEMBER_JOB_POSITION, "Error adding member with '" + position + "' job position to '" + teamName + "' team");
+        Team team = teamRepository.findByName(teamName);
+        when(team == null)
+                .thenMissingEntity(NONEXISTENT_TEAM, "Error adding member to '" + teamName + "' team");
     }
 }

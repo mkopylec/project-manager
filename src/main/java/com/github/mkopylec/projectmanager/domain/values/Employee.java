@@ -1,6 +1,5 @@
 package com.github.mkopylec.projectmanager.domain.values;
 
-import static com.github.mkopylec.projectmanager.domain.exceptions.PreCondition.when;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class Employee {
@@ -10,7 +9,6 @@ public class Employee {
     private final JobPosition jobPosition;
 
     public Employee(String firstName, String lastName, JobPosition jobPosition) {
-        when(isBlank(firstName)).
         this.firstName = firstName;
         this.lastName = lastName;
         this.jobPosition = jobPosition;
@@ -20,11 +18,23 @@ public class Employee {
         return firstName;
     }
 
+    public boolean hasNoFirstName() {
+        return isBlank(firstName);
+    }
+
     public String getLastName() {
         return lastName;
     }
 
+    public boolean hasNoLastName() {
+        return isBlank(lastName);
+    }
+
     public JobPosition getJobPosition() {
         return jobPosition;
+    }
+
+    public boolean hasNoJobPosition() {
+        return jobPosition == null;
     }
 }
