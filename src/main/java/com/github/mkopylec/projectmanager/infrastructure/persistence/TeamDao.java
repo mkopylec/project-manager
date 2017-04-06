@@ -1,5 +1,7 @@
 package com.github.mkopylec.projectmanager.infrastructure.persistence;
 
+import java.util.List;
+
 import com.github.mkopylec.projectmanager.domain.team.Team;
 import com.github.mkopylec.projectmanager.domain.team.TeamRepository;
 
@@ -28,6 +30,11 @@ class TeamDao implements TeamRepository {
     @Override
     public Team findByName(String name) {
         return mongo.findById(name, Team.class, TEAMS_COLLECTION);
+    }
+
+    @Override
+    public List<Team> findAll() {
+        return mongo.findAll(Team.class, TEAMS_COLLECTION);
     }
 
     @Override

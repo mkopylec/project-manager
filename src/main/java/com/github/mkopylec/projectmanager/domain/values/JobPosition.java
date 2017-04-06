@@ -9,6 +9,11 @@ public enum JobPosition {
     SCRUM_MASTER,
     PRODUCT_OWNER;
 
+    @Override
+    public String toString() {
+        return name().toLowerCase().replace('_', ' ');
+    }
+
     public static JobPosition createJobPosition(String jobPosition) {
         if (isBlank(jobPosition)) {
             return null;

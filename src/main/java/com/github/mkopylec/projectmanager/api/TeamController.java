@@ -43,6 +43,6 @@ class TeamController {
     @ResponseStatus(OK)
     @GetMapping
     public List<ExistingTeam> getTeams() {
-        return null;
+        return teamService.getTeams();
     }
 }

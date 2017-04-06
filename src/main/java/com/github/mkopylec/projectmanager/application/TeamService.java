@@ -1,7 +1,11 @@
 package com.github.mkopylec.projectmanager.application;
 
+import java.util.List;
+
+import com.github.mkopylec.projectmanager.application.dto.ExistingTeam;
 import com.github.mkopylec.projectmanager.application.dto.NewTeam;
 import com.github.mkopylec.projectmanager.application.dto.TeamMember;
+import com.github.mkopylec.projectmanager.application.utils.DtoMapper;
 import com.github.mkopylec.projectmanager.domain.team.Team;
 import com.github.mkopylec.projectmanager.domain.team.TeamFactory;
 import com.github.mkopylec.projectmanager.domain.team.TeamRepository;
@@ -14,6 +18,7 @@ import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.NON
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.TEAM_ALREADY_EXISTS;
 import static com.github.mkopylec.projectmanager.domain.exceptions.PreCondition.when;
 import static com.github.mkopylec.projectmanager.domain.values.JobPosition.createJobPosition;
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class TeamService {
@@ -40,5 +45,11 @@ public class TeamService {
         JobPosition jobPosition = createJobPosition(teamMember.getJobPosition());
         Employee member = new Employee(teamMember.getFirstName(), teamMember.getLastName(), jobPosition);
         team.addMember(member);
+    }
+
+    public List<ExistingTeam> getTeams() {
+        return teamRepository.findAll().stream()
+                .map(DtoMapper::mapToExistingTeam)
+                .collect(toList());
     }
 }
