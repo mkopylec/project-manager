@@ -25,7 +25,7 @@ A team cannot be created if it already exists.
 ##### To do
 Checkout the _step-1-start_ branch.
 Implement the `TeamsEndpoint.createTeam(...)` method, so the unit tests can successfully pass.
-Compare your solution with the _step-1-done_ branch.
+Compare your solution with the _step-1-finish_ branch.
 
 ### Step 2 - Assign an employee to a team
 The user can add a member to a team.
@@ -37,7 +37,7 @@ An employee without first name, last name or job position cannot be added.
 ##### To do
 Checkout the _step-2-start_ branch.
 Implement the `TeamsEndpoint.addMemberToTeam(...)` method, so the unit tests can successfully pass.
-Compare your solution with the _step-2-done_ branch.
+Compare your solution with the _step-2-finish_ branch.
 
 ### Step 3 - Show teams
 The user can browse teams.
@@ -46,4 +46,4 @@ He can see their members and on how many projects teams are working right now.
 ##### To do
 Checkout the _step-3-start_ branch.
 Implement the `TeamsEndpoint.getTeams(...)` method, so the unit tests can successfully pass.
-Compare your solution with the _step-3-done_ branch.
+Compare your solution with the _step-3-finish_ branch.
