@@ -28,6 +28,7 @@ Implement the `TeamsEndpoint.createTeam(...)` method, so the unit tests can succ
 Compare your solution with the _step-1-done_ branch.
 
 ### Step 2 - Assign an employee to a team
+The user can add a member to a team.
 Every team consists of **members** that are company's **employees**.
 It is important for an employee that, besides of having a **first** and **last name**, he has a known **job position**.
 Job position can be one of: developer, scrum master or product owner.
@@ -37,3 +38,12 @@ An employee without first name, last name or job position cannot be added.
 Checkout the _step-2-start_ branch.
 Implement the `TeamsEndpoint.addMemberToTeam(...)` method, so the unit tests can successfully pass.
 Compare your solution with the _step-2-done_ branch.
+
+### Step 3 - Show teams
+The user can browse teams.
+He can see their members and on how many projects teams are working right now.
+
+##### To do
+Checkout the _step-3-start_ branch.
+Implement the `TeamsEndpoint.getTeams(...)` method, so the unit tests can successfully pass.
+Compare your solution with the _step-3-done_ branch.
