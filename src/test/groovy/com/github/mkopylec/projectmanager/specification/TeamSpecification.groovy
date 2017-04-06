@@ -93,7 +93,7 @@ class TeamSpecification extends BasicSpecification {
 
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == 'EMPTY_EMPLOYEE_FIRST_NAME'
+        response.body.code == 'EMPTY_MEMBER_FIRST_NAME'
 
         where:
         firstName << [null, '', '  ']
@@ -111,7 +111,7 @@ class TeamSpecification extends BasicSpecification {
 
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == 'EMPTY_EMPLOYEE_LAST_NAME'
+        response.body.code == 'EMPTY_MEMBER_LAST_NAME'
 
         where:
         lastName << [null, '', '  ']
@@ -129,7 +129,7 @@ class TeamSpecification extends BasicSpecification {
 
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == 'EMPTY_EMPLOYEE_JOB_POSITION'
+        response.body.code == 'EMPTY_MEMBER_JOB_POSITION'
 
         where:
         jobPosition << [null, '', '  ']
@@ -147,7 +147,7 @@ class TeamSpecification extends BasicSpecification {
 
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == 'INVALID_EMPLOYEE_JOB_POSITION'
+        response.body.code == 'INVALID_MEMBER_JOB_POSITION'
 
         where:
         jobPosition << ['accountant', 'Project Manager', 'TECHNICAL_LEADER']

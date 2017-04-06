@@ -18,12 +18,6 @@ public class PreCondition {
         }
     }
 
-    public void thenInvalidValue(ErrorCode code, String message) {
-        if (condition) {
-            throw new InvalidValueException(message, code);
-        }
-    }
-
     public void thenEntityAlreadyExists(ErrorCode code, String message) {
         if (condition) {
             throw new EntityAlreadyExistsException(message, code);

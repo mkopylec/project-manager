@@ -1,5 +1,6 @@
 package com.github.mkopylec.projectmanager.domain.values;
 
+import static com.github.mkopylec.projectmanager.domain.values.JobPosition.INVALID;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class Employee {
@@ -36,5 +37,9 @@ public class Employee {
 
     public boolean hasNoJobPosition() {
         return jobPosition == null;
+    }
+
+    public boolean hasInvalidJobPosition() {
+        return jobPosition == INVALID;
     }
 }

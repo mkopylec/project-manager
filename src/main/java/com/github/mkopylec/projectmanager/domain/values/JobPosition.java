@@ -4,6 +4,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public enum JobPosition {
 
+    INVALID,
     DEVELOPER,
     SCRUM_MASTER,
     PRODUCT_OWNER;
@@ -16,7 +17,7 @@ public enum JobPosition {
         try {
             return valueOf(normalizedJobPosition);
         } catch (IllegalArgumentException ex) {
-            return null;
+            return INVALID;
         }
     }
 }
