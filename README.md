@@ -19,6 +19,8 @@ The user can create new **teams**.
 Every team is **named**.
 To manage teams more efficient the user will need an information on how busy a team currently is.
 To fulfil this requirement the application must display **how many projects a team is currently implementing**.
+An unnamed team cannot be created.
+A team cannot be created if it already exists.
 
 ##### To do
 Checkout the _step-1-start_ branch.
