@@ -31,7 +31,7 @@ Compare your solution with the _step-1-done_ branch.
 Every team consists of **members** that are company's **employees**.
 It is important for an employee that, besides of having a **first** and **last name**, he has a known **job position**.
 Job position can be one of: developer, scrum master or product owner.
-An employee must without first name, last name or job position cannot be added.
+An employee without first name, last name or job position cannot be added.
 
 ##### To do
 Checkout the _step-2-start_ branch.
