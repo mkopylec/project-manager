@@ -5,6 +5,7 @@ import java.util.List;
 public class ExistingTeam {
 
     private String name;
+    private int currentlyImplementedProjects;
     private boolean busy;
     private List<TeamMember> members;
 
@@ -14,6 +15,14 @@ public class ExistingTeam {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getCurrentlyImplementedProjects() {
+        return currentlyImplementedProjects;
+    }
+
+    public void setCurrentlyImplementedProjects(int currentlyImplementedProjects) {
+        this.currentlyImplementedProjects = currentlyImplementedProjects;
     }
 
     public boolean isBusy() {
