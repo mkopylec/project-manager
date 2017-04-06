@@ -1,6 +1,9 @@
 package com.github.mkopylec.projectmanager.api;
 
+import java.util.List;
+
 import com.github.mkopylec.projectmanager.application.TeamService;
+import com.github.mkopylec.projectmanager.application.dto.ExistingTeam;
 import com.github.mkopylec.projectmanager.application.dto.NewTeam;
 import com.github.mkopylec.projectmanager.application.dto.TeamMember;
 
@@ -39,7 +42,7 @@ class TeamController {
 
     @ResponseStatus(OK)
     @GetMapping
-    public void getTeams() {
-
+    public List<ExistingTeam> getTeams() {
+        return null;
     }
 }
