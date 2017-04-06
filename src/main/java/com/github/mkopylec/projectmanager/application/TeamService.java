@@ -1,7 +1,7 @@
 package com.github.mkopylec.projectmanager.application;
 
 import com.github.mkopylec.projectmanager.application.dto.NewTeam;
-import com.github.mkopylec.projectmanager.application.dto.NewTeamMember;
+import com.github.mkopylec.projectmanager.application.dto.TeamMember;
 import com.github.mkopylec.projectmanager.domain.team.Team;
 import com.github.mkopylec.projectmanager.domain.team.TeamFactory;
 import com.github.mkopylec.projectmanager.domain.team.TeamRepository;
@@ -33,12 +33,12 @@ public class TeamService {
         teamRepository.save(team);
     }
 
-    public void addMemberToTeam(String teamName, NewTeamMember newTeamMember) {
+    public void addMemberToTeam(String teamName, TeamMember teamMember) {
         Team team = teamRepository.findByName(teamName);
         when(team == null)
                 .thenMissingEntity(NONEXISTENT_TEAM, "Error adding member to '" + teamName + "' team");
-        JobPosition jobPosition = createJobPosition(newTeamMember.getJobPosition());
-        Employee member = new Employee(newTeamMember.getFirstName(), newTeamMember.getLastName(), jobPosition);
+        JobPosition jobPosition = createJobPosition(teamMember.getJobPosition());
+        Employee member = new Employee(teamMember.getFirstName(), teamMember.getLastName(), jobPosition);
         team.addMember(member);
     }
 }

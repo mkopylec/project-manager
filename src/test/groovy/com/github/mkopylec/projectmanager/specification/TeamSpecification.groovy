@@ -2,7 +2,7 @@ package com.github.mkopylec.projectmanager.specification
 
 import com.github.mkopylec.projectmanager.BasicSpecification
 import com.github.mkopylec.projectmanager.application.dto.NewTeam
-import com.github.mkopylec.projectmanager.application.dto.NewTeamMember
+import com.github.mkopylec.projectmanager.application.dto.TeamMember
 import spock.lang.Unroll
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -55,7 +55,7 @@ class TeamSpecification extends BasicSpecification {
         given:
         def newTeam = new NewTeam(name: 'Team 3')
         post('/teams', newTeam)
-        def member = new NewTeamMember(firstName: 'Mariusz', lastName: 'Kopylec', jobPosition: 'developer')
+        def member = new TeamMember(firstName: 'Mariusz', lastName: 'Kopylec', jobPosition: 'developer')
 
         when:
         def response = post('/teams/Team 3/members', member)
@@ -69,7 +69,7 @@ class TeamSpecification extends BasicSpecification {
         given:
         def newTeam = new NewTeam(name: 'Team 4')
         post('/teams', newTeam)
-        def member = new NewTeamMember(firstName: 'Mariusz', lastName: 'Kopylec', jobPosition: jobPosition)
+        def member = new TeamMember(firstName: 'Mariusz', lastName: 'Kopylec', jobPosition: jobPosition)
 
         when:
         def response = post('/teams/Team 4/members', member)
@@ -86,7 +86,7 @@ class TeamSpecification extends BasicSpecification {
         given:
         def newTeam = new NewTeam(name: 'Team 5')
         post('/teams', newTeam)
-        def member = new NewTeamMember(firstName: firstName, lastName: 'Kopylec', jobPosition: 'developer')
+        def member = new TeamMember(firstName: firstName, lastName: 'Kopylec', jobPosition: 'developer')
 
         when:
         def response = post('/teams/Team 5/members', member)
@@ -104,7 +104,7 @@ class TeamSpecification extends BasicSpecification {
         given:
         def newTeam = new NewTeam(name: 'Team 6')
         post('/teams', newTeam)
-        def member = new NewTeamMember(firstName: 'Mariusz', lastName: lastName, jobPosition: 'developer')
+        def member = new TeamMember(firstName: 'Mariusz', lastName: lastName, jobPosition: 'developer')
 
         when:
         def response = post('/teams/Team 6/members', member)
@@ -122,7 +122,7 @@ class TeamSpecification extends BasicSpecification {
         given:
         def newTeam = new NewTeam(name: 'Team 7')
         post('/teams', newTeam)
-        def member = new NewTeamMember(firstName: 'Mariusz', lastName: 'Kopylec', jobPosition: jobPosition)
+        def member = new TeamMember(firstName: 'Mariusz', lastName: 'Kopylec', jobPosition: jobPosition)
 
         when:
         def response = post('/teams/Team 7/members', member)
@@ -140,7 +140,7 @@ class TeamSpecification extends BasicSpecification {
         given:
         def newTeam = new NewTeam(name: 'Team 8')
         post('/teams', newTeam)
-        def member = new NewTeamMember(firstName: 'Mariusz', lastName: 'Kopylec', jobPosition: jobPosition)
+        def member = new TeamMember(firstName: 'Mariusz', lastName: 'Kopylec', jobPosition: jobPosition)
 
         when:
         def response = post('/teams/Team 8/members', member)
@@ -155,7 +155,7 @@ class TeamSpecification extends BasicSpecification {
 
     def "Should not add a new member to a nonexistent team"() {
         given:
-        def member = new NewTeamMember(firstName: 'Mariusz', lastName: 'Kopylec', jobPosition: 'developer')
+        def member = new TeamMember(firstName: 'Mariusz', lastName: 'Kopylec', jobPosition: 'developer')
 
         when:
         def response = post('/teams/Team 9/members', member)
