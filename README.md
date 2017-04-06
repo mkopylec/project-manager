@@ -42,6 +42,7 @@ Compare your solution with the _step-2-finish_ branch.
 ### Step 3 - Show teams
 The user can browse teams.
 He can see their members and on how many projects teams are working right now.
+If a team is working on more than 3 projects the user sees it as a busy team.
 
 ##### To do
 Checkout the _step-3-start_ branch.
