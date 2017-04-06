@@ -13,7 +13,8 @@ public class Team {
     private int currentlyImplementedProjects;
 
     Team(String name, int currentlyImplementedProjects) {
-        when(isBlank(name)).thenInvalidEntity(EMPTY_TEAM_NAME, "Error creating team");
+        when(isBlank(name))
+                .thenInvalidEntity(EMPTY_TEAM_NAME, "Error creating team");
         this.name = name;
         this.currentlyImplementedProjects = currentlyImplementedProjects;
     }
