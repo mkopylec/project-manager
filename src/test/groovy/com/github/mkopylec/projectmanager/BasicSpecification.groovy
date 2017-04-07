@@ -28,11 +28,11 @@ abstract class BasicSpecification extends Specification {
     @Autowired
     private TestRestTemplate restTemplate
     @Autowired
-    private MongoTemplate mongo;
+    private MongoTemplate mongo
 
     void setup() {
-        mongo.getCollectionNames().each {
-            mongo.dropCollection(it)
+        for (def collection : mongo.collectionNames) {
+            mongo.dropCollection(collection)
         }
     }
 
