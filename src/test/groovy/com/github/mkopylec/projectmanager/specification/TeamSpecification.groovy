@@ -55,7 +55,7 @@ class TeamSpecification extends BasicSpecification {
 
     def "Should not create a team that already exists"() {
         given:
-        def newTeam = new NewTeam(name: 'Team 2')
+        def newTeam = new NewTeam(name: 'Team 1')
         post('/teams', newTeam)
 
         when:
@@ -68,12 +68,12 @@ class TeamSpecification extends BasicSpecification {
 
     def "Should add a new member to a team and browse him"() {
         given:
-        def newTeam = new NewTeam(name: 'Team 3')
+        def newTeam = new NewTeam(name: 'Team 1')
         post('/teams', newTeam)
         def member = new TeamMember(firstName: 'Mariusz', lastName: 'Kopylec', jobPosition: 'developer')
 
         when:
-        def response = post('/teams/Team 3/members', member)
+        def response = post('/teams/Team 1/members', member)
 
         then:
         response.statusCode == CREATED
@@ -97,12 +97,12 @@ class TeamSpecification extends BasicSpecification {
     @Unroll
     def "Should add a new member with '#jobPosition' job position to a team and browse it"() {
         given:
-        def newTeam = new NewTeam(name: 'Team 4')
+        def newTeam = new NewTeam(name: 'Team 1')
         post('/teams', newTeam)
         def member = new TeamMember(firstName: 'Mariusz', lastName: 'Kopylec', jobPosition: jobPosition)
 
         when:
-        def response = post('/teams/Team 4/members', member)
+        def response = post('/teams/Team 1/members', member)
 
         then:
         response.statusCode == CREATED
@@ -133,12 +133,12 @@ class TeamSpecification extends BasicSpecification {
     @Unroll
     def "Should not add a new member without a first name to a team"() {
         given:
-        def newTeam = new NewTeam(name: 'Team 5')
+        def newTeam = new NewTeam(name: 'Team 1')
         post('/teams', newTeam)
         def member = new TeamMember(firstName: firstName, lastName: 'Kopylec', jobPosition: 'developer')
 
         when:
-        def response = post('/teams/Team 5/members', member)
+        def response = post('/teams/Team 1/members', member)
 
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
@@ -151,12 +151,12 @@ class TeamSpecification extends BasicSpecification {
     @Unroll
     def "Should not add a new member without a last name to a team"() {
         given:
-        def newTeam = new NewTeam(name: 'Team 6')
+        def newTeam = new NewTeam(name: 'Team 1')
         post('/teams', newTeam)
         def member = new TeamMember(firstName: 'Mariusz', lastName: lastName, jobPosition: 'developer')
 
         when:
-        def response = post('/teams/Team 6/members', member)
+        def response = post('/teams/Team 1/members', member)
 
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
@@ -169,12 +169,12 @@ class TeamSpecification extends BasicSpecification {
     @Unroll
     def "Should not add a new member without job position to a team"() {
         given:
-        def newTeam = new NewTeam(name: 'Team 7')
+        def newTeam = new NewTeam(name: 'Team 1')
         post('/teams', newTeam)
         def member = new TeamMember(firstName: 'Mariusz', lastName: 'Kopylec', jobPosition: jobPosition)
 
         when:
-        def response = post('/teams/Team 7/members', member)
+        def response = post('/teams/Team 1/members', member)
 
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
@@ -187,12 +187,12 @@ class TeamSpecification extends BasicSpecification {
     @Unroll
     def "Should not add a new member with '#jobPosition' job position to a team"() {
         given:
-        def newTeam = new NewTeam(name: 'Team 8')
+        def newTeam = new NewTeam(name: 'Team 1')
         post('/teams', newTeam)
         def member = new TeamMember(firstName: 'Mariusz', lastName: 'Kopylec', jobPosition: jobPosition)
 
         when:
-        def response = post('/teams/Team 8/members', member)
+        def response = post('/teams/Team 1/members', member)
 
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
@@ -207,7 +207,7 @@ class TeamSpecification extends BasicSpecification {
         def member = new TeamMember(firstName: 'Mariusz', lastName: 'Kopylec', jobPosition: 'developer')
 
         when:
-        def response = post('/teams/Team 9/members', member)
+        def response = post('/teams/Team 1/members', member)
 
         then:
         response.statusCode == NOT_FOUND
