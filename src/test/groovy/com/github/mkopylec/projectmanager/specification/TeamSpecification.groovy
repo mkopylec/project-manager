@@ -40,7 +40,7 @@ class TeamSpecification extends BasicSpecification {
 
     def "Should not create a team that already exists"() {
         given:
-        def newTeam = new NewTeam(name: 'Team 2')
+        def newTeam = new NewTeam(name: 'Team 1')
         post('/teams', newTeam)
 
         when:
