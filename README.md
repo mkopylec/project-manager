@@ -22,11 +22,9 @@ A hint is a bold part of the text with a suggestion on what domain building bloc
  - _(VO)_ - value object
  - _(VOP)_ - value object property
  - _(DS)_ - domain service
- - _(DE)_ - domain event
- - _(DEP)_ - domain event property
  - _(?)_ - try to guess :-)
  
-[This repository](https://github.com/mkopylec/ddd-building-blocks) contains examples on how to properly implement a Domain-Driven Design building blocks. 
+The `layers` package contains examples on how to properly implement and organize Domain-Driven Design building blocks and other component types. 
 
 ### Step 1 - Create a team
 The user can create a new **team**<sub>_(E)_</sub>.
@@ -130,7 +128,7 @@ Compare your solution with the _step-9-finish_ branch.
 The user can end a started project when **all the features in the projects are done**<sub>_(?)_</sub>.
 Sometimes the users manager can give him a permission to end a project when **only the necessary features are done**<sub>_(?)_</sub>.
 Ended projects needs to be reported in the company's end year review.
-To do that the application needs to **inform a Reporting Service**<sub>_(DE)_</sub> about the ended project by sending its **identifier**<sub>_(DEP)_</sub>.
+To do that the application needs to **inform a Reporting Service**<sub>_(?)_</sub> about the ended project by sending its **identifier**<sub>_(?)_</sub>.
 
 ##### To do
 Checkout the _step-10-start_ branch.
