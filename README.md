@@ -67,6 +67,8 @@ A project draft includes minimum information about the project.
 An application must automatically **generate an unique project identifier**<sub>_(DS)_</sub>.
 A draft also requires a project **name**<sub>_(EP)_</sub>.
 A newly created project has a "to do" **status**<sub>_(EP)_</sub>.
+An unnamed project draft cannot be created.
+A project draft cannot be created if it already exists.
 
 ##### To do
 Checkout the _step-4-start_ branch.
@@ -80,6 +82,8 @@ It must contain a list of features that are required to implement within the pro
 Every **feature**<sub>_(VO)_</sub> has to be **named**<sub>_(VOP)_</sub> and it must have **status**<sub>_(VOP)_</sub> and **requirement**<sub>_(VOP)_</sub> defined.
 Status can be one of: to do, in progress or done.
 Requirement can be one of: optional, recommended or necessary.
+An unnamed project cannot be created.
+A project cannot be created if it already exists.
 
 ##### To do
 Checkout the _step-5-start_ branch.
