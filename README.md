@@ -1,4 +1,4 @@
-# Project Manager - Domain-Driven Design sample
+# Project Manager - Domain-Driven Design workshop application
 Project Manager is a sample REST service implemented using Domain-Driven Design technique.
 Its primary goal is to help me to conduct a Domain-Driven Design workshops.
 During the workshop developers implement the application on their own, following the steps in right order.
