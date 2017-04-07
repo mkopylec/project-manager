@@ -48,3 +48,14 @@ If a team is working on more than 3 projects the user sees it as a busy team.
 Checkout the _step-3-start_ branch.
 Implement the `TeamsEndpoint.getTeams(...)` method, so the unit tests can successfully pass.
 Compare your solution with the _step-3-finish_ branch.
+
+### Step 4 - Create a project draft
+The user can create **project** drafts.
+A project draft includes minimum information about the project.
+Every project must have an automatically generated unique **identifier**.
+A draft also requires a project **name**.
+
+##### To do
+Checkout the _step-4-start_ branch.
+Implement the `ProjectsEndpoint.createProject(...)` method, so the unit tests can successfully pass.
+Compare your solution with the _step-4-finish_ branch.
