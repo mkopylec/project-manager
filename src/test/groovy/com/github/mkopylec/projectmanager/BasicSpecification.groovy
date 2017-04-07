@@ -5,6 +5,7 @@ import org.junit.Rule
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
+import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
@@ -26,6 +27,14 @@ abstract class BasicSpecification extends Specification {
     public WireMockRule reportingService = new WireMockRule(8081)
     @Autowired
     private TestRestTemplate restTemplate
+    @Autowired
+    private MongoTemplate mongo
+
+    void setup() {
+        for (def collection : mongo.collectionNames) {
+            mongo.dropCollection(collection)
+        }
+    }
 
     protected void stubReportingService() {
         stubFor(post(urlEqualTo('/reports/projects')).willReturn(aResponse().withStatus(201)))
