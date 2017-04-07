@@ -125,7 +125,7 @@ Implement the `ProjectController.startProject(...)` method, so the unit tests ca
 Compare your solution with the _step-9-finish_ branch.
 
 ### Step 10 - End a project
-The user can end a started project when **all the features in the projects are done**<sub>_(?)_</sub>.
+The user can end a started project when **all of the features in the project are done**<sub>_(?)_</sub>.
 Sometimes the users manager can give him a permission to end a project when **only the necessary features are done**<sub>_(?)_</sub>.
 Ended projects needs to be reported in the company's end year review.
 To do that the application needs to **inform a Reporting Service**<sub>_(?)_</sub> about the ended project by sending its **identifier**<sub>_(?)_</sub>.
