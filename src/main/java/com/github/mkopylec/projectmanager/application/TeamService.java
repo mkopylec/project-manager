@@ -45,6 +45,7 @@ public class TeamService {
         JobPosition jobPosition = createJobPosition(teamMember.getJobPosition());
         Employee member = new Employee(teamMember.getFirstName(), teamMember.getLastName(), jobPosition);
         team.addMember(member);
+        teamRepository.save(team);
     }
 
     public List<ExistingTeam> getTeams() {
