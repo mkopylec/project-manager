@@ -1,5 +1,7 @@
 package com.github.mkopylec.projectmanager.domain.exceptions;
 
+import java.util.function.Supplier;
+
 public class PreCondition {
 
     private final boolean condition;
@@ -13,14 +15,16 @@ public class PreCondition {
     }
 
     public void thenInvalidEntity(ErrorCode code, String message) {
-        if (condition) {
-            throw new InvalidEntityException(message, code);
-        }
+        thenThrow(() -> new InvalidEntityException(message, code));
     }
 
     public void thenEntityAlreadyExists(ErrorCode code, String message) {
+        thenThrow(() -> new EntityAlreadyExistsException(message, code));
+    }
+
+    private void thenThrow(Supplier<DomainException> exceptionCreator) {
         if (condition) {
-            throw new EntityAlreadyExistsException(message, code);
+            throw exceptionCreator.get();
         }
     }
 }
