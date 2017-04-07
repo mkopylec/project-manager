@@ -5,6 +5,7 @@ import org.junit.Rule
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
+import org.springframework.core.ParameterizedTypeReference
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
@@ -44,6 +45,10 @@ abstract class BasicSpecification extends Specification {
         return sendRequest(uri, GET, null, responseBodyType)
     }
 
+    protected <T> ResponseEntity<T> get(String uri, ParameterizedTypeReference<T> responseBodyType) {
+        return sendRequest(uri, GET, null, responseBodyType)
+    }
+
     protected ResponseEntity post(String uri, Object requestBody) {
         return sendRequest(uri, POST, requestBody, Object)
     }
@@ -61,6 +66,11 @@ abstract class BasicSpecification extends Specification {
     }
 
     private <T> ResponseEntity<T> sendRequest(String uri, HttpMethod method, Object requestBody, Class<T> responseBodyType) {
+        def entity = new HttpEntity<>(requestBody)
+        return restTemplate.exchange(uri, method, entity, responseBodyType)
+    }
+
+    private <T> ResponseEntity<T> sendRequest(String uri, HttpMethod method, Object requestBody, ParameterizedTypeReference<T> responseBodyType) {
         def entity = new HttpEntity<>(requestBody)
         return restTemplate.exchange(uri, method, entity, responseBodyType)
     }
