@@ -1,8 +1,10 @@
 package com.github.mkopylec.projectmanager.specification
 
 import com.github.mkopylec.projectmanager.BasicSpecification
+import com.github.mkopylec.projectmanager.application.dto.ExistingTeam
 import com.github.mkopylec.projectmanager.application.dto.NewTeam
 import com.github.mkopylec.projectmanager.application.dto.TeamMember
+import org.springframework.core.ParameterizedTypeReference
 import spock.lang.Unroll
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -23,7 +25,7 @@ class TeamSpecification extends BasicSpecification {
         response.statusCode == CREATED
 
         when:
-        response = get('/teams', List)
+        response = get('/teams', new ParameterizedTypeReference<List<ExistingTeam>>() {})
 
         then:
         response.statusCode == OK
@@ -32,7 +34,7 @@ class TeamSpecification extends BasicSpecification {
         with(response.body[0]) {
             name == 'Team 3'
             currentlyImplementedProjects == 0
-            busy == false
+            !busy
             members == []
         }
     }
@@ -79,13 +81,13 @@ class TeamSpecification extends BasicSpecification {
         response.statusCode == CREATED
 
         when:
-        response = get('/teams', List)
+        response = get('/teams', new ParameterizedTypeReference<List<ExistingTeam>>() {})
 
         then:
         response.statusCode == OK
         response.body != null
         response.body.size() == 1
-        with(response.body[0].members) {
+        with(response.body[0]) {
             members != null
             members.size() == 1
             members[0].firstName == 'Mariusz'
@@ -108,13 +110,13 @@ class TeamSpecification extends BasicSpecification {
         response.statusCode == CREATED
 
         when:
-        response = get('/teams', List)
+        response = get('/teams', new ParameterizedTypeReference<List<ExistingTeam>>() {})
 
         then:
         response.statusCode == OK
         response.body != null
         response.body.size() == 1
-        with(response.body[0].members) {
+        with(response.body[0]) {
             members != null
             members.size() == 1
             members[0].jobPosition == browsedJobPosition
