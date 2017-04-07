@@ -30,7 +30,7 @@ class TeamSpecification extends BasicSpecification {
         response.body != null
         response.body.size() == 1
         with(response.body[0]) {
-            name == 'Team 3'
+            name == 'Team 1'
             currentlyImplementedProjects == 0
             busy == false
             members == []
