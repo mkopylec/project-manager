@@ -69,7 +69,7 @@ class TeamSpecification extends BasicSpecification {
     }
 
     @Unroll
-    def "Should add a new member with '#jobPosition' job position to a team and browse him"() {
+    def "Should add a new member with #jobPosition job position to a team and browse him"() {
         given:
         def newTeam = new NewTeam(name: 'Team 1')
         post('/teams', newTeam)
