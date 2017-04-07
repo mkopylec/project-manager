@@ -68,36 +68,8 @@ class TeamSpecification extends BasicSpecification {
         response.body.code == 'TEAM_ALREADY_EXISTS'
     }
 
-    def "Should add a new member to a team and browse him"() {
-        given:
-        def newTeam = new NewTeam(name: 'Team 1')
-        post('/teams', newTeam)
-        def member = new TeamMember(firstName: 'Mariusz', lastName: 'Kopylec', jobPosition: 'developer')
-
-        when:
-        def response = post('/teams/Team 1/members', member)
-
-        then:
-        response.statusCode == CREATED
-
-        when:
-        response = get('/teams', new ParameterizedTypeReference<List<ExistingTeam>>() {})
-
-        then:
-        response.statusCode == OK
-        response.body != null
-        response.body.size() == 1
-        with(response.body[0]) {
-            members != null
-            members.size() == 1
-            members[0].firstName == 'Mariusz'
-            members[0].lastName == 'Kopylec'
-            members[0].jobPosition == 'developer'
-        }
-    }
-
     @Unroll
-    def "Should add a new member with '#jobPosition' job position to a team and browse it"() {
+    def "Should add a new member with #jobPosition job position to a team and browse him"() {
         given:
         def newTeam = new NewTeam(name: 'Team 1')
         post('/teams', newTeam)
@@ -119,17 +91,13 @@ class TeamSpecification extends BasicSpecification {
         with(response.body[0]) {
             members != null
             members.size() == 1
-            members[0].jobPosition == browsedJobPosition
+            members[0].firstName == 'Mariusz'
+            members[0].lastName == 'Kopylec'
+            members[0].jobPosition == jobPosition
         }
 
         where:
-        jobPosition     | browsedJobPosition
-        'developer'     | 'developer'
-        'DEVELOPER'     | 'developer'
-        'product owner' | 'product owner'
-        'Product Owner' | 'product owner'
-        'product_owner' | 'product owner'
-        'PRODUCT_OWNER' | 'product owner'
+        jobPosition << ['DEVELOPER', 'SCRUM_MASTER', 'PRODUCT_OWNER']
     }
 
     @Unroll
@@ -137,7 +105,7 @@ class TeamSpecification extends BasicSpecification {
         given:
         def newTeam = new NewTeam(name: 'Team 1')
         post('/teams', newTeam)
-        def member = new TeamMember(firstName: firstName, lastName: 'Kopylec', jobPosition: 'developer')
+        def member = new TeamMember(firstName: firstName, lastName: 'Kopylec', jobPosition: 'DEVELOPER')
 
         when:
         def response = post('/teams/Team 1/members', member)
@@ -155,7 +123,7 @@ class TeamSpecification extends BasicSpecification {
         given:
         def newTeam = new NewTeam(name: 'Team 1')
         post('/teams', newTeam)
-        def member = new TeamMember(firstName: 'Mariusz', lastName: lastName, jobPosition: 'developer')
+        def member = new TeamMember(firstName: 'Mariusz', lastName: lastName, jobPosition: 'DEVELOPER')
 
         when:
         def response = post('/teams/Team 1/members', member)
@@ -186,12 +154,11 @@ class TeamSpecification extends BasicSpecification {
         jobPosition << [null, '', '  ']
     }
 
-    @Unroll
-    def "Should not add a new member with '#jobPosition' job position to a team"() {
+    def "Should not add a new member with invalid job position to a team"() {
         given:
         def newTeam = new NewTeam(name: 'Team 1')
         post('/teams', newTeam)
-        def member = new TeamMember(firstName: 'Mariusz', lastName: 'Kopylec', jobPosition: jobPosition)
+        def member = new TeamMember(firstName: 'Mariusz', lastName: 'Kopylec', jobPosition: 'Not a job position')
 
         when:
         def response = post('/teams/Team 1/members', member)
@@ -199,14 +166,11 @@ class TeamSpecification extends BasicSpecification {
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
         response.body.code == 'INVALID_MEMBER_JOB_POSITION'
-
-        where:
-        jobPosition << ['accountant', 'Project Manager', 'TECHNICAL_LEADER']
     }
 
     def "Should not add a new member to a nonexistent team"() {
         given:
-        def member = new TeamMember(firstName: 'Mariusz', lastName: 'Kopylec', jobPosition: 'developer')
+        def member = new TeamMember(firstName: 'Mariusz', lastName: 'Kopylec', jobPosition: 'DEVELOPER')
 
         when:
         def response = post('/teams/Team 1/members', member)

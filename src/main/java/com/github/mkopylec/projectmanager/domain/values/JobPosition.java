@@ -4,7 +4,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public enum JobPosition {
 
-    INVALID,
+    _INVALID,
     DEVELOPER,
     SCRUM_MASTER,
     PRODUCT_OWNER;
@@ -18,11 +18,10 @@ public enum JobPosition {
         if (isBlank(jobPosition)) {
             return null;
         }
-        String normalizedJobPosition = jobPosition.toUpperCase().replace(' ', '_');
         try {
-            return valueOf(normalizedJobPosition);
+            return valueOf(jobPosition);
         } catch (IllegalArgumentException ex) {
-            return INVALID;
+            return _INVALID;
         }
     }
 }
