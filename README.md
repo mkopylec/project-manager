@@ -76,7 +76,7 @@ Compare your solution with the _step-4-finish_ branch.
 ### Step 5 - Create a full project
 The user can also create a full project.
 A full project is a project draft with extra information.
-It must contain a list of features that are required to implement within the project.
+It must contain a list of **features**<sub>_(EP)_</sub> that are required to implement within the project.
 Every **feature**<sub>_(VO)_</sub> has to be **named**<sub>_(VOP)_</sub> and it must have **status**<sub>_(VOP)_</sub> and **requirement**<sub>_(VOP)_</sub> defined.
 Status can be one of: to do, in progress or done.
 Requirement can be one of: optional, recommended or necessary.
