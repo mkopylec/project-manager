@@ -1,6 +1,8 @@
 package com.github.mkopylec.projectmanager.specification
 
 import com.github.mkopylec.projectmanager.BasicSpecification
+import com.github.mkopylec.projectmanager.application.dto.NewFeature
+import com.github.mkopylec.projectmanager.application.dto.NewProject
 import com.github.mkopylec.projectmanager.application.dto.NewProjectDraft
 import spock.lang.Unroll
 
@@ -34,5 +36,76 @@ class ProjectSpecification extends BasicSpecification {
 
         where:
         name << [null, '', '  ']
+    }
+
+    def "Should create new full project"() {
+        given:
+        def feature = new NewFeature(name: 'Feature 1', requirement: 'NECESSARY')
+        def project = new NewProject(name: 'Project 1', features: [feature])
+
+        when:
+        def response = post('/projects', project)
+
+        then:
+        response.statusCode == CREATED
+    }
+
+    @Unroll
+    def "Should not create an unnamed new full project"() {
+        given:
+        def project = new NewProject(name: name, features: [])
+
+        when:
+        def response = post('/projects', project)
+
+        then:
+        response.statusCode == UNPROCESSABLE_ENTITY
+        response.body.code == 'EMPTY_PROJECT_NAME'
+
+        where:
+        name << [null, '', '  ']
+    }
+
+    @Unroll
+    def "Should not create a new full project with unnamed feature"() {
+        given:
+        def feature = new NewFeature(name: name, requirement: 'NECESSARY')
+        def project = new NewProject(name: 'Project 1', features: [feature])
+
+        when:
+        def response = post('/projects', project)
+
+        then:
+        response.statusCode == UNPROCESSABLE_ENTITY
+        response.body.code == 'EMPTY_FEATURE_NAME'
+
+        where:
+        name << [null, '', '  ']
+    }
+
+    def "Should not create a new full project with feature without requirement"() {
+        given:
+        def feature = new NewFeature(name: 'Feature 1', requirement: null)
+        def project = new NewProject(name: 'Project 1', features: [feature])
+
+        when:
+        def response = post('/projects', project)
+
+        then:
+        response.statusCode == UNPROCESSABLE_ENTITY
+        response.body.code == 'EMPTY_FEATURE_REQUIREMENT'
+    }
+
+    def "Should not create a new full project with feature with invalid requirement"() {
+        given:
+        def feature = new NewFeature(name: 'Feature 1', requirement: 'Not a requirement')
+        def project = new NewProject(name: 'Project 1', features: [feature])
+
+        when:
+        def response = post('/projects', project)
+
+        then:
+        response.statusCode == UNPROCESSABLE_ENTITY
+        response.body.code == 'INVALID_FEATURE_REQUIREMENT'
     }
 }

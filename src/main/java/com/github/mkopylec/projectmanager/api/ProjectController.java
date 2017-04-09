@@ -1,6 +1,7 @@
 package com.github.mkopylec.projectmanager.api;
 
 import com.github.mkopylec.projectmanager.application.ProjectService;
+import com.github.mkopylec.projectmanager.application.dto.NewProject;
 import com.github.mkopylec.projectmanager.application.dto.NewProjectDraft;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,5 +26,11 @@ class ProjectController {
     @PostMapping("/drafts")
     public void createProject(@RequestBody NewProjectDraft newProjectDraft) {
         projectService.createProject(newProjectDraft);
+    }
+
+    @ResponseStatus(CREATED)
+    @PostMapping
+    public void createProject(@RequestBody NewProject newProject) {
+
     }
 }
