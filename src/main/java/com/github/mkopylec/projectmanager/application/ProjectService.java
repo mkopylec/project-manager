@@ -1,5 +1,6 @@
 package com.github.mkopylec.projectmanager.application;
 
+import com.github.mkopylec.projectmanager.application.dto.NewProject;
 import com.github.mkopylec.projectmanager.application.dto.NewProjectDraft;
 import com.github.mkopylec.projectmanager.domain.project.Project;
 import com.github.mkopylec.projectmanager.domain.project.ProjectFactory;
@@ -21,5 +22,9 @@ public class ProjectService {
     public void createProject(NewProjectDraft newProjectDraft) {
         Project project = projectFactory.createProjectDraft(newProjectDraft.getName());
         projectRepository.save(project);
+    }
+
+    public void createProject(NewProject newProject) {
+
     }
 }

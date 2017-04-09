@@ -31,6 +31,6 @@ class ProjectController {
     @ResponseStatus(CREATED)
     @PostMapping
     public void createProject(@RequestBody NewProject newProject) {
-
+        projectService.createProject(newProject);
     }
 }

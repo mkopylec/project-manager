@@ -19,4 +19,9 @@ public class ProjectFactory {
         String identifier = identifierGenerator.generateUniqueIdentifier();
         return new Project(identifier, name, TO_DO);
     }
+
+    public Project createFullProject(String name) {
+        String identifier = identifierGenerator.generateUniqueIdentifier();
+        return new Project(identifier, name, TO_DO);
+    }
 }
