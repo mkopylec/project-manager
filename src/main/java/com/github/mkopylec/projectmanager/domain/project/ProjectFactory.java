@@ -4,7 +4,7 @@ import com.github.mkopylec.projectmanager.domain.services.UniqueIdentifierGenera
 
 import org.springframework.stereotype.Service;
 
-import static com.github.mkopylec.projectmanager.domain.project.Status.TO_DO;
+import static com.github.mkopylec.projectmanager.domain.values.Status.TO_DO;
 
 @Service
 public class ProjectFactory {
