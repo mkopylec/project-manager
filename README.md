@@ -80,6 +80,7 @@ It must contain a list of **features**<sub>_(EP)_</sub> that are required to imp
 Every **feature**<sub>_(VO)_</sub> has to be **named**<sub>_(VOP)_</sub> and it must have **status**<sub>_(VOP)_</sub> and **requirement**<sub>_(VOP)_</sub> defined.
 Status can be one of: to do, in progress or done.
 Requirement can be one of: optional, recommended or necessary.
+For the newly created feature a "to do" status has to be set.
 An unnamed project cannot be created.
 
 ##### To do
