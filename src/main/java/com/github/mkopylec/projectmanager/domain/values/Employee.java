@@ -10,10 +10,14 @@ public class Employee {
     private final String lastName;
     private final JobPosition jobPosition;
 
-    public Employee(String firstName, String lastName, String jobPosition) {
+    private Employee(String firstName, String lastName, JobPosition jobPosition) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.jobPosition = createJobPosition(jobPosition);
+        this.jobPosition = jobPosition;
+    }
+
+    public static Employee createEmployee(String firstName, String lastName, String jobPosition) {
+        return new Employee(firstName, lastName, createJobPosition(jobPosition));
     }
 
     public String getFirstName() {
