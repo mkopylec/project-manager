@@ -1,5 +1,7 @@
 package com.github.mkopylec.projectmanager.domain.project;
 
+import org.springframework.data.annotation.Id;
+
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMPTY_PROJECT_IDENTIFIER;
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMPTY_PROJECT_NAME;
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMPTY_PROJECT_STATUS;
@@ -8,6 +10,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class Project {
 
+    @Id
     private String identifier;
     private String name;
     private Status status;
