@@ -68,7 +68,6 @@ An application must automatically **generate an unique project identifier**<sub>
 A draft also requires a project **name**<sub>_(EP)_</sub>.
 A newly created project has a "to do" **status**<sub>_(EP)_</sub>.
 An unnamed project draft cannot be created.
-A project draft cannot be created if it already exists.
 
 ##### To do
 Checkout the _step-4-start_ branch.
