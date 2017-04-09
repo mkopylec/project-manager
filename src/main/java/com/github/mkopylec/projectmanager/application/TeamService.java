@@ -10,7 +10,6 @@ import com.github.mkopylec.projectmanager.domain.team.Team;
 import com.github.mkopylec.projectmanager.domain.team.TeamFactory;
 import com.github.mkopylec.projectmanager.domain.team.TeamRepository;
 import com.github.mkopylec.projectmanager.domain.values.Employee;
-import com.github.mkopylec.projectmanager.domain.values.JobPosition;
 
 import org.springframework.stereotype.Service;
 
@@ -42,8 +41,7 @@ public class TeamService {
         Team team = teamRepository.findByName(teamName);
         when(team == null)
                 .thenMissingEntity(NONEXISTENT_TEAM, "Error adding member to '" + teamName + "' team");
-        JobPosition jobPosition = createJobPosition(teamMember.getJobPosition());
-        Employee member = new Employee(teamMember.getFirstName(), teamMember.getLastName(), jobPosition);
+        Employee member = new Employee(teamMember.getFirstName(), teamMember.getLastName(), teamMember.getJobPosition());
         team.addMember(member);
         teamRepository.save(team);
     }
