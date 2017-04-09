@@ -2,11 +2,11 @@ package com.github.mkopylec.projectmanager.domain.project;
 
 import com.github.mkopylec.projectmanager.domain.services.UniqueIdentifierGenerator;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import static com.github.mkopylec.projectmanager.domain.values.Status.TO_DO;
 
-@Service
+@Component
 public class ProjectFactory {
 
     private final UniqueIdentifierGenerator identifierGenerator;
