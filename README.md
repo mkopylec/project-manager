@@ -64,8 +64,7 @@ Compare your solution with the _step-3-finish_ branch.
 ### Step 4 - Create a project draft
 The user can create **project**<sub>_(E)_</sub> drafts.
 A project draft includes minimum information about the project.
-An application must automatically **generate an unique project identifier**<sub>_(DS)_</sub>.
-A draft also requires a project **name**<sub>_(EP)_</sub>.
+It requires a project **name**<sub>_(EP)_</sub> and an automatically **generated unique project identifier**<sub>_(DS)_</sub>.
 A newly created project has a "to do" **status**<sub>_(EP)_</sub>.
 An unnamed project draft cannot be created.
 
@@ -82,7 +81,6 @@ Every **feature**<sub>_(VO)_</sub> has to be **named**<sub>_(VOP)_</sub> and it 
 Status can be one of: to do, in progress or done.
 Requirement can be one of: optional, recommended or necessary.
 An unnamed project cannot be created.
-A project cannot be created if it already exists.
 
 ##### To do
 Checkout the _step-5-start_ branch.
@@ -92,7 +90,7 @@ Compare your solution with the _step-5-finish_ branch.
 ### Step 6 - Edit a project
 The user can edit created projects.
 He can update its name, features and he can **assign a team**<sub>_(DS)_</sub> to work on a project.
-If a team is assigned to project then the project counts as a project implemented by the team.
+If a team is assigned to a project then the project counts as a project implemented by the team.
 
 ##### To do
 Checkout the _step-6-start_ branch.
@@ -102,7 +100,7 @@ Compare your solution with the _step-6-finish_ branch.
 ### Step 7 - Show projects
 The user can browse projects.
 He can see their list.
-Every item on the list contains a project name and status.
+Every item on the list contains a project identifier and name.
 
 ##### To do
 Checkout the _step-7-start_ branch.
