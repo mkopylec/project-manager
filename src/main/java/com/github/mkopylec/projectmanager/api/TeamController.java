@@ -31,7 +31,7 @@ class TeamController {
 
     @ResponseStatus(CREATED)
     @PostMapping("/{teamName}/members")
-    public void createTeam(@PathVariable String teamName, @RequestBody TeamMember teamMember) {
+    public void addMemberToTeam(@PathVariable String teamName, @RequestBody TeamMember teamMember) {
 
     }
 }
