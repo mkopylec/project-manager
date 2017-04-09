@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.NONEXISTENT_TEAM;
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.TEAM_ALREADY_EXISTS;
 import static com.github.mkopylec.projectmanager.domain.exceptions.PreCondition.when;
-import static com.github.mkopylec.projectmanager.domain.values.JobPosition.createJobPosition;
 import static java.util.stream.Collectors.toList;
 
 @Service
