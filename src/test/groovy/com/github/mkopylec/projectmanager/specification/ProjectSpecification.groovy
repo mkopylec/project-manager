@@ -35,17 +35,4 @@ class ProjectSpecification extends BasicSpecification {
         where:
         name << [null, '', '  ']
     }
-
-    def "Should not create a project draft that already exists"() {
-        given:
-        def projectDraft = new NewProjectDraft(name: 'Project 1')
-        post('/projects/drafts', projectDraft)
-
-        when:
-        def response = post('/projects/drafts', projectDraft)
-
-        then:
-        response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == 'PROJECT_ALREADY_EXISTS'
-    }
 }
