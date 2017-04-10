@@ -7,7 +7,7 @@ import org.springframework.context.ApplicationEventPublisher;
  */
 public class OrderFinalizer {
 
-    private final ApplicationEventPublisher publisher;
+    private ApplicationEventPublisher publisher;
 
     public OrderFinalizer(ApplicationEventPublisher publisher) {
         this.publisher = publisher;
