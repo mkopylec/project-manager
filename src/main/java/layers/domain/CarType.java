@@ -5,8 +5,8 @@ package layers.domain;
  */
 public class CarType {
 
-    private final String brand;
-    private final String model;
+    private String brand;
+    private String model;
 
     public CarType(String brand, String model) {
         this.brand = brand;
