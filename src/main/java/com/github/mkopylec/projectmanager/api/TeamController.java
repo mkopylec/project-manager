@@ -17,7 +17,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RequestMapping("/teams")
 class TeamController {
 
-    private final TeamService teamService;
+    private TeamService teamService;
 
     TeamController(TeamService teamService) {
         this.teamService = teamService;
