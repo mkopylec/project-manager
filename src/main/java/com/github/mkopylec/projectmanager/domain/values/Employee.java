@@ -6,18 +6,14 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class Employee {
 
-    private final String firstName;
-    private final String lastName;
-    private final JobPosition jobPosition;
+    private String firstName;
+    private String lastName;
+    private JobPosition jobPosition;
 
-    private Employee(String firstName, String lastName, JobPosition jobPosition) {
+    public Employee(String firstName, String lastName, String jobPosition) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.jobPosition = jobPosition;
-    }
-
-    public static Employee createEmployee(String firstName, String lastName, String jobPosition) {
-        return new Employee(firstName, lastName, createJobPosition(jobPosition));
+        this.jobPosition = createJobPosition(jobPosition);
     }
 
     public String getFirstName() {
@@ -46,5 +42,8 @@ public class Employee {
 
     public boolean hasInvalidJobPosition() {
         return jobPosition == _INVALID;
+    }
+
+    private Employee() {
     }
 }

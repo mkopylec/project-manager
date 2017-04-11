@@ -5,7 +5,7 @@ package layers.domain;
  */
 public class CarSold {
 
-    private final String vin;
+    private String vin;
 
     public CarSold(String vin) {
         this.vin = vin;
