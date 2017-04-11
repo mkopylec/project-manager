@@ -7,7 +7,7 @@ import java.time.ZonedDateTime;
  */
 public class CarFactory {
 
-    private final VinProvider vinProvider;
+    private VinProvider vinProvider;
 
     public CarFactory(VinProvider vinProvider) {
         this.vinProvider = vinProvider;
