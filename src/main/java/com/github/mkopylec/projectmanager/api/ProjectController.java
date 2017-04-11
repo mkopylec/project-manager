@@ -16,7 +16,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RequestMapping("/projects")
 class ProjectController {
 
-    private final ProjectService projectService;
+    private ProjectService projectService;
 
     ProjectController(ProjectService projectService) {
         this.projectService = projectService;

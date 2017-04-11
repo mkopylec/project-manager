@@ -11,7 +11,7 @@ class ProjectRepositoryDao implements ProjectRepository {
 
     private static final String PROJECTS_COLLECTION = "projects";
 
-    private final MongoTemplate mongo;
+    private MongoTemplate mongo;
 
     ProjectRepositoryDao(MongoTemplate mongo) {
         this.mongo = mongo;

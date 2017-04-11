@@ -14,7 +14,6 @@ import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMP
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMPTY_TEAM_NAME;
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.INVALID_MEMBER_JOB_POSITION;
 import static com.github.mkopylec.projectmanager.domain.exceptions.PreCondition.when;
-import static org.apache.commons.collections4.ListUtils.defaultIfNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class Team {
@@ -26,13 +25,12 @@ public class Team {
     private int currentlyImplementedProjects;
     private List<Employee> members;
 
-    Team(String name, int currentlyImplementedProjects, List<Employee> members) {
+    public Team(String name) {
         when(isBlank(name))
                 .thenInvalidEntity(EMPTY_TEAM_NAME, "Error creating team");
         this.name = name;
-        this.currentlyImplementedProjects = currentlyImplementedProjects;
-        this.members = defaultIfNull(members, new ArrayList<>());
-        this.members.forEach(member -> validateMember(member, "Error creating '" + this.name + "' team"));
+        currentlyImplementedProjects = 0;
+        members = new ArrayList<>();
     }
 
     public String getName() {
@@ -67,5 +65,8 @@ public class Team {
                 .thenInvalidEntity(EMPTY_MEMBER_JOB_POSITION, message);
         when(member.hasInvalidJobPosition())
                 .thenInvalidEntity(INVALID_MEMBER_JOB_POSITION, message);
+    }
+
+    private Team() {
     }
 }

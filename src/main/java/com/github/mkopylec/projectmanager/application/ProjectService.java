@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProjectService {
 
-    private final ProjectFactory projectFactory;
-    private final ProjectRepository projectRepository;
+    private ProjectFactory projectFactory;
+    private ProjectRepository projectRepository;
 
     public ProjectService(ProjectFactory projectFactory, ProjectRepository projectRepository) {
         this.projectFactory = projectFactory;

@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus;
 
 public abstract class DomainException extends RuntimeException {
 
-    private final ErrorCode code;
-    private final HttpStatus status;
+    private ErrorCode code;
+    private HttpStatus status;
 
     DomainException(String message, ErrorCode code, HttpStatus status) {
         super(message);
