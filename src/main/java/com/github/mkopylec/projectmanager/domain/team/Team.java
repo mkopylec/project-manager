@@ -12,14 +12,17 @@ public class Team {
     private String name;
     private int currentlyImplementedProjects;
 
-    Team(String name, int currentlyImplementedProjects) {
+    public Team(String name) {
         when(isBlank(name))
                 .thenInvalidEntity(EMPTY_TEAM_NAME, "Error creating team");
         this.name = name;
-        this.currentlyImplementedProjects = currentlyImplementedProjects;
+        currentlyImplementedProjects = 0;
     }
 
     public String getName() {
         return name;
+    }
+
+    private Team() {
     }
 }

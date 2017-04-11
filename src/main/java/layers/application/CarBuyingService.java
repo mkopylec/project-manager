@@ -8,8 +8,8 @@ import layers.domain.OrderFinalizer;
  */
 public class CarBuyingService {
 
-    private final CarRepository carRepository;
-    private final OrderFinalizer orderFinalizer;
+    private CarRepository carRepository;
+    private OrderFinalizer orderFinalizer;
 
     public CarBuyingService(CarRepository carRepository, OrderFinalizer orderFinalizer) {
         this.carRepository = carRepository;

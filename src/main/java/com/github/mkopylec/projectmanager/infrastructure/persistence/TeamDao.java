@@ -14,7 +14,7 @@ class TeamDao implements TeamRepository {
 
     private static final String TEAMS_COLLECTION = "teams";
 
-    private final MongoTemplate mongo;
+    private MongoTemplate mongo;
 
     TeamDao(MongoTemplate mongo) {
         this.mongo = mongo;
