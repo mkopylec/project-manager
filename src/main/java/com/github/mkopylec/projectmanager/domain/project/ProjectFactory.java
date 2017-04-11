@@ -9,7 +9,7 @@ import static com.github.mkopylec.projectmanager.domain.values.Status.TO_DO;
 @Component
 public class ProjectFactory {
 
-    private final UniqueIdentifierGenerator identifierGenerator;
+    private UniqueIdentifierGenerator identifierGenerator;
 
     public ProjectFactory(UniqueIdentifierGenerator identifierGenerator) {
         this.identifierGenerator = identifierGenerator;
