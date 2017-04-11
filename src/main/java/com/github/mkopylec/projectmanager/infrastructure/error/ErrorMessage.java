@@ -4,7 +4,7 @@ import com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode;
 
 class ErrorMessage {
 
-    private final ErrorCode code;
+    private ErrorCode code;
 
     ErrorMessage(ErrorCode code) {
         this.code = code;
