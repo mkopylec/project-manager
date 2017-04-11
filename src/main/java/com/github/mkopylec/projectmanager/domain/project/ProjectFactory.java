@@ -4,8 +4,6 @@ import com.github.mkopylec.projectmanager.domain.services.UniqueIdentifierGenera
 
 import org.springframework.stereotype.Component;
 
-import static com.github.mkopylec.projectmanager.domain.values.Status.TO_DO;
-
 @Component
 public class ProjectFactory {
 
@@ -17,6 +15,6 @@ public class ProjectFactory {
 
     public Project createProjectDraft(String name) {
         String identifier = identifierGenerator.generateUniqueIdentifier();
-        return new Project(identifier, name, TO_DO);
+        return new Project(identifier, name);
     }
 }
