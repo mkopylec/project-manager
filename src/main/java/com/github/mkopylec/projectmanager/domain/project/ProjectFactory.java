@@ -1,6 +1,9 @@
 package com.github.mkopylec.projectmanager.domain.project;
 
+import java.util.List;
+
 import com.github.mkopylec.projectmanager.domain.services.UniqueIdentifierGenerator;
+import com.github.mkopylec.projectmanager.domain.values.Feature;
 
 import org.springframework.stereotype.Component;
 
@@ -18,8 +21,8 @@ public class ProjectFactory {
         return new Project(identifier, name);
     }
 
-    public Project createFullProject(String name) {
+    public Project createFullProject(String name, List<Feature> features) {
         String identifier = identifierGenerator.generateUniqueIdentifier();
-        return new Project(identifier, name, TO_DO);
+        return new Project(identifier, name, features);
     }
 }

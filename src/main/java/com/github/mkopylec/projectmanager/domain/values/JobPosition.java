@@ -1,6 +1,6 @@
 package com.github.mkopylec.projectmanager.domain.values;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static com.github.mkopylec.projectmanager.domain.values.EnumCreator.createEnum;
 
 public enum JobPosition {
 
@@ -10,13 +10,6 @@ public enum JobPosition {
     PRODUCT_OWNER;
 
     public static JobPosition createJobPosition(String jobPosition) {
-        if (isBlank(jobPosition)) {
-            return null;
-        }
-        try {
-            return valueOf(jobPosition);
-        } catch (IllegalArgumentException ex) {
-            return _INVALID;
-        }
+        return createEnum(JobPosition.class, jobPosition, _INVALID);
     }
 }
