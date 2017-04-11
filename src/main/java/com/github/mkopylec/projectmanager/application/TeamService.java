@@ -13,8 +13,8 @@ import static com.github.mkopylec.projectmanager.domain.exceptions.PreCondition.
 @Service
 public class TeamService {
 
-    private final TeamFactory teamFactory;
-    private final TeamRepository teamRepository;
+    private TeamFactory teamFactory;
+    private TeamRepository teamRepository;
 
     public TeamService(TeamFactory teamFactory, TeamRepository teamRepository) {
         this.teamFactory = teamFactory;

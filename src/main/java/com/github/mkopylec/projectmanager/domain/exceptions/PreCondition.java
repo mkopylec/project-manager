@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 
 public class PreCondition {
 
-    private final boolean condition;
+    private boolean condition;
 
     private PreCondition(boolean condition) {
         this.condition = condition;
