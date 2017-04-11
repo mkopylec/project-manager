@@ -28,10 +28,9 @@ The `layers` package contains examples on how to properly implement and organize
 
 ### Step 1 - Create a team
 The user can create a new **team**<sub>_(E)_</sub>.
-Every team is **named**<sub>_(EP)_</sub>.
+Every team must be **named**<sub>_(EP)_</sub>.
 To manage teams more efficient the user will need an information on how busy a team currently is.
 To fulfil this requirement the application must display **how many projects a team is currently implementing**<sub>_(EP)_</sub>.
-An unnamed team cannot be created.
 A team cannot be created if it already exists.
 
 ##### To do
@@ -44,7 +43,6 @@ The user can add a member to a team.
 Every team consists of **members**<sub>_(EP)_</sub> that are company's **employees**<sub>_(VO)_</sub>.
 It is important for an employee that, besides of having a **first**<sub>_(VOP)_</sub> and **last name**<sub>_(VOP)_</sub>, he has a known **job position**<sub>_(VOP)_</sub>.
 Job position can be one of: developer, scrum master or product owner.
-An employee without first name, last name or job position cannot be added.
 
 ##### To do
 Checkout the _step-2-start_ branch.
@@ -66,7 +64,6 @@ The user can create **project**<sub>_(E)_</sub> drafts.
 A project draft includes minimum information about the project.
 It requires a project **name**<sub>_(EP)_</sub> and an automatically **generated unique project identifier**<sub>_(DS)_</sub>.
 A newly created project has a "to do" **status**<sub>_(EP)_</sub>.
-An unnamed project draft cannot be created.
 
 ##### To do
 Checkout the _step-4-start_ branch.
@@ -78,10 +75,8 @@ The user can also create a full project.
 A full project is a project draft with extra information.
 It must contain a list of **features**<sub>_(EP)_</sub> that are required to implement within the project.
 Every **feature**<sub>_(VO)_</sub> has to be **named**<sub>_(VOP)_</sub> and it must have **status**<sub>_(VOP)_</sub> and **requirement**<sub>_(VOP)_</sub> defined.
-Status can be one of: to do, in progress or done.
-Requirement can be one of: optional, recommended or necessary.
 For the newly created feature a "to do" status has to be set.
-An unnamed project cannot be created.
+Requirement can be one of: optional, recommended or necessary.
 
 ##### To do
 Checkout the _step-5-start_ branch.
@@ -91,6 +86,7 @@ Compare your solution with the _step-5-finish_ branch.
 ### Step 6 - Edit a project
 The user can edit created projects.
 He can update its name, features and he can **assign a team**<sub>_(DS)_</sub> to work on a project.
+Feature status can be change to one of: to do, in progress or done.
 If a team is assigned to a project then the project counts as a project implemented by the team.
 
 ##### To do
