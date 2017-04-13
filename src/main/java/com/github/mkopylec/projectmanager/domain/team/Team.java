@@ -27,8 +27,7 @@ public class Team {
     private List<Employee> members;
 
     public Team(String name) {
-        when(isBlank(name))
-                .thenInvalidEntity(EMPTY_TEAM_NAME, "Error creating team");
+        validateName(name, "Error creating team");
         this.name = name;
         currentlyImplementedProjects = 0;
         members = new ArrayList<>();
@@ -53,6 +52,11 @@ public class Team {
 
     public boolean isBusy() {
         return currentlyImplementedProjects > BUSY_TEAM_THRESHOLD;
+    }
+
+    private void validateName(String name, String message) {
+        when(isBlank(name))
+                .thenInvalidEntity(EMPTY_TEAM_NAME, message);
     }
 
     private void validateMember(Employee member, String message) {
