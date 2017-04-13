@@ -41,6 +41,7 @@ public class DtoMapper {
         existingProject.setIdentifier(project.getIdentifier());
         existingProject.setName(project.getName());
         existingProject.setStatus(project.getStatusName());
+        existingProject.setTeam(project.getAssignedTeam());
         existingProject.setFeatures(project.getFeatures().stream()
                 .map(DtoMapper::mapToProjectFeature)
                 .collect(toList())

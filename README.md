@@ -64,6 +64,7 @@ The user can create **project**<sub>_(E)_</sub> drafts.
 A project draft includes minimum information about the project.
 It requires a project **name**<sub>_(EP)_</sub> and an automatically **generated unique project identifier**<sub>_(DS)_</sub>.
 A newly created project has a "to do" **status**<sub>_(EP)_</sub>.
+No **team**<sub>_(EP)_</sub> is assigned to work on a newly created project.
 
 ##### To do
 Checkout the _step-4-start_ branch.
