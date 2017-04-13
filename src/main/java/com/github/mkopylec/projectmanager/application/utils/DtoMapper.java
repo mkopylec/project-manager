@@ -2,9 +2,11 @@ package com.github.mkopylec.projectmanager.application.utils;
 
 import java.util.List;
 
+import com.github.mkopylec.projectmanager.application.dto.ExistingProjectDraft;
 import com.github.mkopylec.projectmanager.application.dto.ExistingTeam;
 import com.github.mkopylec.projectmanager.application.dto.NewFeature;
 import com.github.mkopylec.projectmanager.application.dto.TeamMember;
+import com.github.mkopylec.projectmanager.domain.project.Project;
 import com.github.mkopylec.projectmanager.domain.team.Team;
 import com.github.mkopylec.projectmanager.domain.values.Feature;
 
@@ -22,6 +24,12 @@ public class DtoMapper {
     public static List<Feature> mapToFeatures(List<NewFeature> newFeatures) {
         return emptyIfNull(newFeatures).stream()
                 .map(DtoMapper::mapToFeature)
+                .collect(toList());
+    }
+
+    public static List<ExistingProjectDraft> mapToExistingProjectDrafts(List<Project> projects) {
+        return emptyIfNull(projects).stream()
+                .map(DtoMapper::mapToExistingProjectDraft)
                 .collect(toList());
     }
 
@@ -48,6 +56,13 @@ public class DtoMapper {
             return null;
         }
         return new Feature(newFeature.getName(), newFeature.getRequirement());
+    }
+
+    private static ExistingProjectDraft mapToExistingProjectDraft(Project project) {
+        ExistingProjectDraft existingProjectDraft = new ExistingProjectDraft();
+        existingProjectDraft.setIdentifier(project.getIdentifier());
+        existingProjectDraft.setName(project.getName());
+        return existingProjectDraft;
     }
 
     private DtoMapper() {

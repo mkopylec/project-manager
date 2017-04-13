@@ -44,6 +44,14 @@ public class Project {
         this.features = features;
     }
 
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     private void validateFeature(Feature feature, String message) {
         when(feature == null)
                 .thenInvalidEntity(EMPTY_FEATURE, message);

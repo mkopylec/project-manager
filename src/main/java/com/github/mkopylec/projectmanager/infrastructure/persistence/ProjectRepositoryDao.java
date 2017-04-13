@@ -1,5 +1,7 @@
 package com.github.mkopylec.projectmanager.infrastructure.persistence;
 
+import java.util.List;
+
 import com.github.mkopylec.projectmanager.domain.project.Project;
 import com.github.mkopylec.projectmanager.domain.project.ProjectRepository;
 
@@ -15,6 +17,11 @@ class ProjectRepositoryDao implements ProjectRepository {
 
     ProjectRepositoryDao(MongoTemplate mongo) {
         this.mongo = mongo;
+    }
+
+    @Override
+    public List<Project> findAll() {
+        return mongo.findAll(Project.class, PROJECTS_COLLECTION);
     }
 
     @Override
