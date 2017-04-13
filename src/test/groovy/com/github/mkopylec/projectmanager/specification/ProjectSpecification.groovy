@@ -1,17 +1,20 @@
 package com.github.mkopylec.projectmanager.specification
 
 import com.github.mkopylec.projectmanager.BasicSpecification
+import com.github.mkopylec.projectmanager.application.dto.ExistingProjectDraft
+import com.github.mkopylec.projectmanager.application.dto.NewFeature
 import com.github.mkopylec.projectmanager.application.dto.NewProject
 import com.github.mkopylec.projectmanager.application.dto.NewProjectDraft
-import com.github.mkopylec.projectmanager.application.dto.NewFeature
+import org.springframework.core.ParameterizedTypeReference
 import spock.lang.Unroll
 
 import static org.springframework.http.HttpStatus.CREATED
+import static org.springframework.http.HttpStatus.OK
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 
 class ProjectSpecification extends BasicSpecification {
 
-    def "Should create new project draft"() {
+    def "Should create new project draft and browse it"() {
         given:
         def projectDraft = new NewProjectDraft(name: 'Project 1')
 
@@ -20,6 +23,18 @@ class ProjectSpecification extends BasicSpecification {
 
         then:
         response.statusCode == CREATED
+
+        when:
+        response = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {})
+
+        then:
+        response.statusCode == OK
+        response.body != null
+        response.body.size() == 1
+        with(response.body[0]) {
+            identifier != null
+            name == 'Project 1'
+        }
     }
 
     @Unroll
@@ -38,7 +53,7 @@ class ProjectSpecification extends BasicSpecification {
         name << [null, '', '  ']
     }
 
-    def "Should create new full project"() {
+    def "Should create new full project and browse it"() {
         given:
         def feature = new NewFeature(name: 'Feature 1', requirement: 'NECESSARY')
         def project = new NewProject(name: 'Project 1', features: [feature])
@@ -48,6 +63,18 @@ class ProjectSpecification extends BasicSpecification {
 
         then:
         response.statusCode == CREATED
+
+        when:
+        response = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {})
+
+        then:
+        response.statusCode == OK
+        response.body != null
+        response.body.size() == 1
+        with(response.body[0]) {
+            identifier != null
+            name == 'Project 1'
+        }
     }
 
     @Unroll
