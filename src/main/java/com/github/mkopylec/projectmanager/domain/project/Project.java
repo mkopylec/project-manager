@@ -19,8 +19,8 @@ public class Project {
     private String assignedTeam;
 
     Project(String identifier, String name) {
-        validateIdentifier(identifier, "Error creating '" + name + "'project");
-        validateName(name, "Error creating '" + identifier + "'project");
+        validateIdentifier(identifier, "Error creating '" + name + "' project");
+        validateName(name, "Error creating '" + identifier + "' project");
         this.identifier = identifier;
         this.name = name;
         this.status = TO_DO;
