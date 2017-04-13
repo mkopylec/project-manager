@@ -34,10 +34,10 @@ public class Project {
     }
 
     Project(String identifier, String name, List<Feature> features) {
-        validateIdentifier(identifier, "Error creating '" + name + "'project");
-        validateName(name, "Error creating '" + identifier + "'project");
+        validateIdentifier(identifier, "Error creating '" + name + "' project");
+        validateName(name, "Error creating '" + identifier + "' project");
         features = normalize(features);
-        validateFeatures(name, features);
+        validateFeatures(features, "Error creating '" + name + " 'project");
         this.identifier = identifier;
         this.name = name;
         this.status = TO_DO;
@@ -68,8 +68,8 @@ public class Project {
         return unmodifiableList(emptyIfNull(features));
     }
 
-    private void validateFeatures(String name, List<Feature> features) {
-        features.forEach(feature -> validateFeature(feature, "Error creating '" + name + "'project"));
+    private void validateFeatures(List<Feature> features, String message) {
+        features.forEach(feature -> validateFeature(feature, message));
     }
 
     private void validateFeature(Feature feature, String message) {
