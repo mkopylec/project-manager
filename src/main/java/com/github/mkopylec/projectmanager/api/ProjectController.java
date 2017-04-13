@@ -3,11 +3,13 @@ package com.github.mkopylec.projectmanager.api;
 import java.util.List;
 
 import com.github.mkopylec.projectmanager.application.ProjectService;
+import com.github.mkopylec.projectmanager.application.dto.ExistingProject;
 import com.github.mkopylec.projectmanager.application.dto.ExistingProjectDraft;
 import com.github.mkopylec.projectmanager.application.dto.NewProject;
 import com.github.mkopylec.projectmanager.application.dto.NewProjectDraft;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,5 +45,11 @@ class ProjectController {
     @GetMapping
     public List<ExistingProjectDraft> getProjects() {
         return projectService.getProjects();
+    }
+
+    @ResponseStatus(OK)
+    @GetMapping("/{projectIdentifier}")
+    public ExistingProject getProject(@PathVariable String projectIdentifier) {
+        return null;
     }
 }

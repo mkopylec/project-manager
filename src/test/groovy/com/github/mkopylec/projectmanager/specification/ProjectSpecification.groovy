@@ -1,6 +1,7 @@
 package com.github.mkopylec.projectmanager.specification
 
 import com.github.mkopylec.projectmanager.BasicSpecification
+import com.github.mkopylec.projectmanager.application.dto.ExistingProject
 import com.github.mkopylec.projectmanager.application.dto.ExistingProjectDraft
 import com.github.mkopylec.projectmanager.application.dto.NewFeature
 import com.github.mkopylec.projectmanager.application.dto.NewProject
@@ -34,6 +35,21 @@ class ProjectSpecification extends BasicSpecification {
         with(response.body[0]) {
             identifier != null
             name == 'Project 1'
+        }
+
+        and:
+        def projectIdentifier = response.body[0].identifier
+
+        when:
+        response = get("/projects/$projectIdentifier", ExistingProject)
+
+        then:
+        response.statusCode == OK
+        response.body != null
+        with(response.body) {
+            identifier == projectIdentifier
+            name == 'Project 1'
+            status == 'TO_DO'
         }
     }
 
@@ -74,6 +90,26 @@ class ProjectSpecification extends BasicSpecification {
         with(response.body[0]) {
             identifier != null
             name == 'Project 1'
+        }
+
+        and:
+        def projectIdentifier = response.body[0].identifier
+
+        when:
+        response = get("/projects/$projectIdentifier", ExistingProject)
+
+        then:
+        response.statusCode == OK
+        response.body != null
+        with(response.body) {
+            identifier == projectIdentifier
+            name == 'Project 1'
+            status == 'TO_DO'
+            features != null
+            features.size() == 1
+            features[0].name == 'Feature 1'
+            features[0].status == 'TO_DO'
+            features[0].requirement == 'NECESSARY'
         }
     }
 
