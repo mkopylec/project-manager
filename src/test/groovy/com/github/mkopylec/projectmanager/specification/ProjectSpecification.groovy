@@ -350,4 +350,66 @@ class ProjectSpecification extends BasicSpecification {
         response.statusCode == NOT_FOUND
         response.body.code == 'NONEXISTENT_PROJECT'
     }
+
+    def "Should start a project"() {
+        given:
+        def project = new NewProject(name: 'Project 1', features: [])
+        post('/projects', project)
+        def newTeam = new NewTeam(name: 'Team 1')
+        post('/teams', newTeam)
+        def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
+        def updatedProject = new UpdatedProject(name: 'Project 1', team: 'Team 1', features: [])
+        put("/projects/$projectIdentifier", updatedProject)
+
+        when:
+        def response = patch("/projects/$projectIdentifier/started")
+
+        then:
+        response.statusCode == NO_CONTENT
+        with(get("/projects/$projectIdentifier", ExistingProject).body) {
+            status == 'IN_PROGRESS'
+        }
+    }
+
+    def "Should not start an already started project"() {
+        given:
+        def project = new NewProject(name: 'Project 1', features: [])
+        post('/projects', project)
+        def newTeam = new NewTeam(name: 'Team 1')
+        post('/teams', newTeam)
+        def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
+        def updatedProject = new UpdatedProject(name: 'Project 1', team: 'Team 1', features: [])
+        put("/projects/$projectIdentifier", updatedProject)
+        patch("/projects/$projectIdentifier/started")
+
+        when:
+        def response = patch("/projects/$projectIdentifier/started")
+
+        then:
+        response.statusCode == UNPROCESSABLE_ENTITY
+        response.body.code == 'PROJECT_ALREADY_STARTED'
+    }
+
+    def "Should not start a project when no team is assigned to it"() {
+        given:
+        def project = new NewProject(name: 'Project 1', features: [])
+        post('/projects', project)
+        def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
+
+        when:
+        def response = patch("/projects/$projectIdentifier/started")
+
+        then:
+        response.statusCode == UNPROCESSABLE_ENTITY
+        response.body.code == 'UNASSIGNED_TEAM'
+    }
+
+    def "Should not start a nonexistent project"() {
+        when:
+        def response = patch('/projects/nonexistent project/started')
+
+        then:
+        response.statusCode == NOT_FOUND
+        response.body.code == 'NONEXISTENT_PROJECT'
+    }
 }

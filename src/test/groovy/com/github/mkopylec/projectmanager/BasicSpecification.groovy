@@ -65,6 +65,10 @@ abstract class BasicSpecification extends Specification {
         return sendRequest(uri, PUT, requestBody, responseBodyType)
     }
 
+    protected <T> ResponseEntity<T> patch(String uri) {
+        return sendRequest(uri, PUT, null, Object)
+    }
+
     private <T> ResponseEntity<T> sendRequest(String uri, HttpMethod method, Object requestBody, Class<T> responseBodyType) {
         def entity = new HttpEntity<>(requestBody)
         return restTemplate.exchange(uri, method, entity, responseBodyType)
