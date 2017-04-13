@@ -77,4 +77,12 @@ public class ProjectService {
         projectRepository.save(project);
         teamRepository.save(team);
     }
+
+    public void startProject(String projectIdentifier) {
+        Project project = projectRepository.findByIdentifier(projectIdentifier);
+        when(project == null)
+                .thenMissingEntity(NONEXISTENT_PROJECT, "Error starting '" + projectIdentifier + "' project");
+        project.start();
+        projectRepository.save(project);
+    }
 }

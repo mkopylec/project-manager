@@ -18,6 +18,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import static org.springframework.http.HttpMethod.GET
+import static org.springframework.http.HttpMethod.PATCH
 import static org.springframework.http.HttpMethod.POST
 import static org.springframework.http.HttpMethod.PUT
 
@@ -66,7 +67,7 @@ abstract class BasicSpecification extends Specification {
     }
 
     protected <T> ResponseEntity<T> patch(String uri) {
-        return sendRequest(uri, PUT, null, Object)
+        return sendRequest(uri, PATCH, null, Object)
     }
 
     private <T> ResponseEntity<T> sendRequest(String uri, HttpMethod method, Object requestBody, Class<T> responseBodyType) {

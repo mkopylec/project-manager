@@ -16,7 +16,10 @@ import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMP
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMPTY_PROJECT_NAME;
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.INVALID_FEATURE_REQUIREMENT;
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.INVALID_FEATURE_STATUS;
+import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.PROJECT_ALREADY_STARTED;
+import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.UNASSIGNED_TEAM;
 import static com.github.mkopylec.projectmanager.domain.exceptions.PreCondition.when;
+import static com.github.mkopylec.projectmanager.domain.values.Status.IN_PROGRESS;
 import static com.github.mkopylec.projectmanager.domain.values.Status.TO_DO;
 import static java.util.Collections.unmodifiableList;
 import static org.apache.commons.collections4.ListUtils.emptyIfNull;
@@ -81,6 +84,13 @@ public class Project {
         this.features = features;
     }
 
+    public void start() {
+        String message = "Error starting '" + identifier + "' project";
+        requireAssignedTeam(message);
+        requireUnstarted(message);
+        status = IN_PROGRESS;
+    }
+
     private List<Feature> normalize(List<Feature> features) {
         return unmodifiableList(emptyIfNull(features));
     }
@@ -112,6 +122,16 @@ public class Project {
     private void validateIdentifier(String identifier, String message) {
         when(isBlank(identifier))
                 .thenInvalidEntity(EMPTY_PROJECT_IDENTIFIER, message);
+    }
+
+    private void requireAssignedTeam(String message) {
+        when(isBlank(assignedTeam))
+                .thenInvalidEntity(UNASSIGNED_TEAM, message);
+    }
+
+    private void requireUnstarted(String message) {
+        when(status.isAtLeastStarted())
+                .thenInvalidEntity(PROJECT_ALREADY_STARTED, message);
     }
 
     private Project() {

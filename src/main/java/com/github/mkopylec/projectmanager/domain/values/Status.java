@@ -9,6 +9,10 @@ public enum Status {
     IN_PROGRESS,
     DONE;
 
+    public boolean isAtLeastStarted() {
+        return this != TO_DO;
+    }
+
     public static Status createStatus(String status) {
         return createEnum(Status.class, status, _INVALID);
     }
