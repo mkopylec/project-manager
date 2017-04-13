@@ -58,6 +58,10 @@ public class Project {
         return status.name();
     }
 
+    public String getAssignedTeam() {
+        return assignedTeam;
+    }
+
     public List<Feature> getFeatures() {
         return unmodifiableList(features);
     }
