@@ -5,7 +5,7 @@ import java.util.List;
 public class NewProject {
 
     private String name;
-    private List<ProjectFeature> features;
+    private List<NewFeature> features;
 
     public String getName() {
         return name;
@@ -15,11 +15,11 @@ public class NewProject {
         this.name = name;
     }
 
-    public List<ProjectFeature> getFeatures() {
+    public List<NewFeature> getFeatures() {
         return features;
     }
 
-    public void setFeatures(List<ProjectFeature> features) {
+    public void setFeatures(List<NewFeature> features) {
         this.features = features;
     }
 }
