@@ -1,14 +1,23 @@
 package com.github.mkopylec.projectmanager.application.utils;
 
+import java.util.List;
+
 import com.github.mkopylec.projectmanager.application.dto.ExistingTeam;
 import com.github.mkopylec.projectmanager.application.dto.TeamMember;
 import com.github.mkopylec.projectmanager.domain.team.Team;
 
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
 
 public class DtoMapper {
 
-    public static ExistingTeam mapToExistingTeam(Team team) {
+    public static List<ExistingTeam> mapToExistingTeams(List<Team> teams) {
+        return emptyIfNull(teams).stream()
+                .map(DtoMapper::mapToExistingTeam)
+                .collect(toList());
+    }
+
+    private static ExistingTeam mapToExistingTeam(Team team) {
         ExistingTeam existingTeam = new ExistingTeam();
         existingTeam.setName(team.getName());
         existingTeam.setBusy(team.isBusy());
