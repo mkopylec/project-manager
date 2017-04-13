@@ -2,6 +2,7 @@ package com.github.mkopylec.projectmanager.application;
 
 import java.util.List;
 
+import com.github.mkopylec.projectmanager.application.dto.ExistingProject;
 import com.github.mkopylec.projectmanager.application.dto.ExistingProjectDraft;
 import com.github.mkopylec.projectmanager.application.dto.NewProject;
 import com.github.mkopylec.projectmanager.application.dto.NewProjectDraft;
@@ -40,5 +41,10 @@ public class ProjectService {
     public List<ExistingProjectDraft> getProjects() {
         List<Project> projects = projectRepository.findAll();
         return mapToExistingProjectDrafts(projects);
+    }
+
+    public ExistingProject getProject(String projectIdentifier) {
+        Project project = projectRepository.findByIdentifier(projectIdentifier);
+        return null;
     }
 }
