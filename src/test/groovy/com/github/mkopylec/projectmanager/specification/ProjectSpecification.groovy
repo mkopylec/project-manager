@@ -38,9 +38,9 @@ class ProjectSpecification extends BasicSpecification {
         name << [null, '', '  ']
     }
 
-    def "Should create new full project"() {
+    def "Should create new full project with a #requirement feature"() {
         given:
-        def feature = new NewFeature(name: 'Feature 1', requirement: 'NECESSARY')
+        def feature = new NewFeature(name: 'Feature 1', requirement: requirement)
         def project = new NewProject(name: 'Project 1', features: [feature])
 
         when:
@@ -48,6 +48,9 @@ class ProjectSpecification extends BasicSpecification {
 
         then:
         response.statusCode == CREATED
+
+        where:
+        requirement << ['OPTIONAL', 'RECOMMENDED', 'NECESSARY']
     }
 
     @Unroll
