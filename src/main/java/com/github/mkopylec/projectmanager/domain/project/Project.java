@@ -16,6 +16,7 @@ import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMP
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.INVALID_FEATURE_REQUIREMENT;
 import static com.github.mkopylec.projectmanager.domain.exceptions.PreCondition.when;
 import static com.github.mkopylec.projectmanager.domain.values.Status.TO_DO;
+import static java.util.Collections.unmodifiableList;
 import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -37,7 +38,7 @@ public class Project {
                 .thenInvalidEntity(EMPTY_PROJECT_IDENTIFIER, "Error creating '" + name + "'project");
         when(isBlank(name))
                 .thenInvalidEntity(EMPTY_PROJECT_NAME, "Error creating '" + identifier + "'project");
-        features = emptyIfNull(features);
+        features = unmodifiableList(emptyIfNull(features));
         features.forEach(feature -> validateFeature(feature, "Error creating '" + name + "'project"));
         this.status = TO_DO;
         this.identifier = identifier;
