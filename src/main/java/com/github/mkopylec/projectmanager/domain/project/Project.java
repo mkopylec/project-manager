@@ -16,6 +16,7 @@ public class Project {
     private String identifier;
     private String name;
     private Status status;
+    private String assignedTeam;
 
     Project(String identifier, String name) {
         when(isBlank(identifier))
