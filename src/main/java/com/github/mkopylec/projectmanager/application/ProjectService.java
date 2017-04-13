@@ -13,6 +13,7 @@ import com.github.mkopylec.projectmanager.domain.values.Feature;
 
 import org.springframework.stereotype.Service;
 
+import static com.github.mkopylec.projectmanager.application.utils.DtoMapper.mapToExistingProject;
 import static com.github.mkopylec.projectmanager.application.utils.DtoMapper.mapToExistingProjectDrafts;
 import static com.github.mkopylec.projectmanager.application.utils.DtoMapper.mapToFeatures;
 
@@ -45,6 +46,6 @@ public class ProjectService {
 
     public ExistingProject getProject(String projectIdentifier) {
         Project project = projectRepository.findByIdentifier(projectIdentifier);
-        return null;
+        return mapToExistingProject(project);
     }
 }

@@ -28,12 +28,20 @@ public class Feature {
         return status;
     }
 
+    public String getStatusName() {
+        return hasNoStatus() ? null : status.name();
+    }
+
     public boolean hasNoStatus() {
         return status == null;
     }
 
     public Requirement getRequirement() {
         return requirement;
+    }
+
+    public String getRequirementName() {
+        return hasNoRequirement() ? null : requirement.name();
     }
 
     public boolean hasNoRequirement() {

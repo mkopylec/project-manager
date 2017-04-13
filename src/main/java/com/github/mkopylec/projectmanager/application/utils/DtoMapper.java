@@ -2,9 +2,11 @@ package com.github.mkopylec.projectmanager.application.utils;
 
 import java.util.List;
 
+import com.github.mkopylec.projectmanager.application.dto.ExistingProject;
 import com.github.mkopylec.projectmanager.application.dto.ExistingProjectDraft;
 import com.github.mkopylec.projectmanager.application.dto.ExistingTeam;
 import com.github.mkopylec.projectmanager.application.dto.NewFeature;
+import com.github.mkopylec.projectmanager.application.dto.ProjectFeature;
 import com.github.mkopylec.projectmanager.application.dto.TeamMember;
 import com.github.mkopylec.projectmanager.domain.project.Project;
 import com.github.mkopylec.projectmanager.domain.team.Team;
@@ -32,6 +34,18 @@ public class DtoMapper {
         return emptyIfNull(projects).stream()
                 .map(DtoMapper::mapToExistingProjectDraft)
                 .collect(toList());
+    }
+
+    public static ExistingProject mapToExistingProject(Project project) {
+        ExistingProject existingProject = new ExistingProject();
+        existingProject.setIdentifier(project.getIdentifier());
+        existingProject.setName(project.getName());
+        existingProject.setStatus(project.getStatusName());
+        existingProject.setFeatures(project.getFeatures().stream()
+                .map(DtoMapper::mapToProjectFeature)
+                .collect(toList())
+        );
+        return existingProject;
     }
 
     private static ExistingTeam mapToExistingTeam(Team team) {
@@ -66,6 +80,14 @@ public class DtoMapper {
         existingProjectDraft.setIdentifier(project.getIdentifier());
         existingProjectDraft.setName(project.getName());
         return existingProjectDraft;
+    }
+
+    private static ProjectFeature mapToProjectFeature(Feature feature) {
+        ProjectFeature projectFeature = new ProjectFeature();
+        projectFeature.setName(feature.getName());
+        projectFeature.setStatus(feature.getStatusName());
+        projectFeature.setRequirement(feature.getRequirementName());
+        return projectFeature;
     }
 
     private DtoMapper() {
