@@ -6,6 +6,7 @@ import com.github.mkopylec.projectmanager.application.dto.ExistingProject;
 import com.github.mkopylec.projectmanager.application.dto.ExistingProjectDraft;
 import com.github.mkopylec.projectmanager.application.dto.NewProject;
 import com.github.mkopylec.projectmanager.application.dto.NewProjectDraft;
+import com.github.mkopylec.projectmanager.application.dto.UpdatedProject;
 import com.github.mkopylec.projectmanager.domain.project.Project;
 import com.github.mkopylec.projectmanager.domain.project.ProjectFactory;
 import com.github.mkopylec.projectmanager.domain.project.ProjectRepository;
@@ -47,5 +48,9 @@ public class ProjectService {
     public ExistingProject getProject(String projectIdentifier) {
         Project project = projectRepository.findByIdentifier(projectIdentifier);
         return mapToExistingProject(project);
+    }
+
+    public void updateProject(String projectIdentifier, UpdatedProject updatedProject) {
+        projectRepository.findByIdentifier(projectIdentifier);
     }
 }

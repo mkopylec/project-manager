@@ -59,6 +59,6 @@ class ProjectController {
     @ResponseStatus(NO_CONTENT)
     @PutMapping("/{projectIdentifier}")
     public void updateProject(@PathVariable String projectIdentifier, @RequestBody UpdatedProject updatedProject) {
-
+        projectService.updateProject(projectIdentifier, updatedProject);
     }
 }
