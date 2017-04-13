@@ -1,12 +1,17 @@
 package com.github.mkopylec.projectmanager.application;
 
+import java.util.List;
+
 import com.github.mkopylec.projectmanager.application.dto.NewProject;
 import com.github.mkopylec.projectmanager.application.dto.NewProjectDraft;
 import com.github.mkopylec.projectmanager.domain.project.Project;
 import com.github.mkopylec.projectmanager.domain.project.ProjectFactory;
 import com.github.mkopylec.projectmanager.domain.project.ProjectRepository;
+import com.github.mkopylec.projectmanager.domain.values.Feature;
 
 import org.springframework.stereotype.Service;
+
+import static com.github.mkopylec.projectmanager.application.utils.DtoMapper.mapToFeatures;
 
 @Service
 public class ProjectService {
@@ -25,6 +30,8 @@ public class ProjectService {
     }
 
     public void createProject(NewProject newProject) {
-
+        List<Feature> features = mapToFeatures(newProject.getFeatures());
+        Project project = projectFactory.createFullProject(newProject.getName(), features);
+        projectRepository.save(project);
     }
 }

@@ -1,5 +1,7 @@
 package com.github.mkopylec.projectmanager.application.utils;
 
+import java.util.List;
+
 import com.github.mkopylec.projectmanager.application.dto.ExistingTeam;
 import com.github.mkopylec.projectmanager.application.dto.NewFeature;
 import com.github.mkopylec.projectmanager.application.dto.TeamMember;
@@ -7,6 +9,7 @@ import com.github.mkopylec.projectmanager.domain.team.Team;
 import com.github.mkopylec.projectmanager.domain.values.Feature;
 
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
 
 public class DtoMapper {
 
@@ -28,7 +31,16 @@ public class DtoMapper {
         return existingTeam;
     }
 
-    public static Feature mapToFeature(NewFeature newFeature) {
+    public static List<Feature> mapToFeatures(List<NewFeature> newFeatures) {
+        return emptyIfNull(newFeatures).stream()
+                .map(DtoMapper::mapToFeature)
+                .collect(toList());
+    }
+
+    private static Feature mapToFeature(NewFeature newFeature) {
+        if (newFeature == null) {
+            return null;
+        }
         return new Feature(newFeature.getName(), newFeature.getRequirement());
     }
 
