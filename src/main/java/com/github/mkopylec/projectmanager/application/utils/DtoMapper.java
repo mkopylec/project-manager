@@ -5,6 +5,7 @@ import java.util.List;
 import com.github.mkopylec.projectmanager.application.dto.ExistingTeam;
 import com.github.mkopylec.projectmanager.application.dto.TeamMember;
 import com.github.mkopylec.projectmanager.domain.team.Team;
+import com.github.mkopylec.projectmanager.domain.values.Employee;
 
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
@@ -23,16 +24,18 @@ public class DtoMapper {
         existingTeam.setBusy(team.isBusy());
         existingTeam.setCurrentlyImplementedProjects(team.getCurrentlyImplementedProjects());
         existingTeam.setMembers(team.getMembers().stream()
-                .map(employee -> {
-                    TeamMember member = new TeamMember();
-                    member.setFirstName(employee.getFirstName());
-                    member.setLastName(employee.getLastName());
-                    member.setJobPosition(employee.getJobPosition().toString());
-                    return member;
-                })
+                .map(DtoMapper::mapToTeamMember)
                 .collect(toList())
         );
         return existingTeam;
+    }
+
+    private static TeamMember mapToTeamMember(Employee employee) {
+        TeamMember member = new TeamMember();
+        member.setFirstName(employee.getFirstName());
+        member.setLastName(employee.getLastName());
+        member.setJobPosition(employee.getJobPosition().toString());
+        return member;
     }
 
     private DtoMapper() {
