@@ -50,6 +50,8 @@ class ProjectSpecification extends BasicSpecification {
             identifier == projectIdentifier
             name == 'Project 1'
             status == 'TO_DO'
+            team == null
+            features == []
         }
     }
 
@@ -106,6 +108,7 @@ class ProjectSpecification extends BasicSpecification {
             identifier == projectIdentifier
             name == 'Project 1'
             status == 'TO_DO'
+            team == null
             features != null
             features.size() == 1
             features[0].name == 'Feature 1'
