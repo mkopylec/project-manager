@@ -179,4 +179,13 @@ class TeamSpecification extends BasicSpecification {
         response.statusCode == NOT_FOUND
         response.body.code == 'NONEXISTENT_TEAM'
     }
+
+    def "Should not browse teams if none exists"() {
+        when:
+        response = get('/teams', new ParameterizedTypeReference<List<ExistingTeam>>() {})
+
+        then:
+        response.statusCode == NOT_FOUND
+        response.body.code == 'NO_TEAMS_EXIST'
+    }
 }
