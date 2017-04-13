@@ -34,8 +34,8 @@ public class Project {
     }
 
     Project(String identifier, String name, List<Feature> features) {
-        validateIdentifier(identifier, "Error creating '" + name + " 'project");
-        validateName(name, "Error creating '" + identifier + " 'project");
+        validateIdentifier(identifier, "Error creating '" + name + "' project");
+        validateName(name, "Error creating '" + identifier + "' project");
         features = normalize(features);
         validateFeatures(features, "Error creating '" + name + " 'project");
         this.identifier = identifier;
