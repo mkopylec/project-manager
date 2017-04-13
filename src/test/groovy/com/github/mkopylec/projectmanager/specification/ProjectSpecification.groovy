@@ -465,7 +465,7 @@ class ProjectSpecification extends BasicSpecification {
 
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == 'PROJECT_ALREADY_ENDED'
+        response.body.code == 'UNSTARTED_PROJECT'
     }
 
     def "Should not end a nonexistent project"() {
