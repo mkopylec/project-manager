@@ -192,4 +192,13 @@ class ProjectSpecification extends BasicSpecification {
         response.statusCode == NOT_FOUND
         response.body.code == 'NO_PROJECTS_EXIST'
     }
+
+    def "Should browse project if it does not exist"() {
+        when:
+        def response = get('/projects/abc', Map)
+
+        then:
+        response.statusCode == NOT_FOUND
+        response.body.code == 'NONEXISTENT_PROJECT'
+    }
 }
