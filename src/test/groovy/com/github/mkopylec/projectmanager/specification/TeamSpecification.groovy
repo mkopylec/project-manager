@@ -182,7 +182,7 @@ class TeamSpecification extends BasicSpecification {
 
     def "Should not browse teams if none exists"() {
         when:
-        response = get('/teams', new ParameterizedTypeReference<List<ExistingTeam>>() {})
+        def response = get('/teams', Map)
 
         then:
         response.statusCode == NOT_FOUND
