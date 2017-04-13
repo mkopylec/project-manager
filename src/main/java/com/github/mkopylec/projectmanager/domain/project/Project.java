@@ -38,12 +38,20 @@ public class Project {
                 .thenInvalidEntity(EMPTY_PROJECT_IDENTIFIER, "Error creating '" + name + "'project");
         when(isBlank(name))
                 .thenInvalidEntity(EMPTY_PROJECT_NAME, "Error creating '" + identifier + "'project");
-        features = unmodifiableList(emptyIfNull(features));
-        features.forEach(feature -> validateFeature(feature, "Error creating '" + name + "'project"));
+        features = normalize(features);
+        validateFeatures(name, features);
         this.status = TO_DO;
         this.identifier = identifier;
         this.name = name;
         this.features = features;
+    }
+
+    private List<Feature> normalize(List<Feature> features) {
+        return unmodifiableList(emptyIfNull(features));
+    }
+
+    private void validateFeatures(String name, List<Feature> features) {
+        features.forEach(feature -> validateFeature(feature, "Error creating '" + name + "'project"));
     }
 
     private void validateFeature(Feature feature, String message) {
