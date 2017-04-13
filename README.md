@@ -83,34 +83,34 @@ Checkout the _step-5-start_ branch.
 Implement the `ProjectController.createProject(...)` method, so the unit tests can successfully pass.
 Compare your solution with the _step-5-finish_ branch.
 
-### Step 6 - Edit a project
+### Step 6 - Show projects
+The user can browse projects.
+He can see their list.
+Every item on the list contains a project identifier and name.
+
+##### To do
+Checkout the _step-6-start_ branch.
+Implement the `ProjectController.getProjects(...)` method, so the unit tests can successfully pass.
+Compare your solution with the _step-6-finish_ branch.
+
+### Step 7 - Show a specific project
+The user can also browse a specific project when he clicks on it in the project list.
+He can see all information about the project.
+
+##### To do
+Checkout the _step-7-start_ branch.
+Implement the `ProjectController.getProject(...)` method, so the unit tests can successfully pass.
+Compare your solution with the _step-7-finish_ branch.
+
+### Step 8 - Edit a project
 The user can edit created projects.
 He can update its name, features and he can **assign a team**<sub>_(DS)_</sub> to work on a project.
 Feature status can be change to one of: to do, in progress or done.
 If a team is assigned to a project then the project counts as a project implemented by the team.
 
 ##### To do
-Checkout the _step-6-start_ branch.
-Implement the `ProjectController.updateProject(...)` method, so the unit tests can successfully pass.
-Compare your solution with the _step-6-finish_ branch.
-
-### Step 7 - Show projects
-The user can browse projects.
-He can see their list.
-Every item on the list contains a project identifier and name.
-
-##### To do
-Checkout the _step-7-start_ branch.
-Implement the `ProjectController.getProjects(...)` method, so the unit tests can successfully pass.
-Compare your solution with the _step-7-finish_ branch.
-
-### Step 8 - Show a specific project
-The user can also browse a specific project when he clicks on it in the project list.
-He can see all information about the project.
-
-##### To do
 Checkout the _step-8-start_ branch.
-Implement the `ProjectController.getProject(...)` method, so the unit tests can successfully pass.
+Implement the `ProjectController.updateProject(...)` method, so the unit tests can successfully pass.
 Compare your solution with the _step-8-finish_ branch.
 
 ### Step 9 - Start a project
