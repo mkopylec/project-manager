@@ -58,6 +58,9 @@ public class ProjectService {
     }
 
     public void updateProject(String projectIdentifier, UpdatedProject updatedProject) {
-        projectRepository.findByIdentifier(projectIdentifier);
+        Project project = projectRepository.findByIdentifier(projectIdentifier);
+        when(project == null)
+                .thenMissingEntity(NONEXISTENT_PROJECT, "Error updating '" + projectIdentifier + "' project");
+        project.
     }
 }
