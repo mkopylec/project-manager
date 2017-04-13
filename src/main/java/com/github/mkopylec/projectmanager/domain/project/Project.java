@@ -34,15 +34,13 @@ public class Project {
     }
 
     Project(String identifier, String name, List<Feature> features) {
-        when(isBlank(identifier))
-                .thenInvalidEntity(EMPTY_PROJECT_IDENTIFIER, "Error creating '" + name + "'project");
-        when(isBlank(name))
-                .thenInvalidEntity(EMPTY_PROJECT_NAME, "Error creating '" + identifier + "'project");
+        validateIdentifier(identifier, "Error creating '" + name + "'project");
+        validateName(name, "Error creating '" + identifier + "'project");
         features = normalize(features);
         validateFeatures(name, features);
-        this.status = TO_DO;
         this.identifier = identifier;
         this.name = name;
+        this.status = TO_DO;
         this.features = features;
     }
 
@@ -65,6 +63,16 @@ public class Project {
                 .thenInvalidEntity(EMPTY_FEATURE_REQUIREMENT, message);
         when(feature.hasInvalidRequirement())
                 .thenInvalidEntity(INVALID_FEATURE_REQUIREMENT, message);
+    }
+
+    private void validateIdentifier(String identifier, String message) {
+        when(isBlank(identifier))
+                .thenInvalidEntity(EMPTY_PROJECT_IDENTIFIER, message);
+    }
+
+    private void validateName(String name, String message) {
+        when(isBlank(name))
+                .thenInvalidEntity(EMPTY_PROJECT_NAME, message);
     }
 
     private Project() {
