@@ -34,10 +34,10 @@ public class Project {
     }
 
     Project(String identifier, String name, List<Feature> features) {
-        validateIdentifier(identifier, "Error creating '" + name + "'project");
-        validateName(name, "Error creating '" + identifier + "'project");
+        validateIdentifier(identifier, "Error creating '" + name + "' project");
+        validateName(name, "Error creating '" + identifier + "' project");
         features = normalize(features);
-        validateFeatures(name, features);
+        validateFeatures(features, "Error creating '" + name + "' project");
         this.identifier = identifier;
         this.name = name;
         this.status = TO_DO;
@@ -52,8 +52,8 @@ public class Project {
         return name;
     }
 
-    public void updateName(String name) {
-        validateName(name, "Error updating '" + identifier + "' project");
+    public void rename(String name) {
+        validateName(name, "Error renaming '" + identifier + "' project");
         this.name = name;
     }
 
@@ -65,13 +65,17 @@ public class Project {
         return assignedTeam;
     }
 
+    public void assignTeam(String teamName) {
+        assignedTeam = teamName;
+    }
+
     public List<Feature> getFeatures() {
         return features;
     }
 
     public void updateFeatures(List<Feature> features) {
         features = normalize(features);
-        validateFeatures(name, features);
+        validateFeatures(features, "Error updating '" + identifier + "' project features");
     }
 
     private List<Feature> normalize(List<Feature> features) {
@@ -83,8 +87,8 @@ public class Project {
                 .thenInvalidEntity(EMPTY_PROJECT_NAME, message);
     }
 
-    private void validateFeatures(String name, List<Feature> features) {
-        features.forEach(feature -> validateFeature(feature, "Error creating '" + name + "'project"));
+    private void validateFeatures(List<Feature> features, String message) {
+        features.forEach(feature -> validateFeature(feature, message));
     }
 
     private void validateFeature(Feature feature, String message) {
