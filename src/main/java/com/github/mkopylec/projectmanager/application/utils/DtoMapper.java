@@ -3,7 +3,7 @@ package com.github.mkopylec.projectmanager.application.utils;
 import java.util.List;
 
 import com.github.mkopylec.projectmanager.application.dto.ExistingTeam;
-import com.github.mkopylec.projectmanager.application.dto.NewFeature;
+import com.github.mkopylec.projectmanager.application.dto.ProjectFeature;
 import com.github.mkopylec.projectmanager.application.dto.TeamMember;
 import com.github.mkopylec.projectmanager.domain.team.Team;
 import com.github.mkopylec.projectmanager.domain.values.Feature;
@@ -16,6 +16,12 @@ public class DtoMapper {
     public static List<ExistingTeam> mapToExistingTeams(List<Team> teams) {
         return emptyIfNull(teams).stream()
                 .map(DtoMapper::mapToExistingTeam)
+                .collect(toList());
+    }
+
+    public static List<Feature> mapToFeatures(List<ProjectFeature> projectFeatures) {
+        return emptyIfNull(projectFeatures).stream()
+                .map(DtoMapper::mapToFeature)
                 .collect(toList());
     }
 
@@ -37,17 +43,11 @@ public class DtoMapper {
         return existingTeam;
     }
 
-    public static List<Feature> mapToFeatures(List<NewFeature> newFeatures) {
-        return emptyIfNull(newFeatures).stream()
-                .map(DtoMapper::mapToFeature)
-                .collect(toList());
-    }
-
-    private static Feature mapToFeature(NewFeature newFeature) {
-        if (newFeature == null) {
+    private static Feature mapToFeature(ProjectFeature projectFeature) {
+        if (projectFeature == null) {
             return null;
         }
-        return new Feature(newFeature.getName(), newFeature.getRequirement());
+        return new Feature(projectFeature.getName(), projectFeature.getRequirement());
     }
 
     private DtoMapper() {

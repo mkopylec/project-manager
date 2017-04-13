@@ -1,9 +1,9 @@
 package com.github.mkopylec.projectmanager.specification
 
 import com.github.mkopylec.projectmanager.BasicSpecification
-import com.github.mkopylec.projectmanager.application.dto.NewFeature
 import com.github.mkopylec.projectmanager.application.dto.NewProject
 import com.github.mkopylec.projectmanager.application.dto.NewProjectDraft
+import com.github.mkopylec.projectmanager.application.dto.ProjectFeature
 import spock.lang.Unroll
 
 import static org.springframework.http.HttpStatus.CREATED
@@ -40,7 +40,7 @@ class ProjectSpecification extends BasicSpecification {
 
     def "Should create new full project"() {
         given:
-        def feature = new NewFeature(name: 'Feature 1', requirement: 'NECESSARY')
+        def feature = new ProjectFeature(name: 'Feature 1', requirement: 'NECESSARY')
         def project = new NewProject(name: 'Project 1', features: [feature])
 
         when:
@@ -69,7 +69,7 @@ class ProjectSpecification extends BasicSpecification {
     @Unroll
     def "Should not create a new full project with unnamed feature"() {
         given:
-        def feature = new NewFeature(name: name, requirement: 'NECESSARY')
+        def feature = new ProjectFeature(name: name, requirement: 'NECESSARY')
         def project = new NewProject(name: 'Project 1', features: [feature])
 
         when:
@@ -85,7 +85,7 @@ class ProjectSpecification extends BasicSpecification {
 
     def "Should not create a new full project with feature without requirement"() {
         given:
-        def feature = new NewFeature(name: 'Feature 1', requirement: null)
+        def feature = new ProjectFeature(name: 'Feature 1', requirement: null)
         def project = new NewProject(name: 'Project 1', features: [feature])
 
         when:
@@ -98,7 +98,7 @@ class ProjectSpecification extends BasicSpecification {
 
     def "Should not create a new full project with feature with invalid requirement"() {
         given:
-        def feature = new NewFeature(name: 'Feature 1', requirement: 'Not a requirement')
+        def feature = new ProjectFeature(name: 'Feature 1', requirement: 'Not a requirement')
         def project = new NewProject(name: 'Project 1', features: [feature])
 
         when:

@@ -1,6 +1,6 @@
 package com.github.mkopylec.projectmanager.application.dto;
 
-public class NewFeature {
+public class ProjectFeature {
 
     private String name;
     private String requirement;
