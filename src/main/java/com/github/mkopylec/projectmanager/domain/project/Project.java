@@ -91,6 +91,10 @@ public class Project {
         status = IN_PROGRESS;
     }
 
+    public void end() {
+
+    }
+
     private List<Feature> normalize(List<Feature> features) {
         return unmodifiableList(emptyIfNull(features));
     }
@@ -130,6 +134,11 @@ public class Project {
     }
 
     private void requireUnstarted(String message) {
+        when(status.isAtLeastStarted())
+                .thenInvalidEntity(PROJECT_ALREADY_STARTED, message);
+    }
+
+    private void requireStarted(String message) {
         when(status.isAtLeastStarted())
                 .thenInvalidEntity(PROJECT_ALREADY_STARTED, message);
     }

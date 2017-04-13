@@ -13,6 +13,10 @@ public enum Status {
         return this != TO_DO;
     }
 
+    public boolean isStarted() {
+        return this == TO_DO;
+    }
+
     public static Status createStatus(String status) {
         return createEnum(Status.class, status, _INVALID);
     }
