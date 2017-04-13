@@ -69,9 +69,10 @@ class ProjectSpecification extends BasicSpecification {
         name << [null, '', '  ']
     }
 
-    def "Should create new full project and browse it"() {
+    @Unroll
+    def "Should create new full project with a #requirement feature and browse it"() {
         given:
-        def feature = new NewFeature(name: 'Feature 1', requirement: 'NECESSARY')
+        def feature = new NewFeature(name: 'Feature 1', requirement: requirement)
         def project = new NewProject(name: 'Project 1', features: [feature])
 
         when:
@@ -109,8 +110,11 @@ class ProjectSpecification extends BasicSpecification {
             features.size() == 1
             features[0].name == 'Feature 1'
             features[0].status == 'TO_DO'
-            features[0].requirement == 'NECESSARY'
+            features[0].requirement == requirement
         }
+
+        where:
+        requirement << ['OPTIONAL', 'RECOMMENDED', 'NECESSARY']
     }
 
     @Unroll
