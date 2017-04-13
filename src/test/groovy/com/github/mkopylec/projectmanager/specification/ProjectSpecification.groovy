@@ -3,9 +3,11 @@ package com.github.mkopylec.projectmanager.specification
 import com.github.mkopylec.projectmanager.BasicSpecification
 import com.github.mkopylec.projectmanager.application.dto.ExistingProject
 import com.github.mkopylec.projectmanager.application.dto.ExistingProjectDraft
+import com.github.mkopylec.projectmanager.application.dto.ExistingTeam
 import com.github.mkopylec.projectmanager.application.dto.NewFeature
 import com.github.mkopylec.projectmanager.application.dto.NewProject
 import com.github.mkopylec.projectmanager.application.dto.NewProjectDraft
+import com.github.mkopylec.projectmanager.application.dto.NewTeam
 import com.github.mkopylec.projectmanager.application.dto.ProjectFeature
 import com.github.mkopylec.projectmanager.application.dto.UpdatedProject
 import org.springframework.core.ParameterizedTypeReference
@@ -181,13 +183,15 @@ class ProjectSpecification extends BasicSpecification {
         response.statusCode == UNPROCESSABLE_ENTITY
         response.body.code == 'INVALID_FEATURE_REQUIREMENT'
     }
-    //-----
+
     @Unroll
     def "Should update a project setting a #requirement feature with #featureStatus status and browse it"() {
         given:
         def feature = new NewFeature(name: 'Feature 1', requirement: requirement)
         def project = new NewProject(name: 'Project 1', features: [feature])
         post('/projects', project)
+        def newTeam = new NewTeam(name: 'Team 2')
+        post('/teams', newTeam)
         def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
         def projectFeature = new ProjectFeature(name: 'Feature 2', status: featureStatus, requirement: requirement)
         def updatedProject = new UpdatedProject(name: 'Project 2', team: 'Team 2', features: [projectFeature])
@@ -208,11 +212,26 @@ class ProjectSpecification extends BasicSpecification {
             identifier == projectIdentifier
             name == 'Project 2'
             status == 'TO_DO'
+            team == 'Team 2'
             features != null
             features.size() == 1
             features[0].name == 'Feature 2'
             features[0].status == featureStatus
             features[0].requirement == requirement
+        }
+
+        when:
+        response = get('/teams', new ParameterizedTypeReference<List<ExistingTeam>>() {})
+
+        then:
+        response.statusCode == OK
+        response.body != null
+        response.body.size() == 1
+        with(response.body[0]) {
+            name == 'Team 2'
+            currentlyImplementedProjects == 1
+            !busy
+            members == []
         }
 
         where:
@@ -223,12 +242,15 @@ class ProjectSpecification extends BasicSpecification {
     }
 
     @Unroll
-    def "Should not create an unnamed new full project"() {
+    def "Should not update a project with an empty name"() {
         given:
-        def project = new NewProject(name: name, features: [])
+        def project = new NewProject(name: 'Project 1', features: [])
+        post('/projects', project)
+        def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
+        def updatedProject = new UpdatedProject(name: name, features: [])
 
         when:
-        def response = post('/projects', project)
+        def response = put("/projects/$projectIdentifier", updatedProject)
 
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
@@ -239,13 +261,16 @@ class ProjectSpecification extends BasicSpecification {
     }
 
     @Unroll
-    def "Should not create a new full project with unnamed feature"() {
+    def "Should not update a project with unnamed feature"() {
         given:
-        def feature = new NewFeature(name: name, requirement: 'NECESSARY')
-        def project = new NewProject(name: 'Project 1', features: [feature])
+        def project = new NewProject(name: 'Project 1', features: [])
+        post('/projects', project)
+        def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
+        def projectFeature = new ProjectFeature(name: 'Feature 1', status: 'IN_PROGRESS', requirement: 'OPTIONAL')
+        def updatedProject = new UpdatedProject(name: 'Project 1', features: [projectFeature])
 
         when:
-        def response = post('/projects', project)
+        def response = put("/projects/$projectIdentifier", updatedProject)
 
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
@@ -255,29 +280,51 @@ class ProjectSpecification extends BasicSpecification {
         name << [null, '', '  ']
     }
 
-    def "Should not create a new full project with feature without requirement"() {
+    @Unroll
+    def "Should not update a project with feature without status or requirement"() {
         given:
-        def feature = new NewFeature(name: 'Feature 1', requirement: null)
-        def project = new NewProject(name: 'Project 1', features: [feature])
+        def project = new NewProject(name: 'Project 1', features: [])
+        post('/projects', project)
+        def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
+        def projectFeature = new ProjectFeature(name: 'Feature 1', status: status, requirement: requirement)
+        def updatedProject = new UpdatedProject(name: 'Project 1', features: [projectFeature])
 
         when:
-        def response = post('/projects', project)
+        def response = put("/projects/$projectIdentifier", updatedProject)
 
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == 'EMPTY_FEATURE_REQUIREMENT'
+        response.body.code == errorCode
+
+        where:
+        status | requirement || errorCode
+        null   | 'OPTIONAL'  || 'EMPTY_FEATURE_STATUS'
+        ''     | 'OPTIONAL'  || 'EMPTY_FEATURE_STATUS'
+        '  '   | 'OPTIONAL'  || 'EMPTY_FEATURE_STATUS'
+        'DONE' | null        || 'EMPTY_FEATURE_REQUIREMENT'
+        'DONE' | ''          || 'EMPTY_FEATURE_REQUIREMENT'
+        'DONE' | '  '        || 'EMPTY_FEATURE_REQUIREMENT'
     }
 
-    def "Should not create a new full project with feature with invalid requirement"() {
+    @Unroll
+    def "Should not update a project with feature with invalid status or requirement"() {
         given:
-        def feature = new NewFeature(name: 'Feature 1', requirement: 'Not a requirement')
-        def project = new NewProject(name: 'Project 1', features: [feature])
+        def project = new NewProject(name: 'Project 1', features: [])
+        post('/projects', project)
+        def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
+        def projectFeature = new ProjectFeature(name: 'Feature 1', status: status, requirement: requirement)
+        def updatedProject = new UpdatedProject(name: 'Project 1', features: [projectFeature])
 
         when:
-        def response = post('/projects', project)
+        def response = put("/projects/$projectIdentifier", updatedProject)
 
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == 'INVALID_FEATURE_REQUIREMENT'
+        response.body.code == errorCode
+
+        where:
+        status         | requirement         || errorCode
+        'Not a status' | 'OPTIONAL'          || 'INVALID_FEATURE_STATUS'
+        'DONE'         | 'Not a requirement' || 'INVALID_FEATURE_REQUIREMENT'
     }
 }
