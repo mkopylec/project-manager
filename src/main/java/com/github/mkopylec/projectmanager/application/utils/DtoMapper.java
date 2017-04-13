@@ -24,7 +24,7 @@ public class DtoMapper {
                 .collect(toList());
     }
 
-    public static List<Feature> mapToFeatures(List<NewFeature> newFeatures) {
+    public static List<Feature> mapNewToFeatures(List<NewFeature> newFeatures) {
         return emptyIfNull(newFeatures).stream()
                 .map(DtoMapper::mapToFeature)
                 .collect(toList());
@@ -47,6 +47,12 @@ public class DtoMapper {
                 .collect(toList())
         );
         return existingProject;
+    }
+
+    public static List<Feature> mapToFeatures(List<ProjectFeature> projectFeatures) {
+        return emptyIfNull(projectFeatures).stream()
+                .map(DtoMapper::mapToFeature)
+                .collect(toList());
     }
 
     private static ExistingTeam mapToExistingTeam(Team team) {
@@ -89,6 +95,13 @@ public class DtoMapper {
         projectFeature.setStatus(feature.getStatusName());
         projectFeature.setRequirement(feature.getRequirementName());
         return projectFeature;
+    }
+
+    private static Feature mapToFeature(ProjectFeature projectFeature) {
+        if (projectFeature == null) {
+            return null;
+        }
+        return new Feature(projectFeature.getName(), projectFeature.getRequirement(), projectFeature.getStatus());
     }
 
     private DtoMapper() {

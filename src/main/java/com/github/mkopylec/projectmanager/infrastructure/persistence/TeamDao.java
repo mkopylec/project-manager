@@ -39,6 +39,8 @@ class TeamDao implements TeamRepository {
 
     @Override
     public void save(Team team) {
-        mongo.save(team, TEAMS_COLLECTION);
+        if (team != null) {
+            mongo.save(team, TEAMS_COLLECTION);
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.github.mkopylec.projectmanager.domain.project;
 
 import java.util.List;
 
+import com.github.mkopylec.projectmanager.domain.team.Team;
 import com.github.mkopylec.projectmanager.domain.values.Feature;
 import com.github.mkopylec.projectmanager.domain.values.Status;
 
@@ -14,6 +15,7 @@ import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMP
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMPTY_PROJECT_IDENTIFIER;
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMPTY_PROJECT_NAME;
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.INVALID_FEATURE_REQUIREMENT;
+import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.INVALID_FEATURE_STATUS;
 import static com.github.mkopylec.projectmanager.domain.exceptions.PreCondition.when;
 import static com.github.mkopylec.projectmanager.domain.values.Status.TO_DO;
 import static java.util.Collections.unmodifiableList;
@@ -65,8 +67,8 @@ public class Project {
         return assignedTeam;
     }
 
-    public void assignTeam(String teamName) {
-        assignedTeam = teamName;
+    public void assignTeam(Team team) {
+        assignedTeam = team == null ? null : team.getName();
     }
 
     public List<Feature> getFeatures() {
@@ -76,6 +78,7 @@ public class Project {
     public void updateFeatures(List<Feature> features) {
         features = normalize(features);
         validateFeatures(features, "Error updating '" + identifier + "' project features");
+        this.features = features;
     }
 
     private List<Feature> normalize(List<Feature> features) {
@@ -98,6 +101,8 @@ public class Project {
                 .thenInvalidEntity(EMPTY_FEATURE_NAME, message);
         when(feature.hasNoStatus())
                 .thenInvalidEntity(EMPTY_FEATURE_STATUS, message);
+        when(feature.hasInvalidStatus())
+                .thenInvalidEntity(INVALID_FEATURE_STATUS, message);
         when(feature.hasNoRequirement())
                 .thenInvalidEntity(EMPTY_FEATURE_REQUIREMENT, message);
         when(feature.hasInvalidRequirement())
