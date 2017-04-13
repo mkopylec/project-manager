@@ -7,6 +7,7 @@ public class ExistingProject {
     private String identifier;
     private String name;
     private String status;
+    private String team;
     private List<ProjectFeature> features;
 
     public String getIdentifier() {
@@ -31,6 +32,14 @@ public class ExistingProject {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getTeam() {
+        return team;
+    }
+
+    public void setTeam(String team) {
+        this.team = team;
     }
 
     public List<ProjectFeature> getFeatures() {
