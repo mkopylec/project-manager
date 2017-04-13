@@ -68,4 +68,10 @@ class ProjectController {
     public void startProject(@PathVariable String projectIdentifier) {
         projectService.startProject(projectIdentifier);
     }
+
+    @ResponseStatus(NO_CONTENT)
+    @PatchMapping("/{projectIdentifier}/ended")
+    public void endProject(@PathVariable String projectIdentifier) {
+
+    }
 }

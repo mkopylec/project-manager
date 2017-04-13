@@ -412,4 +412,68 @@ class ProjectSpecification extends BasicSpecification {
         response.statusCode == NOT_FOUND
         response.body.code == 'NONEXISTENT_PROJECT'
     }
+
+    def "Should end a project"() {
+        given:
+        def project = new NewProject(name: 'Project 1', features: [])
+        post('/projects', project)
+        def newTeam = new NewTeam(name: 'Team 1')
+        post('/teams', newTeam)
+        def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
+        def updatedProject = new UpdatedProject(name: 'Project 1', team: 'Team 1', features: [])
+        put("/projects/$projectIdentifier", updatedProject)
+        patch("/projects/$projectIdentifier/started")
+
+        when:
+        def response = patch("/projects/$projectIdentifier/ended")
+
+        then:
+        response.statusCode == NO_CONTENT
+        with(get("/projects/$projectIdentifier", ExistingProject).body) {
+            status == 'DONE'
+        }
+    }
+
+    def "Should not end an unstarted project"() {
+        given:
+        def project = new NewProject(name: 'Project 1', features: [])
+        post('/projects', project)
+        def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
+
+        when:
+        def response = patch("/projects/$projectIdentifier/ended")
+
+        then:
+        response.statusCode == UNPROCESSABLE_ENTITY
+        response.body.code == 'UNSTARTED_PROJECT'
+    }
+
+    def "Should not end an already ended project"() {
+        given:
+        def project = new NewProject(name: 'Project 1', features: [])
+        post('/projects', project)
+        def newTeam = new NewTeam(name: 'Team 1')
+        post('/teams', newTeam)
+        def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
+        def updatedProject = new UpdatedProject(name: 'Project 1', team: 'Team 1', features: [])
+        put("/projects/$projectIdentifier", updatedProject)
+        patch("/projects/$projectIdentifier/started")
+        patch("/projects/$projectIdentifier/ended")
+
+        when:
+        def response = patch("/projects/$projectIdentifier/ended")
+
+        then:
+        response.statusCode == UNPROCESSABLE_ENTITY
+        response.body.code == 'PROJECT_ALREADY_ENDED'
+    }
+
+    def "Should not end a nonexistent project"() {
+        when:
+        def response = patch('/projects/nonexistent project/ended')
+
+        then:
+        response.statusCode == NOT_FOUND
+        response.body.code == 'NONEXISTENT_PROJECT'
+    }
 }
