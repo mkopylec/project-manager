@@ -38,6 +38,7 @@ class ProjectSpecification extends BasicSpecification {
         name << [null, '', '  ']
     }
 
+    @Unroll
     def "Should create new full project with a #requirement feature"() {
         given:
         def feature = new NewFeature(name: 'Feature 1', requirement: requirement)
