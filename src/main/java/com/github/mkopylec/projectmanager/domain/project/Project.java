@@ -25,6 +25,7 @@ public class Project {
     private String identifier;
     private String name;
     private Status status;
+    private String assignedTeam;
     private List<Feature> features;
 
     Project(String identifier, String name) {
