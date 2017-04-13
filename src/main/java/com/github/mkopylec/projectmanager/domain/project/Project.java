@@ -1,6 +1,5 @@
 package com.github.mkopylec.projectmanager.domain.project;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.github.mkopylec.projectmanager.domain.values.Feature;
@@ -18,6 +17,7 @@ import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.INV
 import static com.github.mkopylec.projectmanager.domain.exceptions.PreCondition.when;
 import static com.github.mkopylec.projectmanager.domain.values.Status.TO_DO;
 import static java.util.Collections.unmodifiableList;
+import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class Project {
@@ -38,7 +38,7 @@ public class Project {
                 .thenInvalidEntity(EMPTY_PROJECT_IDENTIFIER, "Error creating '" + name + "'project");
         when(isBlank(name))
                 .thenInvalidEntity(EMPTY_PROJECT_NAME, "Error creating '" + identifier + "'project");
-        features = features == null ? new ArrayList<>() : features;
+        features = unmodifiableList(emptyIfNull(features));
         features.forEach(feature -> validateFeature(feature, "Error creating '" + name + "'project"));
         this.status = TO_DO;
         this.identifier = identifier;
@@ -63,7 +63,7 @@ public class Project {
     }
 
     public List<Feature> getFeatures() {
-        return unmodifiableList(features);
+        return features;
     }
 
     private void validateFeature(Feature feature, String message) {
