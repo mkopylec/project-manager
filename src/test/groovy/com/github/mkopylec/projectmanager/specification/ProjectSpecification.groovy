@@ -1,9 +1,9 @@
 package com.github.mkopylec.projectmanager.specification
 
 import com.github.mkopylec.projectmanager.BasicSpecification
+import com.github.mkopylec.projectmanager.application.dto.NewFeature
 import com.github.mkopylec.projectmanager.application.dto.NewProject
 import com.github.mkopylec.projectmanager.application.dto.NewProjectDraft
-import com.github.mkopylec.projectmanager.application.dto.NewFeature
 import spock.lang.Unroll
 
 import static org.springframework.http.HttpStatus.CREATED
