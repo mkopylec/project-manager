@@ -1,10 +1,12 @@
 package com.github.mkopylec.projectmanager.application.dto;
 
+import com.github.mkopylec.projectmanager.domain.values.JobPosition;
+
 public class TeamMember {
 
     private String firstName;
     private String lastName;
-    private String jobPosition;
+    private JobPosition jobPosition;
 
     public String getFirstName() {
         return firstName;
@@ -22,11 +24,11 @@ public class TeamMember {
         this.lastName = lastName;
     }
 
-    public String getJobPosition() {
+    public JobPosition getJobPosition() {
         return jobPosition;
     }
 
-    public void setJobPosition(String jobPosition) {
+    public void setJobPosition(JobPosition jobPosition) {
         this.jobPosition = jobPosition;
     }
 }
