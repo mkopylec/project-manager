@@ -1,6 +1,6 @@
-package layers.infrastructure;
+package layers.infrastructure.services;
 
-import layers.domain.VinProvider;
+import layers.domain.services.VinProvider;
 
 /**
  * Domain service implementation
