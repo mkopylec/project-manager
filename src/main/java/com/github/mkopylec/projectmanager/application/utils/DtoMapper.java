@@ -34,7 +34,7 @@ public class DtoMapper {
         TeamMember member = new TeamMember();
         member.setFirstName(employee.getFirstName());
         member.setLastName(employee.getLastName());
-        member.setJobPosition(employee.getJobPosition().toString());
+        member.setJobPosition(employee.getJobPosition());
         return member;
     }
 

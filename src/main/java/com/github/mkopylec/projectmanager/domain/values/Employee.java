@@ -1,7 +1,5 @@
 package com.github.mkopylec.projectmanager.domain.values;
 
-import static com.github.mkopylec.projectmanager.domain.values.JobPosition._INVALID;
-import static com.github.mkopylec.projectmanager.domain.values.JobPosition.createJobPosition;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class Employee {
@@ -10,10 +8,10 @@ public class Employee {
     private String lastName;
     private JobPosition jobPosition;
 
-    public Employee(String firstName, String lastName, String jobPosition) {
+    public Employee(String firstName, String lastName, JobPosition jobPosition) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.jobPosition = createJobPosition(jobPosition);
+        this.jobPosition = jobPosition;
     }
 
     public String getFirstName() {
@@ -38,10 +36,6 @@ public class Employee {
 
     public boolean hasNoJobPosition() {
         return jobPosition == null;
-    }
-
-    public boolean hasInvalidJobPosition() {
-        return jobPosition == _INVALID;
     }
 
     private Employee() {
