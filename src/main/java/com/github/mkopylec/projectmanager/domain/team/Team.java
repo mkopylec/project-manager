@@ -12,7 +12,6 @@ import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMP
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMPTY_MEMBER_JOB_POSITION;
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMPTY_MEMBER_LAST_NAME;
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMPTY_TEAM_NAME;
-import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.INVALID_MEMBER_JOB_POSITION;
 import static com.github.mkopylec.projectmanager.domain.exceptions.PreCondition.when;
 import static java.util.Collections.unmodifiableList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -68,8 +67,6 @@ public class Team {
                 .thenInvalidEntity(EMPTY_MEMBER_LAST_NAME, message);
         when(member.hasNoJobPosition())
                 .thenInvalidEntity(EMPTY_MEMBER_JOB_POSITION, message);
-        when(member.hasInvalidJobPosition())
-                .thenInvalidEntity(INVALID_MEMBER_JOB_POSITION, message);
     }
 
     private Team() {
