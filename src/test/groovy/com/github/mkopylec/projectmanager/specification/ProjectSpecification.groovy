@@ -324,7 +324,7 @@ class ProjectSpecification extends BasicSpecification {
         then:
         response.statusCode == NO_CONTENT
         with(get("/projects/$projectIdentifier", ExistingProject).body) {
-            status == 'IN_PROGRESS'
+            status.toString() == 'IN_PROGRESS'
         }
     }
 
