@@ -50,7 +50,7 @@ class ProjectSpecification extends BasicSpecification {
         with(response.body) {
             identifier == projectIdentifier
             name == 'Project 1'
-            status == 'TO_DO'
+            status.toString() == 'TO_DO'
             team == null
             features == []
         }
@@ -108,12 +108,12 @@ class ProjectSpecification extends BasicSpecification {
         with(response.body) {
             identifier == projectIdentifier
             name == 'Project 1'
-            status == 'TO_DO'
+            status.toString() == 'TO_DO'
             team == null
             features != null
             features.size() == 1
             features[0].name == 'Feature 1'
-            features[0].status == 'TO_DO'
+            features[0].status.toString() == 'TO_DO'
             features[0].requirement == requirement
         }
 
