@@ -104,12 +104,11 @@ class TeamSpecification extends BasicSpecification {
         lastName << [null, '', '  ']
     }
 
-    @Unroll
     def "Should not add a new member without job position to a team"() {
         given:
         def newTeam = new NewTeam(name: 'Team 1')
         post('/teams', newTeam)
-        def member = new TeamMember(firstName: 'Mariusz', lastName: 'Kopylec', jobPosition: jobPosition)
+        def member = new TeamMember(firstName: 'Mariusz', lastName: 'Kopylec')
 
         when:
         def response = post('/teams/Team 1/members', member)
@@ -117,23 +116,6 @@ class TeamSpecification extends BasicSpecification {
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
         response.body.code == 'EMPTY_MEMBER_JOB_POSITION'
-
-        where:
-        jobPosition << [null, '', '  ']
-    }
-
-    def "Should not add a new member with invalid job position to a team"() {
-        given:
-        def newTeam = new NewTeam(name: 'Team 1')
-        post('/teams', newTeam)
-        def member = new TeamMember(firstName: 'Mariusz', lastName: 'Kopylec', jobPosition: 'Not a job position')
-
-        when:
-        def response = post('/teams/Team 1/members', member)
-
-        then:
-        response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == 'INVALID_MEMBER_JOB_POSITION'
     }
 
     def "Should not add a new member to a nonexistent team"() {
