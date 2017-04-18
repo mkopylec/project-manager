@@ -55,7 +55,7 @@ class ProjectSpecification extends BasicSpecification {
         with(response.body) {
             identifier == projectIdentifier
             name == 'Project 1'
-            status == 'TO_DO'
+            status.toString() == 'TO_DO'
             team == null
             features == []
         }
@@ -113,13 +113,13 @@ class ProjectSpecification extends BasicSpecification {
         with(response.body) {
             identifier == projectIdentifier
             name == 'Project 1'
-            status == 'TO_DO'
+            status.toString() == 'TO_DO'
             team == null
             features != null
             features.size() == 1
             features[0].name == 'Feature 1'
-            features[0].status == 'TO_DO'
-            features[0].requirement == requirement
+            features[0].status.toString() == 'TO_DO'
+            features[0].requirement.toString() == requirement
         }
 
         where:
@@ -159,10 +159,9 @@ class ProjectSpecification extends BasicSpecification {
         name << [null, '', '  ']
     }
 
-    @Unroll
     def "Should not create a new full project with feature without requirement"() {
         given:
-        def feature = new NewFeature(name: 'Feature 1', requirement: requirement)
+        def feature = new NewFeature(name: 'Feature 1')
         def project = new NewProject(name: 'Project 1', features: [feature])
 
         when:
@@ -171,22 +170,6 @@ class ProjectSpecification extends BasicSpecification {
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
         response.body.code == 'EMPTY_FEATURE_REQUIREMENT'
-
-        where:
-        requirement << [null, '', '  ']
-    }
-
-    def "Should not create a new full project with feature with invalid requirement"() {
-        given:
-        def feature = new NewFeature(name: 'Feature 1', requirement: 'Not a requirement')
-        def project = new NewProject(name: 'Project 1', features: [feature])
-
-        when:
-        def response = post('/projects', project)
-
-        then:
-        response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == 'INVALID_FEATURE_REQUIREMENT'
     }
 
     @Unroll
@@ -216,13 +199,13 @@ class ProjectSpecification extends BasicSpecification {
         with(response.body) {
             identifier == projectIdentifier
             name == 'Project 2'
-            status == 'TO_DO'
+            status.toString() == 'TO_DO'
             team == 'Team 2'
             features != null
             features.size() == 1
             features[0].name == 'Feature 2'
-            features[0].status == featureStatus
-            features[0].requirement == requirement
+            features[0].status.toString() == featureStatus
+            features[0].requirement.toString() == requirement
         }
 
         when:
@@ -304,33 +287,7 @@ class ProjectSpecification extends BasicSpecification {
         where:
         status | requirement || errorCode
         null   | 'OPTIONAL'  || 'EMPTY_FEATURE_STATUS'
-        ''     | 'OPTIONAL'  || 'EMPTY_FEATURE_STATUS'
-        '  '   | 'OPTIONAL'  || 'EMPTY_FEATURE_STATUS'
         'DONE' | null        || 'EMPTY_FEATURE_REQUIREMENT'
-        'DONE' | ''          || 'EMPTY_FEATURE_REQUIREMENT'
-        'DONE' | '  '        || 'EMPTY_FEATURE_REQUIREMENT'
-    }
-
-    @Unroll
-    def "Should not update a project with feature with invalid status or requirement"() {
-        given:
-        def project = new NewProject(name: 'Project 1', features: [])
-        post('/projects', project)
-        def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
-        def projectFeature = new ProjectFeature(name: 'Feature 1', status: status, requirement: requirement)
-        def updatedProject = new UpdatedProject(name: 'Project 1', features: [projectFeature])
-
-        when:
-        def response = put("/projects/$projectIdentifier", updatedProject)
-
-        then:
-        response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == errorCode
-
-        where:
-        status         | requirement         || errorCode
-        'Not a status' | 'OPTIONAL'          || 'INVALID_FEATURE_STATUS'
-        'DONE'         | 'Not a requirement' || 'INVALID_FEATURE_REQUIREMENT'
     }
 
     def "Should browse projects if none exists"() {
@@ -367,7 +324,7 @@ class ProjectSpecification extends BasicSpecification {
         then:
         response.statusCode == NO_CONTENT
         with(get("/projects/$projectIdentifier", ExistingProject).body) {
-            status == 'IN_PROGRESS'
+            status.toString() == 'IN_PROGRESS'
         }
     }
 
