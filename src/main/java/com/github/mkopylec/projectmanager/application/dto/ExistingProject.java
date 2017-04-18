@@ -2,11 +2,13 @@ package com.github.mkopylec.projectmanager.application.dto;
 
 import java.util.List;
 
+import com.github.mkopylec.projectmanager.domain.values.Status;
+
 public class ExistingProject {
 
     private String identifier;
     private String name;
-    private String status;
+    private Status status;
     private String team;
     private List<ProjectFeature> features;
 
@@ -26,11 +28,11 @@ public class ExistingProject {
         this.name = name;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
