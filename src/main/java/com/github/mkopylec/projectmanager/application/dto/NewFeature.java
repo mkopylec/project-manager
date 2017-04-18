@@ -1,9 +1,11 @@
 package com.github.mkopylec.projectmanager.application.dto;
 
+import com.github.mkopylec.projectmanager.domain.values.Requirement;
+
 public class NewFeature {
 
     private String name;
-    private String requirement;
+    private Requirement requirement;
 
     public String getName() {
         return name;
@@ -13,11 +15,11 @@ public class NewFeature {
         this.name = name;
     }
 
-    public String getRequirement() {
+    public Requirement getRequirement() {
         return requirement;
     }
 
-    public void setRequirement(String requirement) {
+    public void setRequirement(Requirement requirement) {
         this.requirement = requirement;
     }
 }
