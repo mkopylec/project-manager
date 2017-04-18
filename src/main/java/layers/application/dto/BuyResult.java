@@ -1,4 +1,4 @@
-package layers.application;
+package layers.application.dto;
 
 /**
  * Data transfer object

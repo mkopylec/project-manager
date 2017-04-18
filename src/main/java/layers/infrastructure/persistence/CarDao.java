@@ -1,9 +1,9 @@
-package layers.infrastructure;
+package layers.infrastructure.persistence;
 
 import java.util.List;
 
-import layers.domain.Car;
-import layers.domain.CarRepository;
+import layers.domain.car.Car;
+import layers.domain.car.CarRepository;
 
 /**
  * Repository implementation
