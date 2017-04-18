@@ -7,6 +7,7 @@ import com.github.mkopylec.projectmanager.application.dto.ExistingProject;
 import com.github.mkopylec.projectmanager.application.dto.ExistingProjectDraft;
 import com.github.mkopylec.projectmanager.application.dto.NewProject;
 import com.github.mkopylec.projectmanager.application.dto.NewProjectDraft;
+import com.github.mkopylec.projectmanager.application.dto.ProjectEndingCondition;
 import com.github.mkopylec.projectmanager.application.dto.UpdatedProject;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -71,7 +72,7 @@ class ProjectController {
 
     @ResponseStatus(NO_CONTENT)
     @PatchMapping("/{projectIdentifier}/ended")
-    public void endProject(@PathVariable String projectIdentifier) {
+    public void endProject(@PathVariable String projectIdentifier, @RequestBody ProjectEndingCondition endingCondition) {
 
     }
 }

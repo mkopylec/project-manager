@@ -66,8 +66,12 @@ abstract class BasicSpecification extends Specification {
         return sendRequest(uri, PUT, requestBody, responseBodyType)
     }
 
-    protected <T> ResponseEntity<T> patch(String uri) {
+    protected ResponseEntity patch(String uri) {
         return sendRequest(uri, PATCH, null, Object)
+    }
+
+    protected <T> ResponseEntity<T> patch(String uri, Object requestBody) {
+        return sendRequest(uri, PATCH, requestBody, Object)
     }
 
     private <T> ResponseEntity<T> sendRequest(String uri, HttpMethod method, Object requestBody, Class<T> responseBodyType) {
