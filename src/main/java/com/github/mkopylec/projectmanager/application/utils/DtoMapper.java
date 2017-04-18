@@ -40,7 +40,7 @@ public class DtoMapper {
         ExistingProject existingProject = new ExistingProject();
         existingProject.setIdentifier(project.getIdentifier());
         existingProject.setName(project.getName());
-        existingProject.setStatus(project.getStatusName());
+        existingProject.setStatus(project.getStatus());
         existingProject.setTeam(project.getAssignedTeam());
         existingProject.setFeatures(project.getFeatures().stream()
                 .map(DtoMapper::mapToProjectFeature)
@@ -65,7 +65,7 @@ public class DtoMapper {
         TeamMember member = new TeamMember();
         member.setFirstName(employee.getFirstName());
         member.setLastName(employee.getLastName());
-        member.setJobPosition(employee.getJobPosition().toString());
+        member.setJobPosition(employee.getJobPosition());
         return member;
     }
 
@@ -86,8 +86,8 @@ public class DtoMapper {
     private static ProjectFeature mapToProjectFeature(Feature feature) {
         ProjectFeature projectFeature = new ProjectFeature();
         projectFeature.setName(feature.getName());
-        projectFeature.setStatus(feature.getStatusName());
-        projectFeature.setRequirement(feature.getRequirementName());
+        projectFeature.setStatus(feature.getStatus());
+        projectFeature.setRequirement(feature.getRequirement());
         return projectFeature;
     }
 

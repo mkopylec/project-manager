@@ -55,7 +55,7 @@ class ProjectSpecification extends BasicSpecification {
         with(response.body) {
             identifier == projectIdentifier
             name == 'Project 1'
-            status == 'TO_DO'
+            status.toString() == 'TO_DO'
             team == null
             features == []
         }
@@ -113,13 +113,13 @@ class ProjectSpecification extends BasicSpecification {
         with(response.body) {
             identifier == projectIdentifier
             name == 'Project 1'
-            status == 'TO_DO'
+            status.toString() == 'TO_DO'
             team == null
             features != null
             features.size() == 1
             features[0].name == 'Feature 1'
-            features[0].status == 'TO_DO'
-            features[0].requirement == requirement
+            features[0].status.toString() == 'TO_DO'
+            features[0].requirement.toString() == requirement
         }
 
         where:
@@ -159,10 +159,9 @@ class ProjectSpecification extends BasicSpecification {
         name << [null, '', '  ']
     }
 
-    @Unroll
     def "Should not create a new full project with feature without requirement"() {
         given:
-        def feature = new NewFeature(name: 'Feature 1', requirement: requirement)
+        def feature = new NewFeature(name: 'Feature 1')
         def project = new NewProject(name: 'Project 1', features: [feature])
 
         when:
@@ -171,22 +170,6 @@ class ProjectSpecification extends BasicSpecification {
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
         response.body.code == 'EMPTY_FEATURE_REQUIREMENT'
-
-        where:
-        requirement << [null, '', '  ']
-    }
-
-    def "Should not create a new full project with feature with invalid requirement"() {
-        given:
-        def feature = new NewFeature(name: 'Feature 1', requirement: 'Not a requirement')
-        def project = new NewProject(name: 'Project 1', features: [feature])
-
-        when:
-        def response = post('/projects', project)
-
-        then:
-        response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == 'INVALID_FEATURE_REQUIREMENT'
     }
 
     @Unroll

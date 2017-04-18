@@ -1,4 +1,4 @@
-package layers.domain;
+package layers.domain.policies;
 
 import java.math.BigDecimal;
 
