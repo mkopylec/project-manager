@@ -114,7 +114,7 @@ class ProjectSpecification extends BasicSpecification {
             features.size() == 1
             features[0].name == 'Feature 1'
             features[0].status.toString() == 'TO_DO'
-            features[0].requirement == requirement
+            features[0].requirement.toString() == requirement
         }
 
         where:
