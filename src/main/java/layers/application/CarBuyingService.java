@@ -1,7 +1,8 @@
 package layers.application;
 
-import layers.domain.CarRepository;
-import layers.domain.OrderFinalizer;
+import layers.application.dto.BuyResult;
+import layers.domain.car.CarRepository;
+import layers.domain.services.OrderFinalizer;
 
 /**
  * Application service
