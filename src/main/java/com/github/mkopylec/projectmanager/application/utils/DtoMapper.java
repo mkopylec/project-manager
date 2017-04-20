@@ -14,6 +14,10 @@ import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
 
 public class DtoMapper {
 
+    public static Employee mapToEmployee(TeamMember teamMember) {
+        return new Employee(teamMember.getFirstName(), teamMember.getLastName(), teamMember.getJobPosition());
+    }
+
     public static List<ExistingTeam> mapToExistingTeams(List<Team> teams) {
         return emptyIfNull(teams).stream()
                 .map(DtoMapper::mapToExistingTeam)
