@@ -428,7 +428,7 @@ class ProjectSpecification extends BasicSpecification {
 
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == 'ENDING_CONDITION_NOT_FULFILLED'
+        response.body.code == 'PROJECT_ENDING_CONDITION_NOT_FULFILLED'
         verifyReportWasNotSent(projectIdentifier)
 
         where:

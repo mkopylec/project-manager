@@ -73,6 +73,6 @@ class ProjectController {
     @ResponseStatus(NO_CONTENT)
     @PatchMapping("/{projectIdentifier}/ended")
     public void endProject(@PathVariable String projectIdentifier, @RequestBody ProjectEndingCondition endingCondition) {
-
+        projectService.endProject(projectIdentifier, endingCondition);
     }
 }

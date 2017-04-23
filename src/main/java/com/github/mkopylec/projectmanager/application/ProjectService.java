@@ -6,6 +6,7 @@ import com.github.mkopylec.projectmanager.application.dto.ExistingProject;
 import com.github.mkopylec.projectmanager.application.dto.ExistingProjectDraft;
 import com.github.mkopylec.projectmanager.application.dto.NewProject;
 import com.github.mkopylec.projectmanager.application.dto.NewProjectDraft;
+import com.github.mkopylec.projectmanager.application.dto.ProjectEndingCondition;
 import com.github.mkopylec.projectmanager.application.dto.UpdatedProject;
 import com.github.mkopylec.projectmanager.application.utils.DtoMapper;
 import com.github.mkopylec.projectmanager.domain.project.Project;
@@ -84,5 +85,9 @@ public class ProjectService {
                 .thenMissingEntity(NONEXISTENT_PROJECT, "Error starting '" + projectIdentifier + "' project");
         project.start();
         projectRepository.save(project);
+    }
+
+    public void endProject(String projectIdentifier, ProjectEndingCondition endingCondition) {
+
     }
 }
