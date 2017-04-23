@@ -471,7 +471,7 @@ class ProjectSpecification extends BasicSpecification {
 
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == 'UNSTARTED_PROJECT'
+        response.body.code == 'PROJECT_ALREADY_ENDED'
         verifyReportWasNotSent(projectIdentifier)
     }
 
