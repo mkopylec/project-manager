@@ -18,6 +18,10 @@ import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
 
 public class DtoMapper {
 
+    public static Employee mapToEmployee(TeamMember teamMember) {
+        return new Employee(teamMember.getFirstName(), teamMember.getLastName(), teamMember.getJobPosition());
+    }
+
     public static List<ExistingTeam> mapToExistingTeams(List<Team> teams) {
         return emptyIfNull(teams).stream()
                 .map(DtoMapper::mapToExistingTeam)
@@ -40,7 +44,7 @@ public class DtoMapper {
         ExistingProject existingProject = new ExistingProject();
         existingProject.setIdentifier(project.getIdentifier());
         existingProject.setName(project.getName());
-        existingProject.setStatus(project.getStatusName());
+        existingProject.setStatus(project.getStatus());
         existingProject.setTeam(project.getAssignedTeam());
         existingProject.setFeatures(project.getFeatures().stream()
                 .map(DtoMapper::mapToProjectFeature)
@@ -71,7 +75,7 @@ public class DtoMapper {
         TeamMember member = new TeamMember();
         member.setFirstName(employee.getFirstName());
         member.setLastName(employee.getLastName());
-        member.setJobPosition(employee.getJobPosition().toString());
+        member.setJobPosition(employee.getJobPosition());
         return member;
     }
 
@@ -92,8 +96,8 @@ public class DtoMapper {
     private static ProjectFeature mapToProjectFeature(Feature feature) {
         ProjectFeature projectFeature = new ProjectFeature();
         projectFeature.setName(feature.getName());
-        projectFeature.setStatus(feature.getStatusName());
-        projectFeature.setRequirement(feature.getRequirementName());
+        projectFeature.setStatus(feature.getStatus());
+        projectFeature.setRequirement(feature.getRequirement());
         return projectFeature;
     }
 
@@ -101,7 +105,7 @@ public class DtoMapper {
         if (projectFeature == null) {
             return null;
         }
-        return new Feature(projectFeature.getName(), projectFeature.getRequirement(), projectFeature.getStatus());
+        return new Feature(projectFeature.getName(), projectFeature.getStatus(), projectFeature.getRequirement());
     }
 
     private DtoMapper() {

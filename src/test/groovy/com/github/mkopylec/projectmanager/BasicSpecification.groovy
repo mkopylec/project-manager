@@ -13,9 +13,12 @@ import org.springframework.http.ResponseEntity
 import spock.lang.Specification
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import static com.github.tomakehurst.wiremock.client.WireMock.containing
 import static com.github.tomakehurst.wiremock.client.WireMock.post
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
+import static com.github.tomakehurst.wiremock.client.WireMock.verify
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import static org.springframework.http.HttpMethod.GET
 import static org.springframework.http.HttpMethod.PATCH
@@ -38,8 +41,18 @@ abstract class BasicSpecification extends Specification {
         }
     }
 
-    protected void stubReportingService() {
+    protected static void stubReportingService() {
         stubFor(post(urlEqualTo('/reports/projects')).willReturn(aResponse().withStatus(201)))
+    }
+
+    protected static void verifyReportWasSent(String projectIdentifier) {
+        sleep(500)
+        verify(postRequestedFor(urlEqualTo('/reports/projects')).withRequestBody(containing(projectIdentifier)))
+    }
+
+    protected static void verifyReportWasNotSent(String projectIdentifier) {
+        sleep(500)
+        verify(0, postRequestedFor(urlEqualTo('/reports/projects')).withRequestBody(containing(projectIdentifier)))
     }
 
     protected <T> ResponseEntity<T> get(String uri, Class<T> responseBodyType) {
@@ -66,8 +79,12 @@ abstract class BasicSpecification extends Specification {
         return sendRequest(uri, PUT, requestBody, responseBodyType)
     }
 
-    protected <T> ResponseEntity<T> patch(String uri) {
+    protected ResponseEntity patch(String uri) {
         return sendRequest(uri, PATCH, null, Object)
+    }
+
+    protected ResponseEntity patch(String uri, Object requestBody) {
+        return sendRequest(uri, PATCH, requestBody, Object)
     }
 
     private <T> ResponseEntity<T> sendRequest(String uri, HttpMethod method, Object requestBody, Class<T> responseBodyType) {

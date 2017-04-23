@@ -14,8 +14,6 @@ import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMP
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMPTY_FEATURE_STATUS;
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMPTY_PROJECT_IDENTIFIER;
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMPTY_PROJECT_NAME;
-import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.INVALID_FEATURE_REQUIREMENT;
-import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.INVALID_FEATURE_STATUS;
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.PROJECT_ALREADY_STARTED;
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.UNASSIGNED_TEAM;
 import static com.github.mkopylec.projectmanager.domain.exceptions.PreCondition.when;
@@ -62,8 +60,8 @@ public class Project {
         this.name = name;
     }
 
-    public String getStatusName() {
-        return status.name();
+    public Status getStatus() {
+        return status;
     }
 
     public String getAssignedTeam() {
@@ -115,12 +113,8 @@ public class Project {
                 .thenInvalidEntity(EMPTY_FEATURE_NAME, message);
         when(feature.hasNoStatus())
                 .thenInvalidEntity(EMPTY_FEATURE_STATUS, message);
-        when(feature.hasInvalidStatus())
-                .thenInvalidEntity(INVALID_FEATURE_STATUS, message);
         when(feature.hasNoRequirement())
                 .thenInvalidEntity(EMPTY_FEATURE_REQUIREMENT, message);
-        when(feature.hasInvalidRequirement())
-                .thenInvalidEntity(INVALID_FEATURE_REQUIREMENT, message);
     }
 
     private void validateIdentifier(String identifier, String message) {

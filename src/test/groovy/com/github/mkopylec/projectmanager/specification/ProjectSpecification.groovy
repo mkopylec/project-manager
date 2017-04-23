@@ -8,11 +8,17 @@ import com.github.mkopylec.projectmanager.application.dto.NewFeature
 import com.github.mkopylec.projectmanager.application.dto.NewProject
 import com.github.mkopylec.projectmanager.application.dto.NewProjectDraft
 import com.github.mkopylec.projectmanager.application.dto.NewTeam
+import com.github.mkopylec.projectmanager.application.dto.ProjectEndingCondition
 import com.github.mkopylec.projectmanager.application.dto.ProjectFeature
 import com.github.mkopylec.projectmanager.application.dto.UpdatedProject
 import org.springframework.core.ParameterizedTypeReference
 import spock.lang.Unroll
 
+import static com.github.mkopylec.projectmanager.domain.values.Requirement.NECESSARY
+import static com.github.mkopylec.projectmanager.domain.values.Requirement.OPTIONAL
+import static com.github.mkopylec.projectmanager.domain.values.Status.DONE
+import static com.github.mkopylec.projectmanager.domain.values.Status.IN_PROGRESS
+import static com.github.mkopylec.projectmanager.domain.values.Status.TO_DO
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -55,7 +61,7 @@ class ProjectSpecification extends BasicSpecification {
         with(response.body) {
             identifier == projectIdentifier
             name == 'Project 1'
-            status == 'TO_DO'
+            status.toString() == 'TO_DO'
             team == null
             features == []
         }
@@ -113,13 +119,13 @@ class ProjectSpecification extends BasicSpecification {
         with(response.body) {
             identifier == projectIdentifier
             name == 'Project 1'
-            status == 'TO_DO'
+            status.toString() == 'TO_DO'
             team == null
             features != null
             features.size() == 1
             features[0].name == 'Feature 1'
-            features[0].status == 'TO_DO'
-            features[0].requirement == requirement
+            features[0].status.toString() == 'TO_DO'
+            features[0].requirement.toString() == requirement
         }
 
         where:
@@ -159,10 +165,9 @@ class ProjectSpecification extends BasicSpecification {
         name << [null, '', '  ']
     }
 
-    @Unroll
     def "Should not create a new full project with feature without requirement"() {
         given:
-        def feature = new NewFeature(name: 'Feature 1', requirement: requirement)
+        def feature = new NewFeature(name: 'Feature 1')
         def project = new NewProject(name: 'Project 1', features: [feature])
 
         when:
@@ -171,22 +176,6 @@ class ProjectSpecification extends BasicSpecification {
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
         response.body.code == 'EMPTY_FEATURE_REQUIREMENT'
-
-        where:
-        requirement << [null, '', '  ']
-    }
-
-    def "Should not create a new full project with feature with invalid requirement"() {
-        given:
-        def feature = new NewFeature(name: 'Feature 1', requirement: 'Not a requirement')
-        def project = new NewProject(name: 'Project 1', features: [feature])
-
-        when:
-        def response = post('/projects', project)
-
-        then:
-        response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == 'INVALID_FEATURE_REQUIREMENT'
     }
 
     @Unroll
@@ -216,13 +205,13 @@ class ProjectSpecification extends BasicSpecification {
         with(response.body) {
             identifier == projectIdentifier
             name == 'Project 2'
-            status == 'TO_DO'
+            status.toString() == 'TO_DO'
             team == 'Team 2'
             features != null
             features.size() == 1
             features[0].name == 'Feature 2'
-            features[0].status == featureStatus
-            features[0].requirement == requirement
+            features[0].status.toString() == featureStatus
+            features[0].requirement.toString() == requirement
         }
 
         when:
@@ -304,33 +293,7 @@ class ProjectSpecification extends BasicSpecification {
         where:
         status | requirement || errorCode
         null   | 'OPTIONAL'  || 'EMPTY_FEATURE_STATUS'
-        ''     | 'OPTIONAL'  || 'EMPTY_FEATURE_STATUS'
-        '  '   | 'OPTIONAL'  || 'EMPTY_FEATURE_STATUS'
         'DONE' | null        || 'EMPTY_FEATURE_REQUIREMENT'
-        'DONE' | ''          || 'EMPTY_FEATURE_REQUIREMENT'
-        'DONE' | '  '        || 'EMPTY_FEATURE_REQUIREMENT'
-    }
-
-    @Unroll
-    def "Should not update a project with feature with invalid status or requirement"() {
-        given:
-        def project = new NewProject(name: 'Project 1', features: [])
-        post('/projects', project)
-        def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
-        def projectFeature = new ProjectFeature(name: 'Feature 1', status: status, requirement: requirement)
-        def updatedProject = new UpdatedProject(name: 'Project 1', features: [projectFeature])
-
-        when:
-        def response = put("/projects/$projectIdentifier", updatedProject)
-
-        then:
-        response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == errorCode
-
-        where:
-        status         | requirement         || errorCode
-        'Not a status' | 'OPTIONAL'          || 'INVALID_FEATURE_STATUS'
-        'DONE'         | 'Not a requirement' || 'INVALID_FEATURE_REQUIREMENT'
     }
 
     def "Should browse projects if none exists"() {
@@ -367,7 +330,7 @@ class ProjectSpecification extends BasicSpecification {
         then:
         response.statusCode == NO_CONTENT
         with(get("/projects/$projectIdentifier", ExistingProject).body) {
-            status == 'IN_PROGRESS'
+            status.toString() == 'IN_PROGRESS'
         }
     }
 
@@ -413,29 +376,70 @@ class ProjectSpecification extends BasicSpecification {
         response.body.code == 'NONEXISTENT_PROJECT'
     }
 
-    def "Should end a project"() {
+    @Unroll
+    def "Should end a project when ending condition is fulfilled"() {
         given:
+        stubReportingService()
         def project = new NewProject(name: 'Project 1', features: [])
         post('/projects', project)
         def newTeam = new NewTeam(name: 'Team 1')
         post('/teams', newTeam)
         def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
-        def updatedProject = new UpdatedProject(name: 'Project 1', team: 'Team 1', features: [])
+        def updatedProject = new UpdatedProject(name: 'Project 1', team: 'Team 1', features: features)
         put("/projects/$projectIdentifier", updatedProject)
         patch("/projects/$projectIdentifier/started")
+        def endingCondition = new ProjectEndingCondition(onlyNecessaryFeatureDone: onlyNecessaryFeatureDone)
 
         when:
-        def response = patch("/projects/$projectIdentifier/ended")
+        def response = patch("/projects/$projectIdentifier/ended", endingCondition)
 
         then:
         response.statusCode == NO_CONTENT
         with(get("/projects/$projectIdentifier", ExistingProject).body) {
             status == 'DONE'
         }
+        verifyReportWasSent(projectIdentifier)
+
+        where:
+        features                                                                            | onlyNecessaryFeatureDone
+        []                                                                                  | true
+        []                                                                                  | false
+        [new ProjectFeature(name: 'Feature 1', status: DONE, requirement: NECESSARY)]       | true
+        [new ProjectFeature(name: 'Feature 1', status: IN_PROGRESS, requirement: OPTIONAL)] | true
+        [new ProjectFeature(name: 'Feature 1', status: DONE, requirement: NECESSARY)]       | false
+    }
+
+    @Unroll
+    def "Should not end a project when ending condition is not fulfilled"() {
+        given:
+        stubReportingService()
+        def project = new NewProject(name: 'Project 1', features: [])
+        post('/projects', project)
+        def newTeam = new NewTeam(name: 'Team 1')
+        post('/teams', newTeam)
+        def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
+        def updatedProject = new UpdatedProject(name: 'Project 1', team: 'Team 1', features: features)
+        put("/projects/$projectIdentifier", updatedProject)
+        patch("/projects/$projectIdentifier/started")
+        def endingCondition = new ProjectEndingCondition(onlyNecessaryFeatureDone: onlyNecessaryFeatureDone)
+
+        when:
+        def response = patch("/projects/$projectIdentifier/ended", endingCondition)
+
+        then:
+        response.statusCode == UNPROCESSABLE_ENTITY
+        response.body.code == 'ENDING_CONDITION_NOT_FULFILLED'
+        verifyReportWasNotSent(projectIdentifier)
+
+        where:
+        features                                                                            | onlyNecessaryFeatureDone
+        [new ProjectFeature(name: 'Feature 1', status: TO_DO, requirement: NECESSARY)]      | true
+        [new ProjectFeature(name: 'Feature 1', status: IN_PROGRESS, requirement: OPTIONAL)] | false
     }
 
     def "Should not end an unstarted project"() {
         given:
+        stubReportingService()
         def project = new NewProject(name: 'Project 1', features: [])
         post('/projects', project)
         def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
@@ -446,10 +450,12 @@ class ProjectSpecification extends BasicSpecification {
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
         response.body.code == 'UNSTARTED_PROJECT'
+        verifyReportWasNotSent(projectIdentifier)
     }
 
     def "Should not end an already ended project"() {
         given:
+        stubReportingService()
         def project = new NewProject(name: 'Project 1', features: [])
         post('/projects', project)
         def newTeam = new NewTeam(name: 'Team 1')
@@ -465,15 +471,18 @@ class ProjectSpecification extends BasicSpecification {
 
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == 'PROJECT_ALREADY_ENDED'
+        response.body.code == 'UNSTARTED_PROJECT'
+        verifyReportWasNotSent(projectIdentifier)
     }
 
     def "Should not end a nonexistent project"() {
         when:
+        stubReportingService()
         def response = patch('/projects/nonexistent project/ended')
 
         then:
         response.statusCode == NOT_FOUND
         response.body.code == 'NONEXISTENT_PROJECT'
+        verifyReportWasNotSent('nonexistent project')
     }
 }
