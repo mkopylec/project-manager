@@ -4,5 +4,9 @@ public enum Requirement {
 
     OPTIONAL,
     RECOMMENDED,
-    NECESSARY
+    NECESSARY;
+
+    public boolean isNecessary() {
+        return this == NECESSARY;
+    }
 }

@@ -2,10 +2,13 @@ package com.github.mkopylec.projectmanager.domain.project;
 
 import java.util.List;
 
+import com.github.mkopylec.projectmanager.domain.events.EndedProject;
+import com.github.mkopylec.projectmanager.domain.policies.FeatureChecker;
 import com.github.mkopylec.projectmanager.domain.team.Team;
 import com.github.mkopylec.projectmanager.domain.values.Feature;
 import com.github.mkopylec.projectmanager.domain.values.Status;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.annotation.Id;
 
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMPTY_FEATURE;
@@ -14,9 +17,12 @@ import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMP
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMPTY_FEATURE_STATUS;
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMPTY_PROJECT_IDENTIFIER;
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMPTY_PROJECT_NAME;
+import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.PROJECT_ALREADY_ENDED;
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.PROJECT_ALREADY_STARTED;
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.UNASSIGNED_TEAM;
+import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.UNSTARTED_PROJECT;
 import static com.github.mkopylec.projectmanager.domain.exceptions.PreCondition.when;
+import static com.github.mkopylec.projectmanager.domain.values.Status.DONE;
 import static com.github.mkopylec.projectmanager.domain.values.Status.IN_PROGRESS;
 import static com.github.mkopylec.projectmanager.domain.values.Status.TO_DO;
 import static java.util.Collections.unmodifiableList;
@@ -89,8 +95,13 @@ public class Project {
         status = IN_PROGRESS;
     }
 
-    public void end() {
-
+    public void end(FeatureChecker featureChecker, ApplicationEventPublisher publisher) {
+        String message = "Error starting '" + identifier + "' project";
+        requireStarted(message);
+        featureChecker.checkFeatures(features, message);
+        status = DONE;
+        EndedProject endedProject = new EndedProject(identifier);
+        publisher.publishEvent(endedProject);
     }
 
     private List<Feature> normalize(List<Feature> features) {
@@ -133,8 +144,10 @@ public class Project {
     }
 
     private void requireStarted(String message) {
-        when(status.isAtLeastStarted())
-                .thenInvalidEntity(PROJECT_ALREADY_STARTED, message);
+        when(status.isNotStarted())
+                .thenInvalidEntity(UNSTARTED_PROJECT, message);
+        when(status.isDone())
+                .thenInvalidEntity(PROJECT_ALREADY_ENDED, message);
     }
 
     private Project() {

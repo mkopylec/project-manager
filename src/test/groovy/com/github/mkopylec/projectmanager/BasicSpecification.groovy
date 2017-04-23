@@ -46,12 +46,12 @@ abstract class BasicSpecification extends Specification {
     }
 
     protected static void verifyReportWasSent(String projectIdentifier) {
-        sleep(500)
+        sleep(1000)
         verify(postRequestedFor(urlEqualTo('/reports/projects')).withRequestBody(containing(projectIdentifier)))
     }
 
     protected static void verifyReportWasNotSent(String projectIdentifier) {
-        sleep(500)
+        sleep(1000)
         verify(0, postRequestedFor(urlEqualTo('/reports/projects')).withRequestBody(containing(projectIdentifier)))
     }
 

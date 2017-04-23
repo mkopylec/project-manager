@@ -396,7 +396,7 @@ class ProjectSpecification extends BasicSpecification {
         then:
         response.statusCode == NO_CONTENT
         with(get("/projects/$projectIdentifier", ExistingProject).body) {
-            status == 'DONE'
+            status.toString() == 'DONE'
         }
         verifyReportWasSent(projectIdentifier)
 
@@ -443,9 +443,10 @@ class ProjectSpecification extends BasicSpecification {
         def project = new NewProject(name: 'Project 1', features: [])
         post('/projects', project)
         def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
+        def endingCondition = new ProjectEndingCondition(onlyNecessaryFeatureDone: false)
 
         when:
-        def response = patch("/projects/$projectIdentifier/ended")
+        def response = patch("/projects/$projectIdentifier/ended", endingCondition)
 
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
@@ -464,10 +465,11 @@ class ProjectSpecification extends BasicSpecification {
         def updatedProject = new UpdatedProject(name: 'Project 1', team: 'Team 1', features: [])
         put("/projects/$projectIdentifier", updatedProject)
         patch("/projects/$projectIdentifier/started")
-        patch("/projects/$projectIdentifier/ended")
+        def endingCondition = new ProjectEndingCondition(onlyNecessaryFeatureDone: false)
+        patch("/projects/$projectIdentifier/ended", endingCondition)
 
         when:
-        def response = patch("/projects/$projectIdentifier/ended")
+        def response = patch("/projects/$projectIdentifier/ended", endingCondition)
 
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
@@ -476,9 +478,12 @@ class ProjectSpecification extends BasicSpecification {
     }
 
     def "Should not end a nonexistent project"() {
-        when:
+        given:
         stubReportingService()
-        def response = patch('/projects/nonexistent project/ended')
+        def endingCondition = new ProjectEndingCondition(onlyNecessaryFeatureDone: false)
+
+        when:
+        def response = patch('/projects/nonexistent project/ended', endingCondition)
 
         then:
         response.statusCode == NOT_FOUND
