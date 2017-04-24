@@ -1,11 +1,11 @@
-package layers.domain.policies;
+package layers.domain.order;
 
 import java.math.BigDecimal;
 
 /**
  * Policy variant
  */
-public class WeekendRebateCalculator implements RebateCalculator {
+public class StudentRebateCalculator implements RebateCalculator {
 
     @Override
     public BigDecimal calculateRebate(BigDecimal stockPrise) {

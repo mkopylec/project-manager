@@ -9,13 +9,13 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-class ProjectRepositoryDao implements ProjectRepository {
+class ProjectDao implements ProjectRepository {
 
     private static final String PROJECTS_COLLECTION = "projects";
 
     private MongoTemplate mongo;
 
-    ProjectRepositoryDao(MongoTemplate mongo) {
+    ProjectDao(MongoTemplate mongo) {
         this.mongo = mongo;
     }
 
