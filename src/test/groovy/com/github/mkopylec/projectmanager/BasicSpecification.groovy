@@ -1,5 +1,6 @@
 package com.github.mkopylec.projectmanager
 
+import com.github.tomakehurst.wiremock.client.VerificationException
 import com.github.tomakehurst.wiremock.junit.WireMockRule
 import org.junit.Rule
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,9 +14,12 @@ import org.springframework.http.ResponseEntity
 import spock.lang.Specification
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import static com.github.tomakehurst.wiremock.client.WireMock.containing
 import static com.github.tomakehurst.wiremock.client.WireMock.post
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
+import static com.github.tomakehurst.wiremock.client.WireMock.verify
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import static org.springframework.http.HttpMethod.GET
 import static org.springframework.http.HttpMethod.PATCH
@@ -32,14 +36,24 @@ abstract class BasicSpecification extends Specification {
     @Autowired
     private MongoTemplate mongo
 
-    void setup() {
-        for (def collection : mongo.collectionNames) {
-            mongo.dropCollection(collection)
-        }
+    void setupSpec() {
+        fixWireMock()
     }
 
-    protected void stubReportingService() {
+    void setup() {
+        clearMongoDb()
+    }
+
+    protected static void stubReportingService() {
         stubFor(post(urlEqualTo('/reports/projects')).willReturn(aResponse().withStatus(201)))
+    }
+
+    protected static void verifyReportWasSent(String projectIdentifier) {
+        verifyReportSending(1, projectIdentifier)
+    }
+
+    protected static void verifyReportWasNotSent(String projectIdentifier) {
+        verifyReportSending(0, projectIdentifier)
     }
 
     protected <T> ResponseEntity<T> get(String uri, Class<T> responseBodyType) {
@@ -54,16 +68,16 @@ abstract class BasicSpecification extends Specification {
         return sendRequest(uri, POST, requestBody, Object)
     }
 
-    protected <T> ResponseEntity<T> post(String uri, Object requestBody, Class<T> responseBodyType) {
-        return sendRequest(uri, POST, requestBody, responseBodyType)
-    }
-
     protected ResponseEntity put(String uri, Object requestBody) {
         return sendRequest(uri, PUT, requestBody, Object)
     }
 
-    protected <T> ResponseEntity<T> put(String uri, Object requestBody, Class<T> responseBodyType) {
-        return sendRequest(uri, PUT, requestBody, responseBodyType)
+    protected ResponseEntity patch(String uri) {
+        return sendRequest(uri, PATCH, null, Object)
+    }
+
+    protected ResponseEntity patch(String uri, Object requestBody) {
+        return sendRequest(uri, PATCH, requestBody, Object)
     }
 
     protected <T> ResponseEntity<T> patch(String uri) {
@@ -78,5 +92,32 @@ abstract class BasicSpecification extends Specification {
     private <T> ResponseEntity<T> sendRequest(String uri, HttpMethod method, Object requestBody, ParameterizedTypeReference<T> responseBodyType) {
         def entity = new HttpEntity<>(requestBody)
         return restTemplate.exchange(uri, method, entity, responseBodyType)
+    }
+
+    private static void fixWireMock() {
+        System.setProperty('http.keepAlive', 'false')
+        System.setProperty('http.maxConnections', '1')
+    }
+
+    private void clearMongoDb() {
+        for (def collection : mongo.collectionNames) {
+            mongo.dropCollection(collection)
+        }
+    }
+
+    private static void verifyReportSending(int count, String projectIdentifier) {
+        def counter = 0
+        def fail = null
+        while (counter < 100) {
+            try {
+                verify(count, postRequestedFor(urlEqualTo('/reports/projects')).withRequestBody(containing(projectIdentifier)))
+                return
+            } catch (VerificationException ex) {
+                counter++
+                fail = ex
+                sleep(10)
+            }
+        }
+        throw fail
     }
 }
