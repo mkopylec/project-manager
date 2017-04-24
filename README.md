@@ -16,7 +16,7 @@ Get known with the starting code, it contains the parts that are not focused on 
 
 The following describes steps to implement using an ubiquitous language.
 The description contains hints on how to design a model from the business requirements.
-A hint is a bold part of the text with a suggestion on what domain building block should be used:
+A hint is a bold part of the text with a suggestion on what domain building block or block part should be used:
  - _(E)_ - entity
  - _(EP)_ - entity property
  - _(VO)_ - value object
@@ -24,7 +24,7 @@ A hint is a bold part of the text with a suggestion on what domain building bloc
  - _(DS)_ - domain service
  - _(?)_ - try to guess :-)
  
-The `layers` package contains examples on how to properly implement and organize Domain-Driven Design building blocks and other component types. 
+The [layers](src/main/java/layers) package contains examples on how to properly implement and organize Domain-Driven Design building blocks and other component types. 
 
 ### Step 1 - Create a team
 The user can create a new **team**<sub>_(E)_</sub>.
@@ -95,8 +95,8 @@ Implement the `ProjectController.getProjects(...)` method, so the unit tests can
 Compare your solution with the _step-6-finish_ branch.
 
 ### Step 7 - Show a specific project
-The user can also browse a specific project when he clicks on it in the project list.
-He can see all information about the project.
+The user can also browse a specific project when he clicks on it in the projects list.
+He can see all information about the clicked project.
 
 ##### To do
 Checkout the _step-7-start_ branch.
@@ -127,7 +127,7 @@ Compare your solution with the _step-9-finish_ branch.
 The user can end a started project when **all of the features in the project are done**<sub>_(?)_</sub>.
 Sometimes the users manager can give him a permission to end a project when **only the necessary features are done**<sub>_(?)_</sub>.
 Ended projects needs to be reported in the company's end year review.
-To do that the application needs to **inform a Reporting Service**<sub>_(?)_</sub> about the ended project by sending its **identifier**<sub>_(?)_</sub>.
+To do that the application needs to inform a Reporting Service about the **ended project**<sub>_(?)_</sub> by sending its **identifier**<sub>_(?)_</sub>.
 
 ##### To do
 Checkout the _step-10-start_ branch.
