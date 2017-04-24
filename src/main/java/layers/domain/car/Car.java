@@ -2,7 +2,6 @@ package layers.domain.car;
 
 import java.time.ZonedDateTime;
 
-import layers.domain.events.CarSold;
 import layers.domain.values.CarType;
 
 import org.springframework.context.ApplicationEventPublisher;

@@ -1,6 +1,6 @@
 package layers.infrastructure.services;
 
-import layers.domain.events.CarSold;
+import layers.domain.car.CarSold;
 
 /**
  * Domain event listener
