@@ -1,4 +1,4 @@
-package com.github.mkopylec.projectmanager.domain.events;
+package com.github.mkopylec.projectmanager.domain.project;
 
 public class EndedProject {
 

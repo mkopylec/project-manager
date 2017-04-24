@@ -1,4 +1,4 @@
-package com.github.mkopylec.projectmanager.domain.policies;
+package com.github.mkopylec.projectmanager.domain.project;
 
 import java.util.List;
 

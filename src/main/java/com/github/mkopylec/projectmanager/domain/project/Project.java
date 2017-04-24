@@ -2,8 +2,6 @@ package com.github.mkopylec.projectmanager.domain.project;
 
 import java.util.List;
 
-import com.github.mkopylec.projectmanager.domain.events.EndedProject;
-import com.github.mkopylec.projectmanager.domain.policies.FeatureChecker;
 import com.github.mkopylec.projectmanager.domain.team.Team;
 import com.github.mkopylec.projectmanager.domain.values.Feature;
 import com.github.mkopylec.projectmanager.domain.values.Status;

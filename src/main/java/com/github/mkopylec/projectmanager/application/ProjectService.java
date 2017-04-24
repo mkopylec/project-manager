@@ -9,7 +9,7 @@ import com.github.mkopylec.projectmanager.application.dto.NewProjectDraft;
 import com.github.mkopylec.projectmanager.application.dto.ProjectEndingCondition;
 import com.github.mkopylec.projectmanager.application.dto.UpdatedProject;
 import com.github.mkopylec.projectmanager.application.utils.DtoMapper;
-import com.github.mkopylec.projectmanager.domain.policies.FeatureChecker;
+import com.github.mkopylec.projectmanager.domain.project.FeatureChecker;
 import com.github.mkopylec.projectmanager.domain.project.Project;
 import com.github.mkopylec.projectmanager.domain.project.ProjectFactory;
 import com.github.mkopylec.projectmanager.domain.project.ProjectRepository;
@@ -27,7 +27,7 @@ import static com.github.mkopylec.projectmanager.application.utils.DtoMapper.map
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.NONEXISTENT_PROJECT;
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.NO_PROJECTS_EXIST;
 import static com.github.mkopylec.projectmanager.domain.exceptions.PreCondition.when;
-import static com.github.mkopylec.projectmanager.domain.policies.FeatureChecker.resolveFeatureChecker;
+import static com.github.mkopylec.projectmanager.domain.project.FeatureChecker.resolveFeatureChecker;
 
 @Service
 public class ProjectService {
