@@ -467,6 +467,7 @@ class ProjectSpecification extends BasicSpecification {
         patch("/projects/$projectIdentifier/started")
         def endingCondition = new ProjectEndingCondition(onlyNecessaryFeatureDone: false)
         patch("/projects/$projectIdentifier/ended", endingCondition)
+        verifyReportWasSent(projectIdentifier)
 
         when:
         def response = patch("/projects/$projectIdentifier/ended", endingCondition)
@@ -474,7 +475,7 @@ class ProjectSpecification extends BasicSpecification {
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
         response.body.code == 'PROJECT_ALREADY_ENDED'
-        verifyReportWasNotSent(projectIdentifier)
+        verifyReportWasSent(projectIdentifier)
     }
 
     def "Should not end a nonexistent project"() {

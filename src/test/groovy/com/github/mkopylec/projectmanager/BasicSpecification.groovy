@@ -1,5 +1,6 @@
 package com.github.mkopylec.projectmanager
 
+import com.github.tomakehurst.wiremock.client.VerificationException
 import com.github.tomakehurst.wiremock.junit.WireMockRule
 import org.junit.Rule
 import org.springframework.beans.factory.annotation.Autowired
@@ -35,10 +36,12 @@ abstract class BasicSpecification extends Specification {
     @Autowired
     private MongoTemplate mongo
 
+    void setupSpec() {
+        fixWireMock()
+    }
+
     void setup() {
-        for (def collection : mongo.collectionNames) {
-            mongo.dropCollection(collection)
-        }
+        clearMongoDb()
     }
 
     protected static void stubReportingService() {
@@ -46,13 +49,11 @@ abstract class BasicSpecification extends Specification {
     }
 
     protected static void verifyReportWasSent(String projectIdentifier) {
-        sleep(1000)
-        verify(postRequestedFor(urlEqualTo('/reports/projects')).withRequestBody(containing(projectIdentifier)))
+        verifyReportSending(1, projectIdentifier)
     }
 
     protected static void verifyReportWasNotSent(String projectIdentifier) {
-        sleep(1000)
-        verify(0, postRequestedFor(urlEqualTo('/reports/projects')).withRequestBody(containing(projectIdentifier)))
+        verifyReportSending(0, projectIdentifier)
     }
 
     protected <T> ResponseEntity<T> get(String uri, Class<T> responseBodyType) {
@@ -67,16 +68,8 @@ abstract class BasicSpecification extends Specification {
         return sendRequest(uri, POST, requestBody, Object)
     }
 
-    protected <T> ResponseEntity<T> post(String uri, Object requestBody, Class<T> responseBodyType) {
-        return sendRequest(uri, POST, requestBody, responseBodyType)
-    }
-
     protected ResponseEntity put(String uri, Object requestBody) {
         return sendRequest(uri, PUT, requestBody, Object)
-    }
-
-    protected <T> ResponseEntity<T> put(String uri, Object requestBody, Class<T> responseBodyType) {
-        return sendRequest(uri, PUT, requestBody, responseBodyType)
     }
 
     protected ResponseEntity patch(String uri) {
@@ -95,5 +88,32 @@ abstract class BasicSpecification extends Specification {
     private <T> ResponseEntity<T> sendRequest(String uri, HttpMethod method, Object requestBody, ParameterizedTypeReference<T> responseBodyType) {
         def entity = new HttpEntity<>(requestBody)
         return restTemplate.exchange(uri, method, entity, responseBodyType)
+    }
+
+    private static void fixWireMock() {
+        System.setProperty('http.keepAlive', 'false')
+        System.setProperty('http.maxConnections', '1')
+    }
+
+    private void clearMongoDb() {
+        for (def collection : mongo.collectionNames) {
+            mongo.dropCollection(collection)
+        }
+    }
+
+    private static void verifyReportSending(int count, String projectIdentifier) {
+        def counter = 0
+        def fail = null
+        while (counter < 100) {
+            try {
+                verify(count, postRequestedFor(urlEqualTo('/reports/projects')).withRequestBody(containing(projectIdentifier)))
+                return
+            } catch (VerificationException ex) {
+                counter++
+                fail = ex
+                sleep(10)
+            }
+        }
+        throw fail
     }
 }
