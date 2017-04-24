@@ -1,4 +1,4 @@
-package com.github.mkopylec.projectmanager.infrastructure.generators;
+package com.github.mkopylec.projectmanager.infrastructure.services;
 
 import com.github.mkopylec.projectmanager.domain.services.UniqueIdentifierGenerator;
 

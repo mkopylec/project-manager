@@ -1,4 +1,4 @@
-package layers.domain.events;
+package layers.domain.car;
 
 /**
  * Domain event
