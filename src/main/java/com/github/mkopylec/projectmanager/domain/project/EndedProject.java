@@ -4,7 +4,7 @@ public class EndedProject {
 
     private String projectIdentifier;
 
-    public EndedProject(String projectIdentifier) {
+    EndedProject(String projectIdentifier) {
         this.projectIdentifier = projectIdentifier;
     }
 
