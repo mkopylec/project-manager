@@ -254,7 +254,7 @@ class ProjectSpecification extends BasicSpecification {
         def project = new NewProject(name: 'Project 1', features: [])
         post('/projects', project)
         def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
-        def projectFeature = new ProjectFeature(name: 'Feature 1', status: 'IN_PROGRESS', requirement: 'OPTIONAL')
+        def projectFeature = new ProjectFeature(name: name, status: 'IN_PROGRESS', requirement: 'OPTIONAL')
         def updatedProject = new UpdatedProject(name: 'Project 1', features: [projectFeature])
 
         when:
