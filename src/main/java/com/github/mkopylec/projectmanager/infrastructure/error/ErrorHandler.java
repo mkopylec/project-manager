@@ -20,7 +20,7 @@ class ErrorHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessage> handleException(Exception ex, HttpServletRequest request) {
-        log.error(createLog(request, INTERNAL_SERVER_ERROR, "UNEXPECTED_ERROR", ex.getMessage()));
+        log.error(createLog(request, INTERNAL_SERVER_ERROR, "UNEXPECTED_ERROR", ex.getMessage()), ex);
         return status(INTERNAL_SERVER_ERROR)
                 .body(new ErrorMessage("UNEXPECTED_ERROR"));
     }

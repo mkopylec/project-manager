@@ -8,6 +8,16 @@ The Project Manager is a simple application for managing business projects at IT
 The application is directed to project managers.
 Using the application they can add projects, monitor their progress and assign teams to work on the projects.
 
+## Working with application
+To run the application execute:
+```bash
+./gradlew bootRun
+```
+To run tests execute:
+```bash
+./gradlew test
+```
+
 ## Steps to implement
 Each branch of the repository represents a subsequent step of the overall task.
 The task is to implement each step using Domain-Driven Design rules, so the unit tests can successfully pass.
