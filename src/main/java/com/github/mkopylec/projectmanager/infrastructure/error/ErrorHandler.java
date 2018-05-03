@@ -6,6 +6,7 @@ import com.github.mkopylec.projectmanager.domain.exceptions.DomainException;
 import com.github.mkopylec.projectmanager.domain.exceptions.EntityAlreadyExistsException;
 import com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode;
 import com.github.mkopylec.projectmanager.domain.exceptions.InvalidEntityException;
+import com.github.mkopylec.projectmanager.domain.exceptions.MissingEntityException;
 import org.slf4j.Logger;
 
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.UNEXPECTED_ERROR;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import static org.springframework.http.ResponseEntity.status;
 
@@ -32,6 +34,11 @@ class ErrorHandler {
     @ExceptionHandler(InvalidEntityException.class)
     public ResponseEntity<ErrorMessage> handleInvalidEntityException(InvalidEntityException ex, HttpServletRequest request) {
         return handleDomainException(ex, request, UNPROCESSABLE_ENTITY);
+    }
+
+    @ExceptionHandler(MissingEntityException.class)
+    public ResponseEntity<ErrorMessage> handleMissingEntityException(MissingEntityException ex, HttpServletRequest request) {
+        return handleDomainException(ex, request, NOT_FOUND);
     }
 
     @ExceptionHandler(Exception.class)
