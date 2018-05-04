@@ -1,11 +1,11 @@
 package com.github.mkopylec.projectmanager.application.utils;
 
-import java.util.List;
-
 import com.github.mkopylec.projectmanager.application.dto.ExistingTeam;
 import com.github.mkopylec.projectmanager.application.dto.TeamMember;
 import com.github.mkopylec.projectmanager.domain.team.Team;
 import com.github.mkopylec.projectmanager.domain.values.Employee;
+
+import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
