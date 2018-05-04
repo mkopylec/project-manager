@@ -1,8 +1,8 @@
 package com.github.mkopylec.projectmanager.application.dto;
 
-import java.util.List;
-
 import com.github.mkopylec.projectmanager.domain.values.Status;
+
+import java.util.List;
 
 public class ExistingProject {
 
