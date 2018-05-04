@@ -1,7 +1,6 @@
 package com.github.mkopylec.projectmanager.domain.project;
 
 import com.github.mkopylec.projectmanager.domain.values.Status;
-
 import org.springframework.data.annotation.Id;
 
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMPTY_PROJECT_IDENTIFIER;

@@ -1,7 +1,6 @@
 package com.github.mkopylec.projectmanager.domain.project;
 
 import com.github.mkopylec.projectmanager.domain.services.UniqueIdentifierGenerator;
-
 import org.springframework.stereotype.Component;
 
 @Component
