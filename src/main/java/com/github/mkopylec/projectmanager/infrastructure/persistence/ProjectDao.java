@@ -2,7 +2,6 @@ package com.github.mkopylec.projectmanager.infrastructure.persistence;
 
 import com.github.mkopylec.projectmanager.domain.project.Project;
 import com.github.mkopylec.projectmanager.domain.project.ProjectRepository;
-
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
