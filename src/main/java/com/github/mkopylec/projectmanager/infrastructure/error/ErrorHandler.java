@@ -1,17 +1,16 @@
 package com.github.mkopylec.projectmanager.infrastructure.error;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.github.mkopylec.projectmanager.domain.exceptions.DomainException;
 import com.github.mkopylec.projectmanager.domain.exceptions.EntityAlreadyExistsException;
 import com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode;
 import com.github.mkopylec.projectmanager.domain.exceptions.InvalidEntityException;
 import org.slf4j.Logger;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import javax.servlet.http.HttpServletRequest;
 
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.UNEXPECTED_ERROR;
 import static org.slf4j.LoggerFactory.getLogger;

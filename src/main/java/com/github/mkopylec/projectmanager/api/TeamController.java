@@ -2,7 +2,6 @@ package com.github.mkopylec.projectmanager.api;
 
 import com.github.mkopylec.projectmanager.application.TeamService;
 import com.github.mkopylec.projectmanager.application.dto.NewTeam;
-
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
