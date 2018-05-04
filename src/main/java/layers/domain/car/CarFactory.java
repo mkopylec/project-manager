@@ -1,9 +1,9 @@
 package layers.domain.car;
 
-import java.time.ZonedDateTime;
-
 import layers.domain.services.VinProvider;
 import layers.domain.values.CarType;
+
+import java.time.ZonedDateTime;
 
 /**
  * Factory
