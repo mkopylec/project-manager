@@ -1,12 +1,11 @@
 package com.github.mkopylec.projectmanager.infrastructure.persistence;
 
-import java.util.List;
-
 import com.github.mkopylec.projectmanager.domain.project.Project;
 import com.github.mkopylec.projectmanager.domain.project.ProjectRepository;
-
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 class ProjectDao implements ProjectRepository {

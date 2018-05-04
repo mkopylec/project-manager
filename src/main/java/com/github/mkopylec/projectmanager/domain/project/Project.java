@@ -1,13 +1,12 @@
 package com.github.mkopylec.projectmanager.domain.project;
 
-import java.util.List;
-
 import com.github.mkopylec.projectmanager.domain.team.Team;
 import com.github.mkopylec.projectmanager.domain.values.Feature;
 import com.github.mkopylec.projectmanager.domain.values.Status;
-
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.annotation.Id;
+
+import java.util.List;
 
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMPTY_FEATURE;
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMPTY_FEATURE_NAME;

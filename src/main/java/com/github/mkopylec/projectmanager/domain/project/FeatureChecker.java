@@ -1,8 +1,8 @@
 package com.github.mkopylec.projectmanager.domain.project;
 
-import java.util.List;
-
 import com.github.mkopylec.projectmanager.domain.values.Feature;
+
+import java.util.List;
 
 public interface FeatureChecker {
 
