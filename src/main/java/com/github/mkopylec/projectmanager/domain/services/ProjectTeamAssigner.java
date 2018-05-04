@@ -2,7 +2,6 @@ package com.github.mkopylec.projectmanager.domain.services;
 
 import com.github.mkopylec.projectmanager.domain.project.Project;
 import com.github.mkopylec.projectmanager.domain.team.Team;
-
 import org.springframework.stereotype.Service;
 
 @Service
