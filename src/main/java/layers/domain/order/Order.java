@@ -1,5 +1,7 @@
 package layers.domain.order;
 
+import java.math.BigDecimal;
+
 /**
  * Entity
  */
@@ -7,10 +9,12 @@ public class Order {
 
     private String identifier;
     private boolean fulfilled;
+    private BigDecimal price;
 
-    Order(String identifier, boolean fulfilled) {
+    Order(String identifier, BigDecimal price) {
         this.identifier = identifier;
-        this.fulfilled = fulfilled;
+        this.price = price;
+        this.fulfilled = false;
     }
 
     public String getIdentifier() {
@@ -23,5 +27,13 @@ public class Order {
 
     public boolean isFulfilled() {
         return fulfilled;
+    }
+
+    public void calculateFinalPrice(RebateCalculator rebateCalculator) {
+        price = price.subtract(rebateCalculator.calculateRebate(price));
+    }
+
+    public BigDecimal getPrice() {
+        return price;
     }
 }
