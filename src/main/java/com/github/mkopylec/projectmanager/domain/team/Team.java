@@ -1,11 +1,10 @@
 package com.github.mkopylec.projectmanager.domain.team;
 
+import com.github.mkopylec.projectmanager.domain.values.Employee;
+import org.springframework.data.annotation.Id;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.github.mkopylec.projectmanager.domain.values.Employee;
-
-import org.springframework.data.annotation.Id;
 
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMPTY_MEMBER;
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMPTY_MEMBER_FIRST_NAME;

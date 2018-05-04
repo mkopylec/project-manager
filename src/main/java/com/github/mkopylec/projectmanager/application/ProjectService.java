@@ -1,15 +1,14 @@
 package com.github.mkopylec.projectmanager.application;
 
-import java.util.List;
-
 import com.github.mkopylec.projectmanager.application.dto.NewProject;
 import com.github.mkopylec.projectmanager.application.dto.NewProjectDraft;
 import com.github.mkopylec.projectmanager.domain.project.Project;
 import com.github.mkopylec.projectmanager.domain.project.ProjectFactory;
 import com.github.mkopylec.projectmanager.domain.project.ProjectRepository;
 import com.github.mkopylec.projectmanager.domain.values.Feature;
-
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static com.github.mkopylec.projectmanager.application.utils.DtoMapper.mapToFeatures;
 
