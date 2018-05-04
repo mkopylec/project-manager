@@ -1,11 +1,10 @@
 package com.github.mkopylec.projectmanager.domain.project;
 
-import java.util.List;
-
 import com.github.mkopylec.projectmanager.domain.services.UniqueIdentifierGenerator;
 import com.github.mkopylec.projectmanager.domain.values.Feature;
-
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class ProjectFactory {
