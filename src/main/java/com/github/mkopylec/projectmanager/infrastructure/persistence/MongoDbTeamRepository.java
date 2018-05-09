@@ -9,13 +9,13 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
 @Repository
-class TeamDao implements TeamRepository {
+class MongoDbTeamRepository implements TeamRepository {
 
     private static final String TEAMS_COLLECTION = "teams";
 
     private MongoTemplate mongo;
 
-    TeamDao(MongoTemplate mongo) {
+    MongoDbTeamRepository(MongoTemplate mongo) {
         this.mongo = mongo;
     }
 
