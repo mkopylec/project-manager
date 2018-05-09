@@ -8,13 +8,13 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-class ProjectDao implements ProjectRepository {
+class MongoDbProjectRepository implements ProjectRepository {
 
     private static final String PROJECTS_COLLECTION = "projects";
 
     private MongoTemplate mongo;
 
-    ProjectDao(MongoTemplate mongo) {
+    MongoDbProjectRepository(MongoTemplate mongo) {
         this.mongo = mongo;
     }
 
