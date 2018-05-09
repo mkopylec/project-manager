@@ -24,6 +24,6 @@ public class CarType {
     }
 
     public boolean hasModel() {
-        return isNotBlank(brand);
+        return isNotBlank(model);
     }
 }
