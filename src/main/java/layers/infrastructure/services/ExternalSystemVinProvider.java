@@ -5,7 +5,7 @@ import layers.domain.services.VinProvider;
 /**
  * Domain service implementation
  */
-class VinProvidingService implements VinProvider {
+class ExternalSystemVinProvider implements VinProvider {
 
     @Override
     public String getVin(String licencePlates) {

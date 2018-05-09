@@ -16,8 +16,9 @@ public class CarFactory {
         this.vinProvider = vinProvider;
     }
 
-    public Car createCar(String licencePlates, CarType type, ZonedDateTime productionDate) {
+    public Car createCar(String licencePlates, String brand, ZonedDateTime productionDate) {
         String vin = vinProvider.getVin(licencePlates);
+        CarType type = new CarType(brand, null);
         return new Car(vin, productionDate, type, false);
     }
 }
