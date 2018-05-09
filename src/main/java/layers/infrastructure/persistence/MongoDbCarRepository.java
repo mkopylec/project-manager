@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Repository implementation
  */
-class CarDao implements CarRepository {
+class MongoDbCarRepository implements CarRepository {
 
     @Override
     public Car findByVin(String vin) {
