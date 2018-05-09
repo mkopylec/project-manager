@@ -7,7 +7,7 @@ public class CarSold {
 
     private String vin;
 
-    public CarSold(String vin) {
+    CarSold(String vin) {
         this.vin = vin;
     }
 
