@@ -22,6 +22,10 @@ public class PreCondition {
         thenThrow(() -> new EntityAlreadyExistsException(message, code));
     }
 
+    public void thenMissingEntity(ErrorCode code, String message) {
+        thenThrow(() -> new MissingEntityException(message, code));
+    }
+
     private void thenThrow(Supplier<DomainException> exceptionCreator) {
         if (condition) {
             throw exceptionCreator.get();
