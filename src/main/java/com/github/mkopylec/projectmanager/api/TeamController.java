@@ -1,9 +1,9 @@
 package com.github.mkopylec.projectmanager.api;
 
-import com.github.mkopylec.projectmanager.application.TeamService;
 import com.github.mkopylec.projectmanager.application.dto.ExistingTeam;
 import com.github.mkopylec.projectmanager.application.dto.NewTeam;
 import com.github.mkopylec.projectmanager.application.dto.TeamMember;
+import com.github.mkopylec.projectmanager.team.TeamApi;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,27 +21,27 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("/teams")
 class TeamController {
 
-    private TeamService teamService;
+    private TeamApi teamApi;
 
-    TeamController(TeamService teamService) {
-        this.teamService = teamService;
+    TeamController(TeamApi teamApi) {
+        this.teamApi = teamApi;
     }
 
     @ResponseStatus(CREATED)
     @PostMapping
     public void createTeam(@RequestBody NewTeam newTeam) {
-        teamService.createTeam(newTeam);
+        teamApi.createTeam(newTeam);
     }
 
     @ResponseStatus(CREATED)
     @PostMapping("/{teamName}/members")
     public void addMemberToTeam(@PathVariable String teamName, @RequestBody TeamMember teamMember) {
-        teamService.addMemberToTeam(teamName, teamMember);
+        teamApi.addMemberToTeam(teamName, teamMember);
     }
 
     @ResponseStatus(OK)
     @GetMapping
     public List<ExistingTeam> getTeams() {
-        return teamService.getTeams();
+        return teamApi.getTeams();
     }
 }
