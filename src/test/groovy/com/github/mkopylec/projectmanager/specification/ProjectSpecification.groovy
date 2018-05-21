@@ -207,13 +207,13 @@ class ProjectSpecification extends BasicSpecification {
         with(response.body) {
             identifier == projectIdentifier
             name == 'Project 2'
-            status.toString() == 'TO_DO'
+            status == 'TO_DO'
             team == 'Team 2'
             features != null
             features.size() == 1
             features[0].name == 'Feature 2'
-            features[0].status.toString() == featureStatus
-            features[0].requirement.toString() == requirement
+            features[0].status == featureStatus
+            features[0].requirement == requirement
         }
 
         when:
@@ -277,7 +277,7 @@ class ProjectSpecification extends BasicSpecification {
     }
 
     @Unroll
-    def "Should not update a project with feature without status or requirement"() {
+    def "Should not update a project with feature with #status status or #requirement requirement"() {
         given:
         def project = new NewProject(name: 'Project 1', features: [])
         post('/projects', project)
@@ -293,9 +293,15 @@ class ProjectSpecification extends BasicSpecification {
         response.body.code == errorCode
 
         where:
-        status | requirement || errorCode
-        null   | 'OPTIONAL'  || 'EMPTY_FEATURE_STATUS'
-        'DONE' | null        || 'EMPTY_FEATURE_REQUIREMENT'
+        status           | requirement           || errorCode
+        null             | 'OPTIONAL'            || 'EMPTY_FEATURE_STATUS'
+        ''               | 'OPTIONAL'            || 'EMPTY_FEATURE_STATUS'
+        '  '             | 'OPTIONAL'            || 'EMPTY_FEATURE_STATUS'
+        'INVALID_STATUS' | 'OPTIONAL'            || 'INVALID_FEATURE_STATUS'
+        'DONE'           | null                  || 'EMPTY_FEATURE_REQUIREMENT'
+        'DONE'           | ''                    || 'EMPTY_FEATURE_REQUIREMENT'
+        'DONE'           | '  '                  || 'EMPTY_FEATURE_REQUIREMENT'
+        'DONE'           | 'INVALID_REQUIREMENT' || 'INVALID_FEATURE_REQUIREMENT'
     }
 
     def "Should browse projects if none exists"() {
