@@ -135,7 +135,8 @@ Compare your solution with the _step-9-finish_ branch.
 
 ### Step 10 - End a project
 The user can end a started project when **all of the features in the project are done**<sub>_(?)_</sub>.
-Sometimes the users manager can give him a permission to end a project when **only the necessary features are done**<sub>_(?)_</sub>.
+Sometimes the users supervisor can give him a permission to end a project when **only the necessary features are done**<sub>_(?)_</sub>.
+Ended projects don't count as projects implemented by a team.
 Ended projects needs to be reported in the company's end year review.
 To do that the application needs to inform a Reporting Service about the **ended project**<sub>_(?)_</sub> by sending its **identifier**<sub>_(?)_</sub>.
 
@@ -143,3 +144,7 @@ To do that the application needs to inform a Reporting Service about the **ended
 Checkout the _step-10-start_ branch.
 Implement the `ProjectController.endProject(...)` method, so the unit tests can successfully pass.
 Compare your solution with the _step-10-finish_ branch.
+
+## Hexagonal architecture
+Following the workshop's steps creates an application designed in classic layered architecture.
+The [hexagonal_architecture](https://github.com/mkopylec/project-manager/tree/hexagonal_architecture) branch shows the fully implemented application in hexagonal architecture.
