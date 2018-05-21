@@ -4,5 +4,6 @@ public enum Requirement {
 
     OPTIONAL,
     RECOMMENDED,
-    NECESSARY
+    NECESSARY,
+    INVALID
 }
