@@ -1,11 +1,9 @@
 package com.github.mkopylec.projectmanager.application.dto;
 
-import com.github.mkopylec.projectmanager.domain.values.Status;
-
 public class ProjectFeature {
 
     private String name;
-    private Status status;
+    private String status;
     private String requirement;
 
     public String getName() {
@@ -16,11 +14,11 @@ public class ProjectFeature {
         this.name = name;
     }
 
-    public Status getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
