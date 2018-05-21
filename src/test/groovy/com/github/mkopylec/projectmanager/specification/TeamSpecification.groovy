@@ -1,9 +1,9 @@
 package com.github.mkopylec.projectmanager.specification
 
 import com.github.mkopylec.projectmanager.BasicSpecification
-import com.github.mkopylec.projectmanager.application.dto.ExistingTeam
-import com.github.mkopylec.projectmanager.application.dto.NewTeam
-import com.github.mkopylec.projectmanager.application.dto.TeamMember
+import com.github.mkopylec.projectmanager.core.team.dto.ExistingTeam
+import com.github.mkopylec.projectmanager.core.team.dto.NewTeam
+import com.github.mkopylec.projectmanager.core.team.dto.TeamMember
 import org.springframework.core.ParameterizedTypeReference
 import spock.lang.Unroll
 
@@ -136,18 +136,25 @@ class TeamSpecification extends BasicSpecification {
         lastName << [null, '', '  ']
     }
 
-    def "Should not add a new member without job position to a team"() {
+    def "Should not add a new member with #jobPosition job position to a team"() {
         given:
         def newTeam = new NewTeam(name: 'Team 1')
         post('/teams', newTeam)
-        def member = new TeamMember(firstName: 'Mariusz', lastName: 'Kopylec')
+        def member = new TeamMember(firstName: 'Mariusz', lastName: 'Kopylec', jobPosition: jobPosition)
 
         when:
         def response = post('/teams/Team 1/members', member)
 
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == 'EMPTY_MEMBER_JOB_POSITION'
+        response.body.code == errorCode
+
+        where:
+        jobPosition            | errorCode
+        null                   | 'EMPTY_MEMBER_JOB_POSITION'
+        ''                     | 'EMPTY_MEMBER_JOB_POSITION'
+        '  '                   | 'EMPTY_MEMBER_JOB_POSITION'
+        'INVALID_JOB_POSITION' | 'INVALID_MEMBER_JOB_POSITION'
     }
 
     def "Should not add a new member to a nonexistent team"() {
@@ -159,15 +166,15 @@ class TeamSpecification extends BasicSpecification {
 
         then:
         response.statusCode == NOT_FOUND
-        response.body.code == 'NONEXISTENT_TEAM'
+        response.body.code == 'MISSING_TEAM'
     }
 
-    def "Should not browse teams if none exists"() {
+    def "Should browse teams if none exists"() {
         when:
-        def response = get('/teams', Map)
+        def response = get('/teams', List)
 
         then:
-        response.statusCode == NOT_FOUND
-        response.body.code == 'NO_TEAMS_EXIST'
+        response.statusCode == OK
+        response.body == []
     }
 }

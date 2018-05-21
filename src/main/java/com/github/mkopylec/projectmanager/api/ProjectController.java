@@ -1,12 +1,12 @@
 package com.github.mkopylec.projectmanager.api;
 
-import com.github.mkopylec.projectmanager.application.dto.ExistingProject;
-import com.github.mkopylec.projectmanager.application.dto.ExistingProjectDraft;
-import com.github.mkopylec.projectmanager.application.dto.NewProject;
-import com.github.mkopylec.projectmanager.application.dto.NewProjectDraft;
-import com.github.mkopylec.projectmanager.application.dto.ProjectEndingCondition;
-import com.github.mkopylec.projectmanager.application.dto.UpdatedProject;
-import com.github.mkopylec.projectmanager.project.ProjectApi;
+import com.github.mkopylec.projectmanager.core.ProjectManager;
+import com.github.mkopylec.projectmanager.core.project.dto.ExistingProject;
+import com.github.mkopylec.projectmanager.core.project.dto.ExistingProjectDraft;
+import com.github.mkopylec.projectmanager.core.project.dto.NewProject;
+import com.github.mkopylec.projectmanager.core.project.dto.NewProjectDraft;
+import com.github.mkopylec.projectmanager.core.project.dto.ProjectEndingCondition;
+import com.github.mkopylec.projectmanager.core.project.dto.UpdatedProject;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,55 +23,58 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
+/**
+ * Primary adapter
+ */
 @RestController
 @RequestMapping("/projects")
 class ProjectController {
 
-    private ProjectApi projectApi;
+    private ProjectManager projectManager;
 
-    ProjectController(ProjectApi projectApi) {
-        this.projectApi = projectApi;
+    ProjectController(ProjectManager projectManager) {
+        this.projectManager = projectManager;
     }
 
     @ResponseStatus(CREATED)
     @PostMapping("/drafts")
-    public void createProject(@RequestBody NewProjectDraft newProjectDraft) {
-        projectApi.createProject(newProjectDraft);
+    void createProject(@RequestBody NewProjectDraft newProjectDraft) {
+        projectManager.createProject(newProjectDraft);
     }
 
     @ResponseStatus(CREATED)
     @PostMapping
-    public void createProject(@RequestBody NewProject newProject) {
-        projectApi.createProject(newProject);
+    void createProject(@RequestBody NewProject newProject) {
+        projectManager.createProject(newProject);
     }
 
     @ResponseStatus(OK)
     @GetMapping
-    public List<ExistingProjectDraft> getProjects() {
-        return projectApi.getProjects();
+    List<ExistingProjectDraft> getProjects() {
+        return projectManager.getProjects();
     }
 
     @ResponseStatus(OK)
     @GetMapping("/{projectIdentifier}")
-    public ExistingProject getProject(@PathVariable String projectIdentifier) {
-        return projectApi.getProject(projectIdentifier);
+    ExistingProject getProject(@PathVariable String projectIdentifier) {
+        return projectManager.getProject(projectIdentifier);
     }
 
     @ResponseStatus(NO_CONTENT)
     @PutMapping("/{projectIdentifier}")
-    public void updateProject(@PathVariable String projectIdentifier, @RequestBody UpdatedProject updatedProject) {
-        projectApi.updateProject(projectIdentifier, updatedProject);
+    void updateProject(@PathVariable String projectIdentifier, @RequestBody UpdatedProject updatedProject) {
+        projectManager.updateProject(projectIdentifier, updatedProject);
     }
 
     @ResponseStatus(NO_CONTENT)
     @PatchMapping("/{projectIdentifier}/started")
-    public void startProject(@PathVariable String projectIdentifier) {
-        projectApi.startProject(projectIdentifier);
+    void startProject(@PathVariable String projectIdentifier) {
+        projectManager.startProject(projectIdentifier);
     }
 
     @ResponseStatus(NO_CONTENT)
     @PatchMapping("/{projectIdentifier}/ended")
-    public void endProject(@PathVariable String projectIdentifier, @RequestBody ProjectEndingCondition endingCondition) {
-        projectApi.endProject(projectIdentifier, endingCondition);
+    void endProject(@PathVariable String projectIdentifier, @RequestBody ProjectEndingCondition endingCondition) {
+        projectManager.endProject(projectIdentifier, endingCondition);
     }
 }

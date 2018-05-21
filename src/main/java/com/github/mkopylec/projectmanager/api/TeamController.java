@@ -1,9 +1,9 @@
 package com.github.mkopylec.projectmanager.api;
 
-import com.github.mkopylec.projectmanager.application.dto.ExistingTeam;
-import com.github.mkopylec.projectmanager.application.dto.NewTeam;
-import com.github.mkopylec.projectmanager.application.dto.TeamMember;
-import com.github.mkopylec.projectmanager.team.TeamApi;
+import com.github.mkopylec.projectmanager.core.ProjectManager;
+import com.github.mkopylec.projectmanager.core.team.dto.ExistingTeam;
+import com.github.mkopylec.projectmanager.core.team.dto.NewTeam;
+import com.github.mkopylec.projectmanager.core.team.dto.TeamMember;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,31 +17,34 @@ import java.util.List;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
+/**
+ * Primary adapter
+ */
 @RestController
 @RequestMapping("/teams")
 class TeamController {
 
-    private TeamApi teamApi;
+    private ProjectManager projectManager;
 
-    TeamController(TeamApi teamApi) {
-        this.teamApi = teamApi;
+    TeamController(ProjectManager projectManager) {
+        this.projectManager = projectManager;
     }
 
     @ResponseStatus(CREATED)
     @PostMapping
-    public void createTeam(@RequestBody NewTeam newTeam) {
-        teamApi.createTeam(newTeam);
+    void createTeam(@RequestBody NewTeam newTeam) {
+        projectManager.createTeam(newTeam);
     }
 
     @ResponseStatus(CREATED)
     @PostMapping("/{teamName}/members")
-    public void addMemberToTeam(@PathVariable String teamName, @RequestBody TeamMember teamMember) {
-        teamApi.addMemberToTeam(teamName, teamMember);
+    void addMemberToTeam(@PathVariable String teamName, @RequestBody TeamMember teamMember) {
+        projectManager.addMemberToTeam(teamName, teamMember);
     }
 
     @ResponseStatus(OK)
     @GetMapping
-    public List<ExistingTeam> getTeams() {
-        return teamApi.getTeams();
+    List<ExistingTeam> getTeams() {
+        return projectManager.getTeams();
     }
 }

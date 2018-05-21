@@ -1,6 +1,6 @@
 package com.github.mkopylec.projectmanager.infrastructure.reporting;
 
-import com.github.mkopylec.projectmanager.domain.project.EndedProject;
+import com.github.mkopylec.projectmanager.core.project.EndedProject;
 import org.slf4j.Logger;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.event.EventListener;

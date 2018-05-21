@@ -1,24 +1,19 @@
 package com.github.mkopylec.projectmanager.specification
 
 import com.github.mkopylec.projectmanager.BasicSpecification
-import com.github.mkopylec.projectmanager.application.dto.ExistingProject
-import com.github.mkopylec.projectmanager.application.dto.ExistingProjectDraft
-import com.github.mkopylec.projectmanager.application.dto.ExistingTeam
-import com.github.mkopylec.projectmanager.application.dto.NewFeature
-import com.github.mkopylec.projectmanager.application.dto.NewProject
-import com.github.mkopylec.projectmanager.application.dto.NewProjectDraft
-import com.github.mkopylec.projectmanager.application.dto.NewTeam
-import com.github.mkopylec.projectmanager.application.dto.ProjectEndingCondition
-import com.github.mkopylec.projectmanager.application.dto.ProjectFeature
-import com.github.mkopylec.projectmanager.application.dto.UpdatedProject
+import com.github.mkopylec.projectmanager.core.project.dto.ExistingProject
+import com.github.mkopylec.projectmanager.core.project.dto.ExistingProjectDraft
+import com.github.mkopylec.projectmanager.core.project.dto.NewFeature
+import com.github.mkopylec.projectmanager.core.project.dto.NewProject
+import com.github.mkopylec.projectmanager.core.project.dto.NewProjectDraft
+import com.github.mkopylec.projectmanager.core.project.dto.ProjectEndingCondition
+import com.github.mkopylec.projectmanager.core.project.dto.ProjectFeature
+import com.github.mkopylec.projectmanager.core.project.dto.UpdatedProject
+import com.github.mkopylec.projectmanager.core.team.dto.ExistingTeam
+import com.github.mkopylec.projectmanager.core.team.dto.NewTeam
 import org.springframework.core.ParameterizedTypeReference
 import spock.lang.Unroll
 
-import static com.github.mkopylec.projectmanager.domain.values.Requirement.NECESSARY
-import static com.github.mkopylec.projectmanager.domain.values.Requirement.OPTIONAL
-import static com.github.mkopylec.projectmanager.domain.values.Status.DONE
-import static com.github.mkopylec.projectmanager.domain.values.Status.IN_PROGRESS
-import static com.github.mkopylec.projectmanager.domain.values.Status.TO_DO
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -165,9 +160,10 @@ class ProjectSpecification extends BasicSpecification {
         name << [null, '', '  ']
     }
 
-    def "Should not create a new full project with feature without requirement"() {
+    @Unroll
+    def "Should not create a new full project with feature with #requirement requirement"() {
         given:
-        def feature = new NewFeature(name: 'Feature 1')
+        def feature = new NewFeature(name: 'Feature 1', requirement: requirement)
         def project = new NewProject(name: 'Project 1', features: [feature])
 
         when:
@@ -175,7 +171,14 @@ class ProjectSpecification extends BasicSpecification {
 
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == 'EMPTY_FEATURE_REQUIREMENT'
+        response.body.code == errorCode
+
+        where:
+        requirement           | errorCode
+        null                  | 'EMPTY_FEATURE_REQUIREMENT'
+        ''                    | 'EMPTY_FEATURE_REQUIREMENT'
+        '  '                  | 'EMPTY_FEATURE_REQUIREMENT'
+        'INVALID_REQUIREMENT' | 'INVALID_FEATURE_REQUIREMENT'
     }
 
     @Unroll
@@ -275,7 +278,7 @@ class ProjectSpecification extends BasicSpecification {
     }
 
     @Unroll
-    def "Should not update a project with feature without status or requirement"() {
+    def "Should not update a project with feature with #status status or #requirement requirement"() {
         given:
         def project = new NewProject(name: 'Project 1', features: [])
         post('/projects', project)
@@ -291,18 +294,24 @@ class ProjectSpecification extends BasicSpecification {
         response.body.code == errorCode
 
         where:
-        status | requirement || errorCode
-        null   | 'OPTIONAL'  || 'EMPTY_FEATURE_STATUS'
-        'DONE' | null        || 'EMPTY_FEATURE_REQUIREMENT'
+        status           | requirement           || errorCode
+        null             | 'OPTIONAL'            || 'EMPTY_FEATURE_STATUS'
+        ''               | 'OPTIONAL'            || 'EMPTY_FEATURE_STATUS'
+        '  '             | 'OPTIONAL'            || 'EMPTY_FEATURE_STATUS'
+        'INVALID_STATUS' | 'OPTIONAL'            || 'INVALID_FEATURE_STATUS'
+        'DONE'           | null                  || 'EMPTY_FEATURE_REQUIREMENT'
+        'DONE'           | ''                    || 'EMPTY_FEATURE_REQUIREMENT'
+        'DONE'           | '  '                  || 'EMPTY_FEATURE_REQUIREMENT'
+        'DONE'           | 'INVALID_REQUIREMENT' || 'INVALID_FEATURE_REQUIREMENT'
     }
 
     def "Should browse projects if none exists"() {
         when:
-        def response = get('/projects', Map)
+        def response = get('/projects', List)
 
         then:
-        response.statusCode == NOT_FOUND
-        response.body.code == 'NO_PROJECTS_EXIST'
+        response.statusCode == OK
+        response.body == []
     }
 
     def "Should browse project if it does not exist"() {
@@ -311,7 +320,7 @@ class ProjectSpecification extends BasicSpecification {
 
         then:
         response.statusCode == NOT_FOUND
-        response.body.code == 'NONEXISTENT_PROJECT'
+        response.body.code == 'MISSING_PROJECT'
     }
 
     def "Should start a project"() {
@@ -373,7 +382,7 @@ class ProjectSpecification extends BasicSpecification {
 
         then:
         response.statusCode == NOT_FOUND
-        response.body.code == 'NONEXISTENT_PROJECT'
+        response.body.code == 'MISSING_PROJECT'
     }
 
     @Unroll
@@ -401,12 +410,12 @@ class ProjectSpecification extends BasicSpecification {
         verifyReportWasSent(projectIdentifier)
 
         where:
-        features                                                                            | onlyNecessaryFeatureDone
-        []                                                                                  | true
-        []                                                                                  | false
-        [new ProjectFeature(name: 'Feature 1', status: DONE, requirement: NECESSARY)]       | true
-        [new ProjectFeature(name: 'Feature 1', status: IN_PROGRESS, requirement: OPTIONAL)] | true
-        [new ProjectFeature(name: 'Feature 1', status: DONE, requirement: NECESSARY)]       | false
+        features                                                                                | onlyNecessaryFeatureDone
+        []                                                                                      | true
+        []                                                                                      | false
+        [new ProjectFeature(name: 'Feature 1', status: 'DONE', requirement: 'NECESSARY')]       | true
+        [new ProjectFeature(name: 'Feature 1', status: 'IN_PROGRESS', requirement: 'OPTIONAL')] | true
+        [new ProjectFeature(name: 'Feature 1', status: 'DONE', requirement: 'NECESSARY')]       | false
     }
 
     @Unroll
@@ -432,9 +441,9 @@ class ProjectSpecification extends BasicSpecification {
         verifyReportWasNotSent(projectIdentifier)
 
         where:
-        features                                                                            | onlyNecessaryFeatureDone
-        [new ProjectFeature(name: 'Feature 1', status: TO_DO, requirement: NECESSARY)]      | true
-        [new ProjectFeature(name: 'Feature 1', status: IN_PROGRESS, requirement: OPTIONAL)] | false
+        features                                                                                | onlyNecessaryFeatureDone
+        [new ProjectFeature(name: 'Feature 1', status: 'TO_DO', requirement: 'NECESSARY')]      | true
+        [new ProjectFeature(name: 'Feature 1', status: 'IN_PROGRESS', requirement: 'OPTIONAL')] | false
     }
 
     def "Should not end an unstarted project"() {
@@ -488,7 +497,7 @@ class ProjectSpecification extends BasicSpecification {
 
         then:
         response.statusCode == NOT_FOUND
-        response.body.code == 'NONEXISTENT_PROJECT'
+        response.body.code == 'MISSING_PROJECT'
         verifyReportWasNotSent('nonexistent project')
     }
 }
