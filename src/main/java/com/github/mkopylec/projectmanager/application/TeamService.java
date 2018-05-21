@@ -13,7 +13,6 @@ import java.util.List;
 import static com.github.mkopylec.projectmanager.application.utils.DtoMapper.mapToEmployee;
 import static com.github.mkopylec.projectmanager.application.utils.DtoMapper.mapToExistingTeams;
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.NONEXISTENT_TEAM;
-import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.NO_TEAMS_EXIST;
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.TEAM_ALREADY_EXISTS;
 import static com.github.mkopylec.projectmanager.domain.exceptions.PreCondition.when;
 
@@ -44,8 +43,6 @@ public class TeamService {
 
     public List<ExistingTeam> getTeams() {
         List<Team> teams = teamRepository.findAll();
-        when(teams.isEmpty())
-                .thenMissingEntity(NO_TEAMS_EXIST, "Error getting teams");
         return mapToExistingTeams(teams);
     }
 }
