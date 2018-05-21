@@ -93,7 +93,7 @@ class TeamSpecification extends BasicSpecification {
             members.size() == 1
             members[0].firstName == 'Mariusz'
             members[0].lastName == 'Kopylec'
-            members[0].jobPosition.toString() == jobPosition
+            members[0].jobPosition == jobPosition
         }
 
         where:
@@ -169,12 +169,12 @@ class TeamSpecification extends BasicSpecification {
         response.body.code == 'NONEXISTENT_TEAM'
     }
 
-    def "Should not browse teams if none exists"() {
+    def "Should browse teams if none exists"() {
         when:
-        def response = get('/teams', Map)
+        def response = get('/teams', List)
 
         then:
-        response.statusCode == NOT_FOUND
-        response.body.code == 'NO_TEAMS_EXIST'
+        response.statusCode == OK
+        response.body == []
     }
 }
