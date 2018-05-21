@@ -405,7 +405,11 @@ class ProjectSpecification extends BasicSpecification {
         then:
         response.statusCode == NO_CONTENT
         with(get("/projects/$projectIdentifier", ExistingProject).body) {
-            status.toString() == 'DONE'
+            status == 'DONE'
+        }
+        with(get('/teams', new ParameterizedTypeReference<List<ExistingTeam>>() {}).body[0]) {
+            name == 'Team 1'
+            currentlyImplementedProjects == 0
         }
         verifyReportWasSent(projectIdentifier)
 
