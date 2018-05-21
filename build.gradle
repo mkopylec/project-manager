@@ -1,6 +1,6 @@
 plugins {
     id 'groovy'
-    id 'org.springframework.boot' version '2.0.1.RELEASE'
+    id 'org.springframework.boot' version '2.0.2.RELEASE'
 }
 
 group  = 'com.github.mkopylec'
@@ -12,7 +12,7 @@ repositories {
     mavenCentral()
 }
 
-ext.springBootVersion = '2.0.1.RELEASE'
+ext.springBootVersion = '2.0.2.RELEASE'
 
 dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: springBootVersion
@@ -25,6 +25,7 @@ dependencies {
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVersion
     testCompile group: 'org.spockframework', name: 'spock-spring', version: '1.1-groovy-2.4'
     testCompile group: 'com.github.tomakehurst', name: 'wiremock', version: '2.17.0'
+    testCompile group: 'org.awaitility', name: 'awaitility-groovy', version: '3.1.0'
 }
 
 task wrapper(type: Wrapper) {
