@@ -13,9 +13,10 @@ import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMP
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMPTY_FEATURE_STATUS;
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMPTY_PROJECT_IDENTIFIER;
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMPTY_PROJECT_NAME;
+import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.INVALID_FEATURE_REQUIREMENT;
+import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.INVALID_FEATURE_STATUS;
 import static com.github.mkopylec.projectmanager.domain.exceptions.PreCondition.when;
 import static com.github.mkopylec.projectmanager.domain.values.Status.TO_DO;
-import static java.util.Collections.unmodifiableList;
 import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -35,8 +36,8 @@ public class Project {
     Project(String identifier, String name, List<Feature> features) {
         validateIdentifier(identifier, "Error creating '" + name + "' project");
         validateName(name, "Error creating '" + identifier + "' project");
-        features = normalize(features);
-        validateFeatures(features, "Error creating '" + name + "' project");
+        features = emptyIfNull(features);
+        validateFeatures(features, "Error creating '" + name + " 'project");
         this.identifier = identifier;
         this.name = name;
         this.status = TO_DO;
@@ -73,13 +74,9 @@ public class Project {
     }
 
     public void updateFeatures(List<Feature> features) {
-        features = normalize(features);
+        features = emptyIfNull(features);
         validateFeatures(features, "Error updating '" + identifier + "' project features");
         this.features = features;
-    }
-
-    private List<Feature> normalize(List<Feature> features) {
-        return unmodifiableList(emptyIfNull(features));
     }
 
     private void validateName(String name, String message) {
@@ -98,8 +95,12 @@ public class Project {
                 .thenInvalidEntity(EMPTY_FEATURE_NAME, message);
         when(feature.hasNoStatus())
                 .thenInvalidEntity(EMPTY_FEATURE_STATUS, message);
+        when(feature.hasInvalidStatus())
+                .thenInvalidEntity(INVALID_FEATURE_STATUS, message);
         when(feature.hasNoRequirement())
                 .thenInvalidEntity(EMPTY_FEATURE_REQUIREMENT, message);
+        when(feature.hasInvalidRequirement())
+                .thenInvalidEntity(INVALID_FEATURE_REQUIREMENT, message);
     }
 
     private void validateIdentifier(String identifier, String message) {

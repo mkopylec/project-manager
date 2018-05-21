@@ -35,7 +35,15 @@ public class Employee {
     }
 
     public boolean hasNoJobPosition() {
-        return jobPosition == null;
+        return !hasJobPosition();
+    }
+
+    public boolean hasInvalidJobPosition() {
+        return hasJobPosition() && jobPosition.isInvalid();
+    }
+
+    private boolean hasJobPosition() {
+        return jobPosition != null;
     }
 
     private Employee() {
