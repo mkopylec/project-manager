@@ -26,4 +26,8 @@ public class CarType {
     public boolean hasModel() {
         return isNotBlank(model);
     }
+
+    public CarType changeModel(String model) {
+        return new CarType(brand, model);
+    }
 }
