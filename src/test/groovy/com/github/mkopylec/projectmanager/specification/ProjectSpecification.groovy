@@ -87,9 +87,10 @@ class ProjectSpecification extends BasicSpecification {
         name << [null, '', '  ']
     }
 
-    def "Should not create a new full project with feature without requirement"() {
+    @Unroll
+    def "Should not create a new full project with feature with #requirement requirement"() {
         given:
-        def feature = new NewFeature(name: 'Feature 1')
+        def feature = new NewFeature(name: 'Feature 1', requirement: requirement)
         def project = new NewProject(name: 'Project 1', features: [feature])
 
         when:
@@ -97,6 +98,13 @@ class ProjectSpecification extends BasicSpecification {
 
         then:
         response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == 'EMPTY_FEATURE_REQUIREMENT'
+        response.body.code == errorCode
+
+        where:
+        requirement           | errorCode
+        null                  | 'EMPTY_FEATURE_REQUIREMENT'
+        ''                    | 'EMPTY_FEATURE_REQUIREMENT'
+        '  '                  | 'EMPTY_FEATURE_REQUIREMENT'
+        'INVALID_REQUIREMENT' | 'INVALID_FEATURE_REQUIREMENT'
     }
 }
