@@ -9,7 +9,6 @@ import org.springframework.core.ParameterizedTypeReference
 import spock.lang.Unroll
 
 import static org.springframework.http.HttpStatus.CREATED
-import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.OK
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 
@@ -138,10 +137,10 @@ class ProjectSpecification extends BasicSpecification {
 
     def "Should browse projects if none exists"() {
         when:
-        def response = get('/projects', Map)
+        def response = get('/projects', List)
 
         then:
-        response.statusCode == NOT_FOUND
-        response.body.code == 'NO_PROJECTS_EXIST'
+        response.statusCode == OK
+        response.body == []
     }
 }
