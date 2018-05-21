@@ -15,6 +15,7 @@ import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.EMP
 import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.INVALID_FEATURE_REQUIREMENT;
 import static com.github.mkopylec.projectmanager.domain.exceptions.PreCondition.when;
 import static com.github.mkopylec.projectmanager.domain.values.Status.TO_DO;
+import static java.util.Collections.unmodifiableList;
 import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -59,7 +60,7 @@ public class Project {
     }
 
     public List<Feature> getFeatures() {
-        return features;
+        return unmodifiableList(features);
     }
 
     private void validateFeatures(List<Feature> features, String message) {
