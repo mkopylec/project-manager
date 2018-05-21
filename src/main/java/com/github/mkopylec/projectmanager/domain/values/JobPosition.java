@@ -4,5 +4,10 @@ public enum JobPosition {
 
     DEVELOPER,
     SCRUM_MASTER,
-    PRODUCT_OWNER
+    PRODUCT_OWNER,
+    INVALID;
+
+    public boolean isInvalid() {
+        return this == INVALID;
+    }
 }

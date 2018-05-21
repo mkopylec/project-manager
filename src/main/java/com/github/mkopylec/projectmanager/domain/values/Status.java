@@ -4,7 +4,8 @@ public enum Status {
 
     TO_DO,
     IN_PROGRESS,
-    DONE;
+    DONE,
+    INVALID;
 
     public boolean isAtLeastStarted() {
         return this != TO_DO;
