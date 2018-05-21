@@ -93,7 +93,7 @@ class TeamSpecification extends BasicSpecification {
             members.size() == 1
             members[0].firstName == 'Mariusz'
             members[0].lastName == 'Kopylec'
-            members[0].jobPosition.toString() == jobPosition
+            members[0].jobPosition == jobPosition
         }
 
         where:

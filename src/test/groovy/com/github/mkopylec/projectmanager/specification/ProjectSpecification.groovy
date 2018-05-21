@@ -56,7 +56,7 @@ class ProjectSpecification extends BasicSpecification {
         with(response.body) {
             identifier == projectIdentifier
             name == 'Project 1'
-            status.toString() == 'TO_DO'
+            status == 'TO_DO'
             team == null
             features == []
         }
@@ -114,13 +114,13 @@ class ProjectSpecification extends BasicSpecification {
         with(response.body) {
             identifier == projectIdentifier
             name == 'Project 1'
-            status.toString() == 'TO_DO'
+            status == 'TO_DO'
             team == null
             features != null
             features.size() == 1
             features[0].name == 'Feature 1'
-            features[0].status.toString() == 'TO_DO'
-            features[0].requirement.toString() == requirement
+            features[0].status == 'TO_DO'
+            features[0].requirement == requirement
         }
 
         where:
@@ -208,27 +208,17 @@ class ProjectSpecification extends BasicSpecification {
         with(response.body) {
             identifier == projectIdentifier
             name == 'Project 2'
-            status.toString() == 'TO_DO'
+            status == 'TO_DO'
             team == 'Team 2'
             features != null
             features.size() == 1
             features[0].name == 'Feature 2'
-            features[0].status.toString() == featureStatus
-            features[0].requirement.toString() == requirement
+            features[0].status == featureStatus
+            features[0].requirement == requirement
         }
-
-        when:
-        response = get('/teams', new ParameterizedTypeReference<List<ExistingTeam>>() {})
-
-        then:
-        response.statusCode == OK
-        response.body != null
-        response.body.size() == 1
-        with(response.body[0]) {
+        with(get('/teams', new ParameterizedTypeReference<List<ExistingTeam>>() {}).body[0]) {
             name == 'Team 2'
             currentlyImplementedProjects == 1
-            !busy
-            members == []
         }
 
         where:
@@ -339,7 +329,7 @@ class ProjectSpecification extends BasicSpecification {
         then:
         response.statusCode == NO_CONTENT
         with(get("/projects/$projectIdentifier", ExistingProject).body) {
-            status.toString() == 'IN_PROGRESS'
+            status == 'IN_PROGRESS'
         }
     }
 
@@ -405,7 +395,11 @@ class ProjectSpecification extends BasicSpecification {
         then:
         response.statusCode == NO_CONTENT
         with(get("/projects/$projectIdentifier", ExistingProject).body) {
-            status.toString() == 'DONE'
+            status == 'DONE'
+        }
+        with(get('/teams', new ParameterizedTypeReference<List<ExistingTeam>>() {}).body[0]) {
+            name == 'Team 1'
+            currentlyImplementedProjects == 0
         }
         verifyReportWasSent(projectIdentifier)
 

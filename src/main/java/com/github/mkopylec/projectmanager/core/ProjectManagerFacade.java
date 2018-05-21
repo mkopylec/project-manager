@@ -1,5 +1,6 @@
 package com.github.mkopylec.projectmanager.core;
 
+import com.github.mkopylec.projectmanager.core.common.TeamName;
 import com.github.mkopylec.projectmanager.core.project.ProjectService;
 import com.github.mkopylec.projectmanager.core.project.dto.ExistingProject;
 import com.github.mkopylec.projectmanager.core.project.dto.ExistingProjectDraft;
@@ -48,8 +49,8 @@ class ProjectManagerFacade implements ProjectManager {
 
     @Override
     public void updateProject(String projectIdentifier, UpdatedProject updatedProject) {
-        projectService.updateProject(projectIdentifier, updatedProject);
-        teamService.addImplementedProjectToTeam(updatedProject.getTeam());
+        TeamName teamAssignedToProject = projectService.updateProject(projectIdentifier, updatedProject);
+        teamService.addImplementedProjectToTeam(teamAssignedToProject);
     }
 
     @Override
@@ -59,7 +60,8 @@ class ProjectManagerFacade implements ProjectManager {
 
     @Override
     public void endProject(String projectIdentifier, ProjectEndingCondition endingCondition) {
-        projectService.endProject(projectIdentifier, endingCondition);
+        TeamName teamAssignedToProject = projectService.endProject(projectIdentifier, endingCondition);
+        teamService.removeImplementedProjectFromTeam(teamAssignedToProject);
     }
 
     @Override

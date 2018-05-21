@@ -1,16 +1,17 @@
 package com.github.mkopylec.projectmanager.core.team;
 
+import com.github.mkopylec.projectmanager.core.common.TeamName;
 import com.github.mkopylec.projectmanager.core.team.dto.ExistingTeam;
 import com.github.mkopylec.projectmanager.core.team.dto.NewTeam;
 import com.github.mkopylec.projectmanager.core.team.dto.TeamMember;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import static com.github.mkopylec.projectmanager.core.team.DtoMapper.mapToEmployee;
 import static com.github.mkopylec.projectmanager.core.team.DtoMapper.mapToExistingTeams;
 import static com.github.mkopylec.projectmanager.core.team.PreCondition.when;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 public class TeamService {
@@ -42,12 +43,20 @@ public class TeamService {
         return mapToExistingTeams(teams);
     }
 
-    public void addImplementedProjectToTeam(String teamName) {
-        if (isBlank(teamName)) {
+    public void addImplementedProjectToTeam(TeamName teamAssignedToProject) {
+        updateTeamImplementedProjects(teamAssignedToProject, team -> team.addCurrentlyImplementedProject());
+    }
+
+    public void removeImplementedProjectFromTeam(TeamName teamAssignedToProject) {
+        updateTeamImplementedProjects(teamAssignedToProject, team -> team.removeCurrentlyImplementedProject());
+    }
+
+    private void updateTeamImplementedProjects(TeamName teamAssignedToProject, Consumer<Team> teamUpdater) {
+        if (teamAssignedToProject == null) {
             return;
         }
-        Team team = teamRepository.findByName(teamName);
-        team.addCurrentlyImplementedProject();
+        Team team = teamRepository.findByName(teamAssignedToProject.get());
+        teamUpdater.accept(team);
         teamRepository.save(team);
     }
 }
