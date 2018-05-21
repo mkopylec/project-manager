@@ -13,8 +13,6 @@ import java.util.List;
 
 import static com.github.mkopylec.projectmanager.application.utils.DtoMapper.mapToExistingProjectDrafts;
 import static com.github.mkopylec.projectmanager.application.utils.DtoMapper.mapToFeatures;
-import static com.github.mkopylec.projectmanager.domain.exceptions.ErrorCode.NO_PROJECTS_EXIST;
-import static com.github.mkopylec.projectmanager.domain.exceptions.PreCondition.when;
 
 @Service
 public class ProjectService {
@@ -40,8 +38,6 @@ public class ProjectService {
 
     public List<ExistingProjectDraft> getProjects() {
         List<Project> projects = projectRepository.findAll();
-        when(projects.isEmpty())
-                .thenMissingEntity(NO_PROJECTS_EXIST, "Error getting projects");
         return mapToExistingProjectDrafts(projects);
     }
 }
