@@ -14,11 +14,6 @@ import com.github.mkopylec.projectmanager.application.dto.UpdatedProject
 import org.springframework.core.ParameterizedTypeReference
 import spock.lang.Unroll
 
-import static com.github.mkopylec.projectmanager.domain.values.Requirement.NECESSARY
-import static com.github.mkopylec.projectmanager.domain.values.Requirement.OPTIONAL
-import static com.github.mkopylec.projectmanager.domain.values.Status.DONE
-import static com.github.mkopylec.projectmanager.domain.values.Status.IN_PROGRESS
-import static com.github.mkopylec.projectmanager.domain.values.Status.TO_DO
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -415,12 +410,12 @@ class ProjectSpecification extends BasicSpecification {
         verifyReportWasSent(projectIdentifier)
 
         where:
-        features                                                                            | onlyNecessaryFeatureDone
-        []                                                                                  | true
-        []                                                                                  | false
-        [new ProjectFeature(name: 'Feature 1', status: DONE, requirement: NECESSARY)]       | true
-        [new ProjectFeature(name: 'Feature 1', status: IN_PROGRESS, requirement: OPTIONAL)] | true
-        [new ProjectFeature(name: 'Feature 1', status: DONE, requirement: NECESSARY)]       | false
+        features                                                                                | onlyNecessaryFeatureDone
+        []                                                                                      | true
+        []                                                                                      | false
+        [new ProjectFeature(name: 'Feature 1', status: 'DONE', requirement: 'NECESSARY')]       | true
+        [new ProjectFeature(name: 'Feature 1', status: 'IN_PROGRESS', requirement: 'OPTIONAL')] | true
+        [new ProjectFeature(name: 'Feature 1', status: 'DONE', requirement: 'NECESSARY')]       | false
     }
 
     @Unroll
@@ -446,9 +441,9 @@ class ProjectSpecification extends BasicSpecification {
         verifyReportWasNotSent(projectIdentifier)
 
         where:
-        features                                                                            | onlyNecessaryFeatureDone
-        [new ProjectFeature(name: 'Feature 1', status: TO_DO, requirement: NECESSARY)]      | true
-        [new ProjectFeature(name: 'Feature 1', status: IN_PROGRESS, requirement: OPTIONAL)] | false
+        features                                                                                | onlyNecessaryFeatureDone
+        [new ProjectFeature(name: 'Feature 1', status: 'TO_DO', requirement: 'NECESSARY')]      | true
+        [new ProjectFeature(name: 'Feature 1', status: 'IN_PROGRESS', requirement: 'OPTIONAL')] | false
     }
 
     def "Should not end an unstarted project"() {
