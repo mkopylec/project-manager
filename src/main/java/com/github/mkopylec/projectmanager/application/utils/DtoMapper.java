@@ -10,16 +10,20 @@ import com.github.mkopylec.projectmanager.domain.project.Project;
 import com.github.mkopylec.projectmanager.domain.team.Team;
 import com.github.mkopylec.projectmanager.domain.values.Employee;
 import com.github.mkopylec.projectmanager.domain.values.Feature;
+import com.github.mkopylec.projectmanager.domain.values.JobPosition;
+import com.github.mkopylec.projectmanager.domain.values.Requirement;
 
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class DtoMapper {
 
     public static Employee mapToEmployee(TeamMember teamMember) {
-        return new Employee(teamMember.getFirstName(), teamMember.getLastName(), teamMember.getJobPosition());
+        JobPosition jobPosition = mapToJobPosition(teamMember.getJobPosition());
+        return new Employee(teamMember.getFirstName(), teamMember.getLastName(), jobPosition);
     }
 
     public static List<ExistingTeam> mapToExistingTeams(List<Team> teams) {
@@ -69,7 +73,7 @@ public class DtoMapper {
         TeamMember member = new TeamMember();
         member.setFirstName(employee.getFirstName());
         member.setLastName(employee.getLastName());
-        member.setJobPosition(employee.getJobPosition());
+        member.setJobPosition(employee.getJobPosition().name());
         return member;
     }
 
@@ -77,7 +81,30 @@ public class DtoMapper {
         if (newFeature == null) {
             return null;
         }
-        return new Feature(newFeature.getName(), newFeature.getRequirement());
+        Requirement requirement = mapToRequirement(newFeature.getRequirement());
+        return new Feature(newFeature.getName(), requirement);
+    }
+
+    private static JobPosition mapToJobPosition(String jobPosition) {
+        if (isBlank(jobPosition)) {
+            return null;
+        }
+        try {
+            return JobPosition.valueOf(jobPosition);
+        } catch (IllegalArgumentException e) {
+            return JobPosition.INVALID;
+        }
+    }
+
+    private static Requirement mapToRequirement(String requirement) {
+        if (isBlank(requirement)) {
+            return null;
+        }
+        try {
+            return Requirement.valueOf(requirement);
+        } catch (IllegalArgumentException e) {
+            return Requirement.INVALID;
+        }
     }
 
     private static ExistingProjectDraft mapToExistingProjectDraft(Project project) {
@@ -91,7 +118,7 @@ public class DtoMapper {
         ProjectFeature projectFeature = new ProjectFeature();
         projectFeature.setName(feature.getName());
         projectFeature.setStatus(feature.getStatus());
-        projectFeature.setRequirement(feature.getRequirement());
+        projectFeature.setRequirement(feature.getRequirement().name());
         return projectFeature;
     }
 

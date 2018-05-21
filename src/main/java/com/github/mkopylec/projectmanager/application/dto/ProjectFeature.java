@@ -1,13 +1,12 @@
 package com.github.mkopylec.projectmanager.application.dto;
 
-import com.github.mkopylec.projectmanager.domain.values.Requirement;
 import com.github.mkopylec.projectmanager.domain.values.Status;
 
 public class ProjectFeature {
 
     private String name;
     private Status status;
-    private Requirement requirement;
+    private String requirement;
 
     public String getName() {
         return name;
@@ -25,11 +24,11 @@ public class ProjectFeature {
         this.status = status;
     }
 
-    public Requirement getRequirement() {
+    public String getRequirement() {
         return requirement;
     }
 
-    public void setRequirement(Requirement requirement) {
+    public void setRequirement(String requirement) {
         this.requirement = requirement;
     }
 }

@@ -1,5 +1,6 @@
 package com.github.mkopylec.projectmanager.domain.values;
 
+import static com.github.mkopylec.projectmanager.domain.values.Requirement.INVALID;
 import static com.github.mkopylec.projectmanager.domain.values.Status.TO_DO;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -28,7 +29,7 @@ public class Feature {
     }
 
     public boolean hasNoStatus() {
-        return status == null;
+        return !hasStatus();
     }
 
     public Requirement getRequirement() {
@@ -36,7 +37,19 @@ public class Feature {
     }
 
     public boolean hasNoRequirement() {
-        return requirement == null;
+        return !hasRequirement();
+    }
+
+    public boolean hasInvalidRequirement() {
+        return hasRequirement() && requirement == INVALID;
+    }
+
+    private boolean hasStatus() {
+        return status != null;
+    }
+
+    private boolean hasRequirement() {
+        return requirement != null;
     }
 
     private Feature() {
