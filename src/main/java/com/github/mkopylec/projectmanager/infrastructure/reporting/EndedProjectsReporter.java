@@ -23,7 +23,7 @@ class EndedProjectsReporter {
 
     @Async
     @EventListener
-    public void report(EndedProject endedProject) {
+    void report(EndedProject endedProject) {
         try {
             restTemplate.postForObject("http://localhost:8081/reports/projects", endedProject, String.class);
         } catch (RestClientException ex) {
