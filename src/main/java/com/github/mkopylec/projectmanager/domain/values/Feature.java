@@ -32,7 +32,11 @@ public class Feature {
     }
 
     public boolean hasNoStatus() {
-        return status == null;
+        return !hasStatus();
+    }
+
+    public boolean hasInvalidStatus() {
+        return hasStatus() && status == Status.INVALID;
     }
 
     public boolean isUndone() {
@@ -48,7 +52,19 @@ public class Feature {
     }
 
     public boolean hasNoRequirement() {
-        return requirement == null;
+        return !hasRequirement();
+    }
+
+    public boolean hasInvalidRequirement() {
+        return hasRequirement() && requirement == Requirement.INVALID;
+    }
+
+    private boolean hasStatus() {
+        return status != null;
+    }
+
+    private boolean hasRequirement() {
+        return requirement != null;
     }
 
     private Feature() {
