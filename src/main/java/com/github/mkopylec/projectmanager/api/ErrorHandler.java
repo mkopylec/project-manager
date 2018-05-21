@@ -28,40 +28,25 @@ class ErrorHandler {
 
     private static final Logger log = getLogger(ErrorHandler.class);
 
-    @ExceptionHandler(TeamAlreadyExistsException.class)
-    ResponseEntity<ErrorMessage> handleTeamAlreadyExistsException(TeamAlreadyExistsException ex, HttpServletRequest request) {
-        return handleDomainException(ex, request, UNPROCESSABLE_ENTITY);
+    @ExceptionHandler({TeamAlreadyExistsException.class, InvalidTeamException.class, InvalidProjectException.class})
+    ResponseEntity<ErrorMessage> mapToUnprocessableEntityResponse(DomainException ex, HttpServletRequest request) {
+        return mapToResponse(ex, request, UNPROCESSABLE_ENTITY);
     }
 
-    @ExceptionHandler(InvalidTeamException.class)
-    ResponseEntity<ErrorMessage> handleInvalidTeamException(InvalidTeamException ex, HttpServletRequest request) {
-        return handleDomainException(ex, request, UNPROCESSABLE_ENTITY);
-    }
-
-    @ExceptionHandler(InvalidProjectException.class)
-    ResponseEntity<ErrorMessage> handleInvalidProjectException(InvalidProjectException ex, HttpServletRequest request) {
-        return handleDomainException(ex, request, UNPROCESSABLE_ENTITY);
-    }
-
-    @ExceptionHandler(MissingTeamException.class)
-    ResponseEntity<ErrorMessage> handleMissingTeamException(MissingTeamException ex, HttpServletRequest request) {
-        return handleDomainException(ex, request, NOT_FOUND);
-    }
-
-    @ExceptionHandler(MissingProjectException.class)
-    ResponseEntity<ErrorMessage> handleMissingProjectException(MissingProjectException ex, HttpServletRequest request) {
-        return handleDomainException(ex, request, NOT_FOUND);
+    @ExceptionHandler({MissingTeamException.class, MissingProjectException.class})
+    ResponseEntity<ErrorMessage> mapToNotFoundResponse(DomainException ex, HttpServletRequest request) {
+        return mapToResponse(ex, request, NOT_FOUND);
     }
 
     @ExceptionHandler(Exception.class)
-    ResponseEntity<ErrorMessage> handleException(Exception ex, HttpServletRequest request) {
+    ResponseEntity<ErrorMessage> mapToInternalServerErrorResponse(Exception ex, HttpServletRequest request) {
         ErrorMessage errorMessage = new ErrorMessage(UNEXPECTED_ERROR_CODE);
         log.error(createLog(request, INTERNAL_SERVER_ERROR, errorMessage, ex.getMessage()), ex);
         return status(INTERNAL_SERVER_ERROR)
                 .body(errorMessage);
     }
 
-    private ResponseEntity<ErrorMessage> handleDomainException(DomainException ex, HttpServletRequest request, HttpStatus status) {
+    private ResponseEntity<ErrorMessage> mapToResponse(DomainException ex, HttpServletRequest request, HttpStatus status) {
         log.warn(createLog(request, status, ex.getErrorMessage(), ex.getMessage()));
         return status(status)
                 .body(ex.getErrorMessage());
