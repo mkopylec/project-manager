@@ -1,6 +1,5 @@
 package com.github.mkopylec.projectmanager
 
-import com.github.tomakehurst.wiremock.client.VerificationException
 import com.github.tomakehurst.wiremock.junit.WireMockRule
 import org.junit.Rule
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,6 +19,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import static com.github.tomakehurst.wiremock.client.WireMock.verify
+import static java.util.concurrent.TimeUnit.SECONDS
+import static org.awaitility.Awaitility.await
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import static org.springframework.http.HttpMethod.GET
 import static org.springframework.http.HttpMethod.PATCH
@@ -102,18 +103,8 @@ abstract class BasicSpecification extends Specification {
     }
 
     private static void verifyReportSending(int count, String projectIdentifier) {
-        def counter = 0
-        def fail = null
-        while (counter < 100) {
-            try {
-                verify(count, postRequestedFor(urlEqualTo('/reports/projects')).withRequestBody(containing(projectIdentifier)))
-                return
-            } catch (VerificationException ex) {
-                counter++
-                fail = ex
-                sleep(10)
-            }
+        await().atMost(1, SECONDS).untilAsserted {
+            verify(count, postRequestedFor(urlEqualTo('/reports/projects')).withRequestBody(containing(projectIdentifier)))
         }
-        throw fail
     }
 }

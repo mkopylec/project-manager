@@ -11,6 +11,6 @@ public class StudentRebateCalculator implements RebateCalculator {
 
     @Override
     public BigDecimal calculateRebate(BigDecimal stockPrise) {
-        return stockPrise.multiply(valueOf(0.9));
+        return stockPrise.multiply(valueOf(0.1));
     }
 }
