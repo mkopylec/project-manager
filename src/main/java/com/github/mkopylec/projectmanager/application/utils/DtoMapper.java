@@ -117,7 +117,7 @@ public class DtoMapper {
     private static ProjectFeature mapToProjectFeature(Feature feature) {
         ProjectFeature projectFeature = new ProjectFeature();
         projectFeature.setName(feature.getName());
-        projectFeature.setStatus(feature.getStatus());
+        projectFeature.setStatus(feature.getStatus().name());
         projectFeature.setRequirement(feature.getRequirement().name());
         return projectFeature;
     }
