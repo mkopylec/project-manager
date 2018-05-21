@@ -3,7 +3,6 @@ package com.github.mkopylec.projectmanager.domain.project;
 import com.github.mkopylec.projectmanager.domain.team.Team;
 import com.github.mkopylec.projectmanager.domain.values.Feature;
 import com.github.mkopylec.projectmanager.domain.values.Status;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.annotation.Id;
 
 import java.util.List;
@@ -27,6 +26,7 @@ import static com.github.mkopylec.projectmanager.domain.values.Status.TO_DO;
 import static java.util.Collections.unmodifiableList;
 import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class Project {
 
@@ -73,6 +73,10 @@ public class Project {
         return assignedTeam;
     }
 
+    public boolean hasAssignedTeam() {
+        return isNotBlank(assignedTeam);
+    }
+
     public void assignTeam(Team team) {
         assignedTeam = team == null ? null : team.getName();
     }
@@ -94,13 +98,12 @@ public class Project {
         status = IN_PROGRESS;
     }
 
-    public void end(FeatureChecker featureChecker, ApplicationEventPublisher publisher) {
+    public EndedProject end(FeatureChecker featureChecker) {
         String message = "Error starting '" + identifier + "' project";
         requireStarted(message);
         featureChecker.checkFeatures(features, message);
         status = DONE;
-        EndedProject endedProject = new EndedProject(identifier);
-        publisher.publishEvent(endedProject);
+        return new EndedProject(identifier);
     }
 
     private void validateName(String name, String message) {

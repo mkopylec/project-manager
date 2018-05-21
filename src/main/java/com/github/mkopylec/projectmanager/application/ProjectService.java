@@ -7,6 +7,7 @@ import com.github.mkopylec.projectmanager.application.dto.NewProjectDraft;
 import com.github.mkopylec.projectmanager.application.dto.ProjectEndingCondition;
 import com.github.mkopylec.projectmanager.application.dto.UpdatedProject;
 import com.github.mkopylec.projectmanager.application.utils.DtoMapper;
+import com.github.mkopylec.projectmanager.domain.project.EndedProject;
 import com.github.mkopylec.projectmanager.domain.project.FeatureChecker;
 import com.github.mkopylec.projectmanager.domain.project.Project;
 import com.github.mkopylec.projectmanager.domain.project.ProjectFactory;
@@ -93,7 +94,13 @@ public class ProjectService {
         when(project == null)
                 .thenMissingEntity(NONEXISTENT_PROJECT, "Error ending '" + projectIdentifier + "' project");
         FeatureChecker featureChecker = resolveFeatureChecker(endingCondition.isOnlyNecessaryFeatureDone());
-        project.end(featureChecker, eventPublisher);
+        EndedProject endedProject = project.end(featureChecker);
+        if (project.hasAssignedTeam()) {
+            Team assignedTeam = teamRepository.findByName(project.getAssignedTeam());
+            assignedTeam.removeCurrentlyImplementedProject();
+            teamRepository.save(assignedTeam);
+        }
         projectRepository.save(project);
+        eventPublisher.publishEvent(endedProject);
     }
 }
