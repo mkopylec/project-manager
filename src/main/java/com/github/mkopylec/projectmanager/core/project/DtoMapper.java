@@ -1,6 +1,6 @@
 package com.github.mkopylec.projectmanager.core.project;
 
-import com.github.mkopylec.projectmanager.core.common.TeamName;
+import com.github.mkopylec.projectmanager.core.common.TeamAssignedToProject;
 import com.github.mkopylec.projectmanager.core.project.dto.ExistingProject;
 import com.github.mkopylec.projectmanager.core.project.dto.ExistingProjectDraft;
 import com.github.mkopylec.projectmanager.core.project.dto.NewFeature;
@@ -45,9 +45,9 @@ class DtoMapper {
                 .collect(toList());
     }
 
-    static TeamName mapToTeamName(Project project) {
+    static TeamAssignedToProject mapToTeamAssignedToProject(Project project) {
         String assignedTeam = project.getAssignedTeam();
-        return assignedTeam == null ? null : new TeamName(assignedTeam);
+        return assignedTeam == null ? null : new TeamAssignedToProject(assignedTeam);
     }
 
     private static Feature mapToFeature(NewFeature newFeature) {

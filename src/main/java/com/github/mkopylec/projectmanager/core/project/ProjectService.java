@@ -1,6 +1,6 @@
 package com.github.mkopylec.projectmanager.core.project;
 
-import com.github.mkopylec.projectmanager.core.common.TeamName;
+import com.github.mkopylec.projectmanager.core.common.TeamAssignedToProject;
 import com.github.mkopylec.projectmanager.core.project.dto.ExistingProject;
 import com.github.mkopylec.projectmanager.core.project.dto.ExistingProjectDraft;
 import com.github.mkopylec.projectmanager.core.project.dto.NewProject;
@@ -16,7 +16,7 @@ import static com.github.mkopylec.projectmanager.core.project.DtoMapper.mapNewTo
 import static com.github.mkopylec.projectmanager.core.project.DtoMapper.mapToExistingProject;
 import static com.github.mkopylec.projectmanager.core.project.DtoMapper.mapToExistingProjectDrafts;
 import static com.github.mkopylec.projectmanager.core.project.DtoMapper.mapToFeatures;
-import static com.github.mkopylec.projectmanager.core.project.DtoMapper.mapToTeamName;
+import static com.github.mkopylec.projectmanager.core.project.DtoMapper.mapToTeamAssignedToProject;
 import static com.github.mkopylec.projectmanager.core.project.FeatureChecker.resolveFeatureChecker;
 import static com.github.mkopylec.projectmanager.core.project.PreCondition.when;
 
@@ -56,7 +56,7 @@ public class ProjectService {
         return mapToExistingProject(project);
     }
 
-    public TeamName updateProject(String projectIdentifier, UpdatedProject updatedProject) {
+    public TeamAssignedToProject updateProject(String projectIdentifier, UpdatedProject updatedProject) {
         Project project = projectRepository.findByIdentifier(projectIdentifier);
         when(project == null)
                 .thenMissingProject("Error updating '" + projectIdentifier + "' project");
@@ -65,7 +65,7 @@ public class ProjectService {
         project.updateFeatures(features);
         project.assignTeam(updatedProject.getTeam());
         projectRepository.save(project);
-        return mapToTeamName(project);
+        return mapToTeamAssignedToProject(project);
     }
 
     public void startProject(String projectIdentifier) {
@@ -76,7 +76,7 @@ public class ProjectService {
         projectRepository.save(project);
     }
 
-    public TeamName endProject(String projectIdentifier, ProjectEndingCondition endingCondition) {
+    public TeamAssignedToProject endProject(String projectIdentifier, ProjectEndingCondition endingCondition) {
         Project project = projectRepository.findByIdentifier(projectIdentifier);
         when(project == null)
                 .thenMissingProject("Error ending '" + projectIdentifier + "' project");
@@ -84,6 +84,6 @@ public class ProjectService {
         EndedProject endedProject = project.end(featureChecker);
         projectRepository.save(project);
         eventPublisher.publishEvent(endedProject);
-        return mapToTeamName(project);
+        return mapToTeamAssignedToProject(project);
     }
 }

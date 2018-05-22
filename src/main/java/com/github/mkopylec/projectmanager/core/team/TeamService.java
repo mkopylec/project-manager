@@ -1,6 +1,6 @@
 package com.github.mkopylec.projectmanager.core.team;
 
-import com.github.mkopylec.projectmanager.core.common.TeamName;
+import com.github.mkopylec.projectmanager.core.common.TeamAssignedToProject;
 import com.github.mkopylec.projectmanager.core.team.dto.ExistingTeam;
 import com.github.mkopylec.projectmanager.core.team.dto.NewTeam;
 import com.github.mkopylec.projectmanager.core.team.dto.TeamMember;
@@ -43,19 +43,19 @@ public class TeamService {
         return mapToExistingTeams(teams);
     }
 
-    public void addImplementedProjectToTeam(TeamName teamAssignedToProject) {
+    public void addImplementedProjectToTeam(TeamAssignedToProject teamAssignedToProject) {
         updateTeamImplementedProjects(teamAssignedToProject, team -> team.addCurrentlyImplementedProject());
     }
 
-    public void removeImplementedProjectFromTeam(TeamName teamAssignedToProject) {
+    public void removeImplementedProjectFromTeam(TeamAssignedToProject teamAssignedToProject) {
         updateTeamImplementedProjects(teamAssignedToProject, team -> team.removeCurrentlyImplementedProject());
     }
 
-    private void updateTeamImplementedProjects(TeamName teamAssignedToProject, Consumer<Team> teamUpdater) {
+    private void updateTeamImplementedProjects(TeamAssignedToProject teamAssignedToProject, Consumer<Team> teamUpdater) {
         if (teamAssignedToProject == null) {
             return;
         }
-        Team team = teamRepository.findByName(teamAssignedToProject.get());
+        Team team = teamRepository.findByName(teamAssignedToProject.getName());
         teamUpdater.accept(team);
         teamRepository.save(team);
     }
