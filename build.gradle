@@ -19,6 +19,7 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb', version: springBootVersion
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: springBootVersion
     compile group: 'de.flapdoodle.embed', name: 'de.flapdoodle.embed.mongo', version: '2.0.3'
+    compile group: 'org.modelmapper', name: 'modelmapper', version: '2.3.5'
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
     compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.1'
 

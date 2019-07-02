@@ -1,0 +1,32 @@
+package com.github.mkopylec.projectmanager.infrastructure.persistence;
+
+class FeatureDocument {
+
+    private String name;
+    private String status;
+    private String requirement;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getRequirement() {
+        return requirement;
+    }
+
+    public void setRequirement(String requirement) {
+        this.requirement = requirement;
+    }
+}

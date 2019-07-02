@@ -1,7 +1,5 @@
 package com.github.mkopylec.projectmanager.core.team;
 
-import org.springframework.data.annotation.Id;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +17,6 @@ public class Team {
 
     private static final int BUSY_TEAM_THRESHOLD = 3;
 
-    @Id
     private String name;
     private int currentlyImplementedProjects;
     private List<Employee> members;

@@ -1,7 +1,5 @@
 package com.github.mkopylec.projectmanager.core.project;
 
-import org.springframework.data.annotation.Id;
-
 import java.util.List;
 
 import static com.github.mkopylec.projectmanager.core.project.ErrorCode.EMPTY_FEATURE;
@@ -27,7 +25,6 @@ import static org.apache.commons.lang3.StringUtils.trimToNull;
 
 public class Project {
 
-    @Id
     private String identifier;
     private String name;
     private Status status;

@@ -1,38 +1,50 @@
 package com.github.mkopylec.projectmanager.infrastructure.persistence;
 
+import java.util.List;
+
 import com.github.mkopylec.projectmanager.core.project.Project;
 import com.github.mkopylec.projectmanager.core.project.ProjectRepository;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
+
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import static java.util.Collections.emptyList;
 
 /**
  * Secondary adapter
  */
 @Repository
-class MongoDbProjectRepository implements ProjectRepository {
+class MongoDbProjectRepository extends MongoDbRepository implements ProjectRepository {
 
-    private static final String PROJECTS_COLLECTION = "projects";
-
-    private MongoTemplate mongo;
-
-    MongoDbProjectRepository(MongoTemplate mongo) {
-        this.mongo = mongo;
+    MongoDbProjectRepository(MongoTemplate database, ModelMapper mapper) {
+        super(database, mapper);
     }
 
     @Override
     public Project findByIdentifier(String identifier) {
-        return mongo.findById(identifier, Project.class, PROJECTS_COLLECTION);
+        ProjectDocument document = getDatabase().findById(identifier, ProjectDocument.class);
+        if (document == null) {
+            return null;
+        }
+        return getMapper().map(document, Project.class);
     }
 
     @Override
     public List<Project> findAll() {
-        return mongo.findAll(Project.class, PROJECTS_COLLECTION);
+        List<ProjectDocument> documents = getDatabase().findAll(ProjectDocument.class);
+        if (documents.isEmpty()) {
+            return emptyList();
+        }
+        return getMapper().map(documents, new TypeToken<List<Project>>() {
+
+        }.getType());
     }
 
     @Override
     public void save(Project project) {
-        mongo.save(project, PROJECTS_COLLECTION);
+        ProjectDocument document = getMapper().map(project, ProjectDocument.class);
+        getDatabase().save(document);
     }
 }
