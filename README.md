@@ -3,7 +3,7 @@ Project Manager is a sample REST service implemented using Domain-Driven Design 
 Its primary goal is to help me to conduct a Domain-Driven Design workshops.
 During the workshop developers implement the application on their own, following the steps in right order.
 
-> :bulb: **UPDATE**  
+> :bulb:
 > Currently I organize the source code someway different. See the [hexagonal_architecture](https://github.com/mkopylec/project-manager/tree/hexagonal_architecture) branch and [my blog post](https://allegro.tech/2019/12/grouping-and-organizing-classes.html) for more details. Neverless the following workshop is still a valueable way to get familiar with DDD.
 
 ## Application summary
