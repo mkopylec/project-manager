@@ -5,13 +5,11 @@ import java.util.List;
 /**
  * Secondary port
  */
-public interface TeamRepository {
+public abstract class TeamRepository {
 
-    boolean existsByName(String name);
+    protected abstract Team findByName(String name);
 
-    Team findByName(String name);
+    protected abstract List<Team> findAll();
 
-    List<Team> findAll();
-
-    void save(Team team);
+    protected abstract void save(Team team);
 }

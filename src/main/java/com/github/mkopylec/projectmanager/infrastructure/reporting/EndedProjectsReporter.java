@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import static java.time.Duration.ofMillis;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -16,16 +17,16 @@ class EndedProjectsReporter {
 
     private static final Logger log = getLogger(EndedProjectsReporter.class);
 
-    private RestTemplate restTemplate = new RestTemplateBuilder()
-            .setConnectTimeout(200)
-            .setReadTimeout(2000)
+    private RestTemplate httpClient = new RestTemplateBuilder()
+            .setConnectTimeout(ofMillis(200))
+            .setReadTimeout(ofMillis(2000))
             .build();
 
     @Async
     @EventListener
     void report(EndedProject endedProject) {
         try {
-            restTemplate.postForObject("http://localhost:8081/reports/projects", endedProject, String.class);
+            httpClient.postForObject("http://localhost:8081/reports/projects", endedProject, Void.class);
         } catch (RestClientException ex) {
             log.error("Error reporting ended project", ex);
         }

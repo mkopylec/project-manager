@@ -1,39 +1,81 @@
 package com.github.mkopylec.projectmanager.core;
 
-import com.github.mkopylec.projectmanager.core.project.dto.ExistingProject;
-import com.github.mkopylec.projectmanager.core.project.dto.ExistingProjectDraft;
-import com.github.mkopylec.projectmanager.core.project.dto.NewProject;
-import com.github.mkopylec.projectmanager.core.project.dto.NewProjectDraft;
-import com.github.mkopylec.projectmanager.core.project.dto.ProjectEndingCondition;
-import com.github.mkopylec.projectmanager.core.project.dto.UpdatedProject;
-import com.github.mkopylec.projectmanager.core.team.dto.ExistingTeam;
-import com.github.mkopylec.projectmanager.core.team.dto.NewTeam;
-import com.github.mkopylec.projectmanager.core.team.dto.TeamMember;
+import com.github.mkopylec.projectmanager.core.common.EventPublisher;
+import com.github.mkopylec.projectmanager.core.project.Project;
+import com.github.mkopylec.projectmanager.core.project.ProjectRepository;
+import com.github.mkopylec.projectmanager.core.project.ProjectService;
+import com.github.mkopylec.projectmanager.core.project.UniqueIdentifierGenerator;
+import com.github.mkopylec.projectmanager.core.team.Team;
+import com.github.mkopylec.projectmanager.core.team.TeamRepository;
+import com.github.mkopylec.projectmanager.core.team.TeamService;
 
 import java.util.List;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Primary port
  */
-public interface ProjectManager {
+public class ProjectManager {
 
-    void createProject(NewProjectDraft newProjectDraft);
+    private ProjectService projectService;
+    private TeamService teamService;
+    private OutgoingDtoMapper dtoMapper = new OutgoingDtoMapper();
 
-    void createProject(NewProject newProject);
+    public ProjectManager(UniqueIdentifierGenerator identifierGenerator, ProjectRepository projectRepository, EventPublisher eventPublisher, TeamRepository teamRepository) {
+        projectService = new ProjectService(identifierGenerator, projectRepository, eventPublisher);
+        teamService = new TeamService(teamRepository);
+    }
 
-    List<ExistingProjectDraft> getProjects();
+    public void createProject(NewProjectDraft newProjectDraft) {
+        requireNonNull(newProjectDraft, "Empty new project draft");
+        projectService.createProject(newProjectDraft);
+    }
 
-    ExistingProject getProject(String projectIdentifier);
+    public void createProject(NewProject newProject) {
+        requireNonNull(newProject, "Empty new project");
+        projectService.createProject(newProject);
+    }
 
-    void updateProject(String projectIdentifier, UpdatedProject updatedProject);
+    public List<ExistingProjectDraft> getProjects() {
+        List<Project> projects = projectService.getProjects();
+        return dtoMapper.mapToExistingProjectDrafts(projects);
+    }
 
-    void startProject(String projectIdentifier);
+    public ExistingProject getProject(String projectIdentifier) {
+        Project project = projectService.getProject(projectIdentifier);
+        return dtoMapper.mapToExistingProject(project);
+    }
 
-    void endProject(String projectIdentifier, ProjectEndingCondition endingCondition);
+    public void updateProject(String projectIdentifier, UpdatedProject updatedProject) {
+        requireNonNull(updatedProject, "Empty updated project");
+        teamService.ensureTeamAssignedToProjectExists(projectIdentifier, updatedProject);
+        Project project = projectService.updateProject(projectIdentifier, updatedProject);
+        teamService.addImplementedProjectToTeam(project);
+    }
 
-    void createTeam(NewTeam newTeam);
+    public void startProject(String projectIdentifier) {
+        projectService.startProject(projectIdentifier);
+    }
 
-    void addMemberToTeam(String teamName, TeamMember teamMember);
+    public void endProject(String projectIdentifier, ProjectEndingCondition projectEndingCondition) {
+        requireNonNull(projectEndingCondition, "Empty project ending condition");
+        Project project = projectService.endProject(projectIdentifier, projectEndingCondition);
+        teamService.removeImplementedProjectFromTeam(project);
+    }
 
-    List<ExistingTeam> getTeams();
+    public void createTeam(NewTeam newTeam) {
+        requireNonNull(newTeam, "Empty new team");
+        teamService.createTeam(newTeam);
+    }
+
+    public void addMemberToTeam(String teamName, NewTeamMember newTeamMember) {
+        requireNonNull(newTeamMember, "Empty new team member");
+        teamService.addMemberToTeam(teamName, newTeamMember);
+    }
+
+    public List<ExistingTeam> getTeams() {
+        List<Team> teams = teamService.getTeams();
+        return dtoMapper.mapToExistingTeams(teams);
+    }
 }

@@ -1,9 +1,9 @@
 package com.github.mkopylec.projectmanager.infrastructure.persistence;
 
-import java.util.List;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.List;
 
 @Document(collection = "projects")
 class ProjectDocument {
@@ -15,43 +15,48 @@ class ProjectDocument {
     private String assignedTeam;
     private List<FeatureDocument> features;
 
-    public String getIdentifier() {
+    String getIdentifier() {
         return identifier;
     }
 
-    public void setIdentifier(String identifier) {
+    ProjectDocument setIdentifier(String identifier) {
         this.identifier = identifier;
+        return this;
     }
 
-    public String getName() {
+    String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    ProjectDocument setName(String name) {
         this.name = name;
+        return this;
     }
 
-    public String getStatus() {
+    String getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    ProjectDocument setStatus(String status) {
         this.status = status;
+        return this;
     }
 
-    public String getAssignedTeam() {
+    String getAssignedTeam() {
         return assignedTeam;
     }
 
-    public void setAssignedTeam(String assignedTeam) {
+    ProjectDocument setAssignedTeam(String assignedTeam) {
         this.assignedTeam = assignedTeam;
+        return this;
     }
 
-    public List<FeatureDocument> getFeatures() {
+    List<FeatureDocument> getFeatures() {
         return features;
     }
 
-    public void setFeatures(List<FeatureDocument> features) {
+    ProjectDocument setFeatures(List<FeatureDocument> features) {
         this.features = features;
+        return this;
     }
 }

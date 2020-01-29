@@ -1,62 +1,72 @@
 package com.github.mkopylec.projectmanager.core.team;
 
-import com.github.mkopylec.projectmanager.core.common.TeamAssignedToProject;
-import com.github.mkopylec.projectmanager.core.team.dto.ExistingTeam;
-import com.github.mkopylec.projectmanager.core.team.dto.NewTeam;
-import com.github.mkopylec.projectmanager.core.team.dto.TeamMember;
-import org.springframework.stereotype.Service;
+import com.github.mkopylec.projectmanager.core.NewTeam;
+import com.github.mkopylec.projectmanager.core.NewTeamMember;
+import com.github.mkopylec.projectmanager.core.UpdatedProject;
+import com.github.mkopylec.projectmanager.core.project.Project;
 
 import java.util.List;
 import java.util.function.Consumer;
 
-import static com.github.mkopylec.projectmanager.core.team.DtoMapper.mapToEmployee;
-import static com.github.mkopylec.projectmanager.core.team.DtoMapper.mapToExistingTeams;
-import static com.github.mkopylec.projectmanager.core.team.PreCondition.when;
+import static com.github.mkopylec.projectmanager.core.common.Utilities.isEmpty;
+import static com.github.mkopylec.projectmanager.core.team.TeamRequirementsValidator.requirements;
 
-@Service
 public class TeamService {
 
-    private TeamRepository teamRepository;
+    private TeamFactory factory = new TeamFactory();
+    private TeamRepository repository;
 
-    TeamService(TeamRepository teamRepository) {
-        this.teamRepository = teamRepository;
+    public TeamService(TeamRepository repository) {
+        this.repository = repository;
     }
 
     public void createTeam(NewTeam newTeam) {
-        Team team = new Team(newTeam.getName());
-        when(teamRepository.existsByName(team.getName()))
-                .thenTeamAlreadyExists("Error creating team named '" + team.getName() + "'");
-        teamRepository.save(team);
+        Team existingTeam = repository.findByName(newTeam.getName());
+        requirements()
+                .requireNoTeam(existingTeam, "Error creating team named '" + newTeam.getName() + "'")
+                .validate();
+        Team team = factory.createTeam(newTeam);
+        repository.save(team);
     }
 
-    public void addMemberToTeam(String teamName, TeamMember teamMember) {
-        Team team = teamRepository.findByName(teamName);
-        when(team == null)
-                .thenMissingTeam("Error adding member to '" + teamName + "' team");
-        Employee member = mapToEmployee(teamMember);
+    public void addMemberToTeam(String teamName, NewTeamMember newTeamMember) {
+        Team team = repository.findByName(teamName);
+        requirements()
+                .requireTeam(team, "Error adding member to '" + teamName + "' team")
+                .validate();
+        Employee member = factory.createMember(newTeamMember);
         team.addMember(member);
-        teamRepository.save(team);
+        repository.save(team);
     }
 
-    public List<ExistingTeam> getTeams() {
-        List<Team> teams = teamRepository.findAll();
-        return mapToExistingTeams(teams);
+    public List<Team> getTeams() {
+        return repository.findAll();
     }
 
-    public void addImplementedProjectToTeam(TeamAssignedToProject teamAssignedToProject) {
-        updateTeamImplementedProjects(teamAssignedToProject, team -> team.addCurrentlyImplementedProject());
+    public void addImplementedProjectToTeam(Project project) {
+        updateTeamAssignedToProject(project, Team::addCurrentlyImplementedProject);
     }
 
-    public void removeImplementedProjectFromTeam(TeamAssignedToProject teamAssignedToProject) {
-        updateTeamImplementedProjects(teamAssignedToProject, team -> team.removeCurrentlyImplementedProject());
+    public void removeImplementedProjectFromTeam(Project project) {
+        updateTeamAssignedToProject(project, Team::removeCurrentlyImplementedProject);
     }
 
-    private void updateTeamImplementedProjects(TeamAssignedToProject teamAssignedToProject, Consumer<Team> teamUpdater) {
-        if (teamAssignedToProject == null) {
+    public void ensureTeamAssignedToProjectExists(String projectIdentifier, UpdatedProject updatedProject) {
+        if (isEmpty(updatedProject.getTeam())) {
             return;
         }
-        Team team = teamRepository.findByName(teamAssignedToProject.getName());
-        teamUpdater.accept(team);
-        teamRepository.save(team);
+        Team team = repository.findByName(updatedProject.getTeam());
+        requirements()
+                .requireTeamAssignedToProject(team, "Error updating '" + projectIdentifier + "' project")
+                .validate();
+    }
+
+    private void updateTeamAssignedToProject(Project project, Consumer<Team> update) {
+        if (project.hasNoTeamAssigned()) {
+            return;
+        }
+        Team team = repository.findByName(project.getAssignedTeam());
+        update.accept(team);
+        repository.save(team);
     }
 }

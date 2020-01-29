@@ -1,43 +1,42 @@
 package com.github.mkopylec.projectmanager.infrastructure.persistence;
 
-import java.util.List;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import static com.github.mkopylec.projectmanager.infrastructure.persistence.TeamDocument.TEAMS_COLLECTION;
+import java.util.List;
 
-@Document(collection = TEAMS_COLLECTION)
+@Document(collection = "teams")
 class TeamDocument {
-
-    static final String TEAMS_COLLECTION = "teams";
 
     @Id
     private String name;
     private int currentlyImplementedProjects;
     private List<EmployeeDocument> members;
 
-    public String getName() {
+    String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    TeamDocument setName(String name) {
         this.name = name;
+        return this;
     }
 
-    public int getCurrentlyImplementedProjects() {
+    int getCurrentlyImplementedProjects() {
         return currentlyImplementedProjects;
     }
 
-    public void setCurrentlyImplementedProjects(int currentlyImplementedProjects) {
+    TeamDocument setCurrentlyImplementedProjects(int currentlyImplementedProjects) {
         this.currentlyImplementedProjects = currentlyImplementedProjects;
+        return this;
     }
 
-    public List<EmployeeDocument> getMembers() {
+    List<EmployeeDocument> getMembers() {
         return members;
     }
 
-    public void setMembers(List<EmployeeDocument> members) {
+    TeamDocument setMembers(List<EmployeeDocument> members) {
         this.members = members;
+        return this;
     }
 }

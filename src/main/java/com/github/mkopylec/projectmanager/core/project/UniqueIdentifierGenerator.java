@@ -3,7 +3,7 @@ package com.github.mkopylec.projectmanager.core.project;
 /**
  * Secondary port
  */
-public interface UniqueIdentifierGenerator {
+public abstract class UniqueIdentifierGenerator {
 
-    String generateUniqueIdentifier();
+    protected abstract String generateUniqueIdentifier();
 }

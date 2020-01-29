@@ -5,11 +5,11 @@ import java.util.List;
 /**
  * Secondary port
  */
-public interface ProjectRepository {
+public abstract class ProjectRepository {
 
-    Project findByIdentifier(String identifier);
+    protected abstract Project findByIdentifier(String identifier);
 
-    List<Project> findAll();
+    protected abstract List<Project> findAll();
 
-    void save(Project project);
+    protected abstract void save(Project project);
 }

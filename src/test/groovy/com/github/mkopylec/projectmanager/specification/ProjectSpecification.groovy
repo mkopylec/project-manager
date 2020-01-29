@@ -1,19 +1,20 @@
 package com.github.mkopylec.projectmanager.specification
 
-import com.github.mkopylec.projectmanager.BasicSpecification
-import com.github.mkopylec.projectmanager.core.project.dto.ExistingProject
-import com.github.mkopylec.projectmanager.core.project.dto.ExistingProjectDraft
-import com.github.mkopylec.projectmanager.core.project.dto.NewFeature
-import com.github.mkopylec.projectmanager.core.project.dto.NewProject
-import com.github.mkopylec.projectmanager.core.project.dto.NewProjectDraft
-import com.github.mkopylec.projectmanager.core.project.dto.ProjectEndingCondition
-import com.github.mkopylec.projectmanager.core.project.dto.ProjectFeature
-import com.github.mkopylec.projectmanager.core.project.dto.UpdatedProject
-import com.github.mkopylec.projectmanager.core.team.dto.ExistingTeam
-import com.github.mkopylec.projectmanager.core.team.dto.NewTeam
-import org.springframework.core.ParameterizedTypeReference
+import com.github.mkopylec.projectmanager.core.NewFeature
+import com.github.mkopylec.projectmanager.core.NewProject
+import com.github.mkopylec.projectmanager.core.NewProjectDraft
+import com.github.mkopylec.projectmanager.core.NewTeam
+import com.github.mkopylec.projectmanager.core.ProjectEndingCondition
+import com.github.mkopylec.projectmanager.core.UpdatedProject
+import com.github.mkopylec.projectmanager.core.UpdatedProjectFeature
 import spock.lang.Unroll
 
+import static com.github.mkopylec.projectmanager.core.Requirement.NECESSARY
+import static com.github.mkopylec.projectmanager.core.Requirement.OPTIONAL
+import static com.github.mkopylec.projectmanager.core.Requirement.RECOMMENDED
+import static com.github.mkopylec.projectmanager.core.Status.DONE
+import static com.github.mkopylec.projectmanager.core.Status.IN_PROGRESS
+import static com.github.mkopylec.projectmanager.core.Status.TO_DO
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -24,55 +25,65 @@ class ProjectSpecification extends BasicSpecification {
 
     def "Should create new project draft and browse it"() {
         given:
-        def projectDraft = new NewProjectDraft(name: 'Project 1')
+        def projectDraft = new NewProjectDraft('Project 1')
 
         when:
-        def response = post('/projects/drafts', projectDraft)
+        def response = httpClient.createProject(projectDraft)
 
         then:
-        response.statusCode == CREATED
+        with(response) {
+            status == CREATED
+        }
 
         when:
-        response = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {})
+        response = httpClient.getProjects()
 
         then:
-        response.statusCode == OK
-        response.body != null
-        response.body.size() == 1
-        with(response.body[0]) {
-            identifier != null
-            name == 'Project 1'
+        with(response) {
+            status == OK
+            body.size() == 1
+            with(body[0]) {
+                identifier
+                name == 'Project 1'
+            }
         }
 
         and:
         def projectIdentifier = response.body[0].identifier
 
         when:
-        response = get("/projects/$projectIdentifier", ExistingProject)
+        response = httpClient.getProject(projectIdentifier)
 
         then:
-        response.statusCode == OK
-        response.body != null
-        with(response.body) {
-            identifier == projectIdentifier
-            name == 'Project 1'
-            status == 'TO_DO'
-            team == null
-            features == []
+        with(response) {
+            status == OK
+            with(body) {
+                identifier == projectIdentifier
+                name == 'Project 1'
+                status == TO_DO
+                !team
+                features == []
+            }
         }
     }
 
     @Unroll
     def "Should not create an unnamed new project draft"() {
         given:
-        def projectDraft = new NewProjectDraft(name: name)
+        def projectDraft = new NewProjectDraft(name)
 
         when:
-        def response = post('/projects/drafts', projectDraft)
+        def response = httpClient.createProject(projectDraft)
 
         then:
-        response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == 'EMPTY_PROJECT_NAME'
+        with(response) {
+            status == UNPROCESSABLE_ENTITY
+            errors.size() == 1
+            with(errors[0]) {
+                code == 'EMPTY_PROJECT_NAME'
+                message == "Error creating '$name' project"
+            }
+        }
 
         where:
         name << [null, '', '  ']
@@ -81,63 +92,74 @@ class ProjectSpecification extends BasicSpecification {
     @Unroll
     def "Should create new full project with a #requirement feature and browse it"() {
         given:
-        def feature = new NewFeature(name: 'Feature 1', requirement: requirement)
-        def project = new NewProject(name: 'Project 1', features: [feature])
+        def feature = new NewFeature('Feature 1', requirement)
+        def project = new NewProject('Project 1', [feature])
 
         when:
-        def response = post('/projects', project)
+        def response = httpClient.createProject(project)
 
         then:
-        response.statusCode == CREATED
+        with(response) {
+            status == CREATED
+        }
 
         when:
-        response = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {})
+        response = httpClient.getProjects()
 
         then:
-        response.statusCode == OK
-        response.body != null
-        response.body.size() == 1
-        with(response.body[0]) {
-            identifier != null
-            name == 'Project 1'
+        with(response) {
+            status == OK
+            body.size() == 1
+            with(body[0]) {
+                identifier
+                name == 'Project 1'
+            }
         }
 
         and:
         def projectIdentifier = response.body[0].identifier
 
         when:
-        response = get("/projects/$projectIdentifier", ExistingProject)
+        response = httpClient.getProject(projectIdentifier)
 
         then:
-        response.statusCode == OK
-        response.body != null
-        with(response.body) {
-            identifier == projectIdentifier
-            name == 'Project 1'
-            status == 'TO_DO'
-            team == null
-            features != null
-            features.size() == 1
-            features[0].name == 'Feature 1'
-            features[0].status == 'TO_DO'
-            features[0].requirement == requirement
+        with(response) {
+            status == OK
+            with(body) {
+                identifier == projectIdentifier
+                name == 'Project 1'
+                status == TO_DO
+                !team
+                features.size() == 1
+                with(features[0]) {
+                    name == 'Feature 1'
+                    status == TO_DO
+                    requirement == requirement
+                }
+            }
         }
 
         where:
-        requirement << ['OPTIONAL', 'RECOMMENDED', 'NECESSARY']
+        requirement << [OPTIONAL, RECOMMENDED, NECESSARY]
     }
 
     @Unroll
     def "Should not create an unnamed new full project"() {
         given:
-        def project = new NewProject(name: name, features: [])
+        def project = new NewProject(name, [])
 
         when:
-        def response = post('/projects', project)
+        def response = httpClient.createProject(project)
 
         then:
-        response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == 'EMPTY_PROJECT_NAME'
+        with(response) {
+            status == UNPROCESSABLE_ENTITY
+            errors.size() == 1
+            with(errors[0]) {
+                code == 'EMPTY_PROJECT_NAME'
+                message == "Error creating '$name' project"
+            }
+        }
 
         where:
         name << [null, '', '  ']
@@ -146,102 +168,125 @@ class ProjectSpecification extends BasicSpecification {
     @Unroll
     def "Should not create a new full project with unnamed feature"() {
         given:
-        def feature = new NewFeature(name: name, requirement: 'NECESSARY')
-        def project = new NewProject(name: 'Project 1', features: [feature])
+        def feature = new NewFeature(name, NECESSARY)
+        def project = new NewProject('Project 1', [feature])
 
         when:
-        def response = post('/projects', project)
+        def response = httpClient.createProject(project)
 
         then:
-        response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == 'EMPTY_FEATURE_NAME'
+        with(response) {
+            status == UNPROCESSABLE_ENTITY
+            errors.size() == 1
+            with(errors[0]) {
+                code == 'EMPTY_PROJECT_FEATURE_NAME'
+                message == "Error creating 'Project 1' project"
+            }
+        }
 
         where:
         name << [null, '', '  ']
     }
 
-    @Unroll
-    def "Should not create a new full project with feature with #requirement requirement"() {
+    def "Should not create a new full project with feature with no requirement"() {
         given:
-        def feature = new NewFeature(name: 'Feature 1', requirement: requirement)
-        def project = new NewProject(name: 'Project 1', features: [feature])
+        def feature = new NewFeature('Feature 1', null)
+        def project = new NewProject('Project 1', [feature])
 
         when:
-        def response = post('/projects', project)
+        def response = httpClient.createProject(project)
 
         then:
-        response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == errorCode
-
-        where:
-        requirement           | errorCode
-        null                  | 'EMPTY_FEATURE_REQUIREMENT'
-        ''                    | 'EMPTY_FEATURE_REQUIREMENT'
-        '  '                  | 'EMPTY_FEATURE_REQUIREMENT'
-        'INVALID_REQUIREMENT' | 'INVALID_FEATURE_REQUIREMENT'
+        with(response) {
+            status == UNPROCESSABLE_ENTITY
+            errors.size() == 1
+            with(errors[0]) {
+                code == 'EMPTY_PROJECT_FEATURE_REQUIREMENT'
+                message == "Error creating 'Project 1' project"
+            }
+        }
     }
 
     @Unroll
     def "Should update a project setting a #requirement feature with #featureStatus status and browse it"() {
         given:
-        def feature = new NewFeature(name: 'Feature 1', requirement: requirement)
-        def project = new NewProject(name: 'Project 1', features: [feature])
-        post('/projects', project)
-        def newTeam = new NewTeam(name: 'Team 2')
-        post('/teams', newTeam)
-        def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
-        def projectFeature = new ProjectFeature(name: 'Feature 2', status: featureStatus, requirement: requirement)
-        def updatedProject = new UpdatedProject(name: 'Project 2', team: 'Team 2', features: [projectFeature])
+        def feature = new NewFeature('Feature 1', requirement)
+        def project = new NewProject('Project 1', [feature])
+        httpClient.createProject(project)
+        def newTeam = new NewTeam('Team 2')
+        httpClient.createTeam(newTeam)
+        def projectIdentifier = httpClient.getProjects().body[0].identifier
+        def projectFeature = new UpdatedProjectFeature('Feature 2', featureStatus, requirement)
+        def updatedProject = new UpdatedProject('Project 2', 'Team 2', [projectFeature])
 
         when:
-        def response = put("/projects/$projectIdentifier", updatedProject)
+        def response = httpClient.updateProject(projectIdentifier, updatedProject)
 
         then:
-        response.statusCode == NO_CONTENT
-
-        when:
-        response = get("/projects/$projectIdentifier", ExistingProject)
-
-        then:
-        response.statusCode == OK
-        response.body != null
-        with(response.body) {
-            identifier == projectIdentifier
-            name == 'Project 2'
-            status == 'TO_DO'
-            team == 'Team 2'
-            features != null
-            features.size() == 1
-            features[0].name == 'Feature 2'
-            features[0].status == featureStatus
-            features[0].requirement == requirement
+        with(response) {
+            status == NO_CONTENT
         }
-        with(get('/teams', new ParameterizedTypeReference<List<ExistingTeam>>() {}).body[0]) {
-            name == 'Team 2'
-            currentlyImplementedProjects == 1
+
+        when:
+        response = httpClient.getProject(projectIdentifier)
+
+        then:
+        with(response) {
+            status == OK
+            with(body) {
+                identifier == projectIdentifier
+                name == 'Project 2'
+                status == TO_DO
+                team == 'Team 2'
+                features.size() == 1
+                with(features[0]) {
+                    name == 'Feature 2'
+                    status == featureStatus
+                    requirement == requirement
+                }
+            }
+        }
+
+        when:
+        response = httpClient.getTeams()
+
+        then:
+        with(response) {
+            status == OK
+            body.size() == 1
+            with(body[0]) {
+                name == 'Team 2'
+                currentlyImplementedProjects == 1
+            }
         }
 
         where:
         featureStatus | requirement
-        'TO_DO'       | 'OPTIONAL'
-        'IN_PROGRESS' | 'RECOMMENDED'
-        'DONE'        | 'NECESSARY'
+        TO_DO         | OPTIONAL
+        IN_PROGRESS   | RECOMMENDED
+        DONE          | NECESSARY
     }
 
     @Unroll
     def "Should not update a project with an empty name"() {
         given:
-        def project = new NewProject(name: 'Project 1', features: [])
-        post('/projects', project)
-        def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
-        def updatedProject = new UpdatedProject(name: name, features: [])
+        def project = new NewProject('Project 1', [])
+        httpClient.createProject(project)
+        def projectIdentifier = httpClient.getProjects().body[0].identifier
+        def updatedProject = new UpdatedProject(name, null, [])
 
         when:
-        def response = put("/projects/$projectIdentifier", updatedProject)
+        def response = httpClient.updateProject(projectIdentifier, updatedProject)
 
         then:
-        response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == 'EMPTY_PROJECT_NAME'
+        with(response) {
+            status == UNPROCESSABLE_ENTITY
+            errors.size() == 1
+            with(errors[0]) {
+                code == 'EMPTY_PROJECT_NAME'
+                message == "Error renaming '$projectIdentifier' project"
+            }
+        }
 
         where:
         name << [null, '', '  ']
@@ -250,18 +295,24 @@ class ProjectSpecification extends BasicSpecification {
     @Unroll
     def "Should not update a project with unnamed feature"() {
         given:
-        def project = new NewProject(name: 'Project 1', features: [])
-        post('/projects', project)
-        def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
-        def projectFeature = new ProjectFeature(name: name, status: 'IN_PROGRESS', requirement: 'OPTIONAL')
-        def updatedProject = new UpdatedProject(name: 'Project 1', features: [projectFeature])
+        def project = new NewProject('Project 1', [])
+        httpClient.createProject(project)
+        def projectIdentifier = httpClient.getProjects().body[0].identifier
+        def projectFeature = new UpdatedProjectFeature(name, IN_PROGRESS, OPTIONAL)
+        def updatedProject = new UpdatedProject('Project 1', null, [projectFeature])
 
         when:
-        def response = put("/projects/$projectIdentifier", updatedProject)
+        def response = httpClient.updateProject(projectIdentifier, updatedProject)
 
         then:
-        response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == 'EMPTY_FEATURE_NAME'
+        with(response) {
+            status == UNPROCESSABLE_ENTITY
+            errors.size() == 1
+            with(errors[0]) {
+                code == 'EMPTY_PROJECT_FEATURE_NAME'
+                message == "Error updating '$projectIdentifier' project features"
+            }
+        }
 
         where:
         name << [null, '', '  ']
@@ -270,228 +321,319 @@ class ProjectSpecification extends BasicSpecification {
     @Unroll
     def "Should not update a project with feature with #status status or #requirement requirement"() {
         given:
-        def project = new NewProject(name: 'Project 1', features: [])
-        post('/projects', project)
-        def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
-        def projectFeature = new ProjectFeature(name: 'Feature 1', status: status, requirement: requirement)
-        def updatedProject = new UpdatedProject(name: 'Project 1', features: [projectFeature])
+        def project = new NewProject('Project 1', [])
+        httpClient.createProject(project)
+        def projectIdentifier = httpClient.getProjects().body[0].identifier
+        def projectFeature = new UpdatedProjectFeature('Feature 1', featureStatus, requirement)
+        def updatedProject = new UpdatedProject('Project 1', null, [projectFeature])
 
         when:
-        def response = put("/projects/$projectIdentifier", updatedProject)
+        def response = httpClient.updateProject(projectIdentifier, updatedProject)
 
         then:
-        response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == errorCode
+        with(response) {
+            status == UNPROCESSABLE_ENTITY
+            errors.size() == 1
+            with(errors[0]) {
+                code == errorCode
+                message == "Error updating '$projectIdentifier' project features"
+            }
+        }
 
         where:
-        status           | requirement           || errorCode
-        null             | 'OPTIONAL'            || 'EMPTY_FEATURE_STATUS'
-        ''               | 'OPTIONAL'            || 'EMPTY_FEATURE_STATUS'
-        '  '             | 'OPTIONAL'            || 'EMPTY_FEATURE_STATUS'
-        'INVALID_STATUS' | 'OPTIONAL'            || 'INVALID_FEATURE_STATUS'
-        'DONE'           | null                  || 'EMPTY_FEATURE_REQUIREMENT'
-        'DONE'           | ''                    || 'EMPTY_FEATURE_REQUIREMENT'
-        'DONE'           | '  '                  || 'EMPTY_FEATURE_REQUIREMENT'
-        'DONE'           | 'INVALID_REQUIREMENT' || 'INVALID_FEATURE_REQUIREMENT'
+        featureStatus | requirement || errorCode
+        null          | OPTIONAL    || 'EMPTY_PROJECT_FEATURE_STATUS'
+        DONE          | null        || 'EMPTY_PROJECT_FEATURE_REQUIREMENT'
+    }
+
+    def "Should not update a project when team does not exist"() {
+        given:
+        def project = new NewProject('Project 1', [])
+        httpClient.createProject(project)
+        def projectIdentifier = httpClient.getProjects().body[0].identifier
+        def updatedProject = new UpdatedProject('Project 1', 'Nonexistent team', [])
+
+        when:
+        def response = httpClient.updateProject(projectIdentifier, updatedProject)
+
+        then:
+        with(response) {
+            status == UNPROCESSABLE_ENTITY
+            errors.size() == 1
+            with(errors[0]) {
+                code == 'MISSING_TEAM_ASSIGNED_TO_PROJECT'
+                message == "Error updating '$projectIdentifier' project"
+            }
+        }
     }
 
     def "Should browse projects if none exists"() {
         when:
-        def response = get('/projects', List)
+        def response = httpClient.getProjects()
 
         then:
-        response.statusCode == OK
-        response.body == []
+        with(response) {
+            status == OK
+            body.isEmpty()
+        }
     }
 
     def "Should browse project if it does not exist"() {
         when:
-        def response = get('/projects/abc', Map)
+        def response = httpClient.getProject('abc')
 
         then:
-        response.statusCode == NOT_FOUND
-        response.body.code == 'MISSING_PROJECT'
+        with(response) {
+            status == NOT_FOUND
+            errors.size() == 1
+            with(errors[0]) {
+                code == 'MISSING_PROJECT'
+                message == "Error getting 'abc' project"
+            }
+        }
     }
 
     def "Should start a project"() {
         given:
-        def project = new NewProject(name: 'Project 1', features: [])
-        post('/projects', project)
-        def newTeam = new NewTeam(name: 'Team 1')
-        post('/teams', newTeam)
-        def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
-        def updatedProject = new UpdatedProject(name: 'Project 1', team: 'Team 1', features: [])
-        put("/projects/$projectIdentifier", updatedProject)
+        def project = new NewProject('Project 1', [])
+        httpClient.createProject(project)
+        def newTeam = new NewTeam('Team 1')
+        httpClient.createTeam(newTeam)
+        def projectIdentifier = httpClient.getProjects().body[0].identifier
+        def updatedProject = new UpdatedProject('Project 1', 'Team 1', [])
+        httpClient.updateProject(projectIdentifier, updatedProject)
 
         when:
-        def response = patch("/projects/$projectIdentifier/started")
+        def response = httpClient.startProject(projectIdentifier)
 
         then:
-        response.statusCode == NO_CONTENT
-        with(get("/projects/$projectIdentifier", ExistingProject).body) {
-            status == 'IN_PROGRESS'
+        with(response) {
+            status == NO_CONTENT
+        }
+
+        when:
+        response = httpClient.getProject(projectIdentifier)
+
+        then:
+        with(response.body) {
+            status == IN_PROGRESS
         }
     }
 
     def "Should not start an already started project"() {
         given:
-        def project = new NewProject(name: 'Project 1', features: [])
-        post('/projects', project)
-        def newTeam = new NewTeam(name: 'Team 1')
-        post('/teams', newTeam)
-        def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
-        def updatedProject = new UpdatedProject(name: 'Project 1', team: 'Team 1', features: [])
-        put("/projects/$projectIdentifier", updatedProject)
-        patch("/projects/$projectIdentifier/started")
+        def project = new NewProject('Project 1', [])
+        httpClient.createProject(project)
+        def newTeam = new NewTeam('Team 1')
+        httpClient.createTeam(newTeam)
+        def projectIdentifier = httpClient.getProjects().body[0].identifier
+        def updatedProject = new UpdatedProject('Project 1', 'Team 1', [])
+        httpClient.updateProject(projectIdentifier, updatedProject)
+        httpClient.startProject(projectIdentifier)
 
         when:
-        def response = patch("/projects/$projectIdentifier/started")
+        def response = httpClient.startProject(projectIdentifier)
 
         then:
-        response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == 'PROJECT_ALREADY_STARTED'
+        with(response) {
+            status == UNPROCESSABLE_ENTITY
+            errors.size() == 1
+            with(errors[0]) {
+                code == 'PROJECT_STATUS_DIFFERENT_THAN_TO_DO'
+                message == "Error starting '$projectIdentifier' project"
+            }
+        }
     }
 
     def "Should not start a project when no team is assigned to it"() {
         given:
-        def project = new NewProject(name: 'Project 1', features: [])
-        post('/projects', project)
-        def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
+        def project = new NewProject('Project 1', [])
+        httpClient.createProject(project)
+        def projectIdentifier = httpClient.getProjects().body[0].identifier
 
         when:
-        def response = patch("/projects/$projectIdentifier/started")
+        def response = httpClient.startProject(projectIdentifier)
 
         then:
-        response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == 'UNASSIGNED_TEAM'
+        with(response) {
+            status == UNPROCESSABLE_ENTITY
+            errors.size() == 1
+            with(errors[0]) {
+                code == 'EMPTY_TEAM_ASSIGNED_TO_PROJECT'
+                message == "Error starting '$projectIdentifier' project"
+            }
+        }
     }
 
     def "Should not start a nonexistent project"() {
         when:
-        def response = patch('/projects/nonexistent project/started')
+        def response = httpClient.startProject('nonexistent project')
 
         then:
-        response.statusCode == NOT_FOUND
-        response.body.code == 'MISSING_PROJECT'
+        with(response) {
+            status == NOT_FOUND
+            errors.size() == 1
+            with(errors[0]) {
+                code == 'MISSING_PROJECT'
+                message == "Error starting 'nonexistent project' project"
+            }
+        }
     }
 
     @Unroll
     def "Should end a project when ending condition is fulfilled"() {
         given:
-        stubReportingService()
-        def project = new NewProject(name: 'Project 1', features: [])
-        post('/projects', project)
-        def newTeam = new NewTeam(name: 'Team 1')
-        post('/teams', newTeam)
-        def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
-        def updatedProject = new UpdatedProject(name: 'Project 1', team: 'Team 1', features: features)
-        put("/projects/$projectIdentifier", updatedProject)
-        patch("/projects/$projectIdentifier/started")
-        def endingCondition = new ProjectEndingCondition(onlyNecessaryFeatureDone: onlyNecessaryFeatureDone)
+        reportingService.stubReportReceiving()
+        def project = new NewProject('Project 1', [])
+        httpClient.createProject(project)
+        def newTeam = new NewTeam('Team 1')
+        httpClient.createTeam(newTeam)
+        def projectIdentifier = httpClient.getProjects().body[0].identifier
+        def updatedProject = new UpdatedProject('Project 1', 'Team 1', features)
+        httpClient.updateProject(projectIdentifier, updatedProject)
+        httpClient.startProject(projectIdentifier)
+        def endingCondition = new ProjectEndingCondition(onlyNecessaryFeatureDone)
 
         when:
-        def response = patch("/projects/$projectIdentifier/ended", endingCondition)
+        def response = httpClient.endProject(projectIdentifier, endingCondition)
 
         then:
-        response.statusCode == NO_CONTENT
-        with(get("/projects/$projectIdentifier", ExistingProject).body) {
-            status == 'DONE'
+        with(response) {
+            status == NO_CONTENT
         }
-        with(get('/teams', new ParameterizedTypeReference<List<ExistingTeam>>() {}).body[0]) {
+
+        when:
+        response = httpClient.getProject(projectIdentifier)
+
+        then:
+        with(response.body) {
+            status == DONE
+        }
+
+        when:
+        response = httpClient.getTeams()
+
+        then:
+        with(response.body[0]) {
             name == 'Team 1'
             currentlyImplementedProjects == 0
         }
-        verifyReportWasSent(projectIdentifier)
+        reportingService.verifyReportWasSent(projectIdentifier)
 
         where:
-        features                                                                                | onlyNecessaryFeatureDone
-        []                                                                                      | true
-        []                                                                                      | false
-        [new ProjectFeature(name: 'Feature 1', status: 'DONE', requirement: 'NECESSARY')]       | true
-        [new ProjectFeature(name: 'Feature 1', status: 'IN_PROGRESS', requirement: 'OPTIONAL')] | true
-        [new ProjectFeature(name: 'Feature 1', status: 'DONE', requirement: 'NECESSARY')]       | false
+        features                                                        | onlyNecessaryFeatureDone
+        []                                                              | true
+        []                                                              | false
+        [new UpdatedProjectFeature('Feature 1', DONE, NECESSARY)]       | true
+        [new UpdatedProjectFeature('Feature 1', IN_PROGRESS, OPTIONAL)] | true
+        [new UpdatedProjectFeature('Feature 1', DONE, NECESSARY)]       | false
     }
 
     @Unroll
     def "Should not end a project when ending condition is not fulfilled"() {
         given:
-        stubReportingService()
-        def project = new NewProject(name: 'Project 1', features: [])
-        post('/projects', project)
-        def newTeam = new NewTeam(name: 'Team 1')
-        post('/teams', newTeam)
-        def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
-        def updatedProject = new UpdatedProject(name: 'Project 1', team: 'Team 1', features: features)
-        put("/projects/$projectIdentifier", updatedProject)
-        patch("/projects/$projectIdentifier/started")
-        def endingCondition = new ProjectEndingCondition(onlyNecessaryFeatureDone: onlyNecessaryFeatureDone)
+        reportingService.stubReportReceiving()
+        def project = new NewProject('Project 1', [])
+        httpClient.createProject(project)
+        def newTeam = new NewTeam('Team 1')
+        httpClient.createTeam(newTeam)
+        def projectIdentifier = httpClient.getProjects().body[0].identifier
+        def updatedProject = new UpdatedProject('Project 1', 'Team 1', features)
+        httpClient.updateProject(projectIdentifier, updatedProject)
+        httpClient.startProject(projectIdentifier)
+        def endingCondition = new ProjectEndingCondition(onlyNecessaryFeatureDone)
 
         when:
-        def response = patch("/projects/$projectIdentifier/ended", endingCondition)
+        def response = httpClient.endProject(projectIdentifier, endingCondition)
 
         then:
-        response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == 'PROJECT_ENDING_CONDITION_NOT_FULFILLED'
-        verifyReportWasNotSent(projectIdentifier)
+        with(response) {
+            status == UNPROCESSABLE_ENTITY
+            errors.size() == 1
+            with(errors[0]) {
+                code == errorCode
+                message == "Error ending '$projectIdentifier' project"
+            }
+        }
+        reportingService.verifyReportWasNotSent(projectIdentifier)
 
         where:
-        features                                                                                | onlyNecessaryFeatureDone
-        [new ProjectFeature(name: 'Feature 1', status: 'TO_DO', requirement: 'NECESSARY')]      | true
-        [new ProjectFeature(name: 'Feature 1', status: 'IN_PROGRESS', requirement: 'OPTIONAL')] | false
+        features                                                        | onlyNecessaryFeatureDone || errorCode
+        [new UpdatedProjectFeature('Feature 1', TO_DO, NECESSARY)]      | true                     || 'UNDONE_PROJECT_NECESSARY_FEATURE'
+        [new UpdatedProjectFeature('Feature 1', IN_PROGRESS, OPTIONAL)] | false                    || 'UNDONE_PROJECT_FEATURE'
     }
 
     def "Should not end an unstarted project"() {
         given:
-        stubReportingService()
-        def project = new NewProject(name: 'Project 1', features: [])
-        post('/projects', project)
-        def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
-        def endingCondition = new ProjectEndingCondition(onlyNecessaryFeatureDone: false)
+        reportingService.stubReportReceiving()
+        def project = new NewProject('Project 1', [])
+        httpClient.createProject(project)
+        def projectIdentifier = httpClient.getProjects().body[0].identifier
+        def endingCondition = new ProjectEndingCondition(false)
 
         when:
-        def response = patch("/projects/$projectIdentifier/ended", endingCondition)
+        def response = httpClient.endProject(projectIdentifier, endingCondition)
 
         then:
-        response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == 'UNSTARTED_PROJECT'
-        verifyReportWasNotSent(projectIdentifier)
+        with(response) {
+            status == UNPROCESSABLE_ENTITY
+            errors.size() == 1
+            with(errors[0]) {
+                code == 'PROJECT_STATUS_DIFFERENT_THAN_IN_PROGRESS'
+                message == "Error ending '$projectIdentifier' project"
+            }
+        }
+        reportingService.verifyReportWasNotSent(projectIdentifier)
     }
 
     def "Should not end an already ended project"() {
         given:
-        stubReportingService()
-        def project = new NewProject(name: 'Project 1', features: [])
-        post('/projects', project)
-        def newTeam = new NewTeam(name: 'Team 1')
-        post('/teams', newTeam)
-        def projectIdentifier = get('/projects', new ParameterizedTypeReference<List<ExistingProjectDraft>>() {}).body[0].identifier
-        def updatedProject = new UpdatedProject(name: 'Project 1', team: 'Team 1', features: [])
-        put("/projects/$projectIdentifier", updatedProject)
-        patch("/projects/$projectIdentifier/started")
-        def endingCondition = new ProjectEndingCondition(onlyNecessaryFeatureDone: false)
-        patch("/projects/$projectIdentifier/ended", endingCondition)
-        verifyReportWasSent(projectIdentifier)
+        reportingService.stubReportReceiving()
+        def project = new NewProject('Project 1', [])
+        httpClient.createProject(project)
+        def newTeam = new NewTeam('Team 1')
+        httpClient.createTeam(newTeam)
+        def projectIdentifier = httpClient.getProjects().body[0].identifier
+        def updatedProject = new UpdatedProject('Project 1', 'Team 1', [])
+        httpClient.updateProject(projectIdentifier, updatedProject)
+        httpClient.startProject(projectIdentifier)
+        def endingCondition = new ProjectEndingCondition(false)
+        httpClient.endProject(projectIdentifier, endingCondition)
+        reportingService.verifyReportWasSent(projectIdentifier)
+        reportingService.clear()
 
         when:
-        def response = patch("/projects/$projectIdentifier/ended", endingCondition)
+        def response = httpClient.endProject(projectIdentifier, endingCondition)
 
         then:
-        response.statusCode == UNPROCESSABLE_ENTITY
-        response.body.code == 'PROJECT_ALREADY_ENDED'
-        verifyReportWasSent(projectIdentifier)
+        with(response) {
+            status == UNPROCESSABLE_ENTITY
+            errors.size() == 1
+            with(errors[0]) {
+                code == 'PROJECT_STATUS_DIFFERENT_THAN_IN_PROGRESS'
+                message == "Error ending '$projectIdentifier' project"
+            }
+        }
+        reportingService.verifyReportWasNotSent(projectIdentifier)
     }
 
     def "Should not end a nonexistent project"() {
         given:
-        stubReportingService()
-        def endingCondition = new ProjectEndingCondition(onlyNecessaryFeatureDone: false)
+        reportingService.stubReportReceiving()
+        def endingCondition = new ProjectEndingCondition(false)
 
         when:
-        def response = patch('/projects/nonexistent project/ended', endingCondition)
+        def response = httpClient.endProject('nonexistent project', endingCondition)
 
         then:
-        response.statusCode == NOT_FOUND
-        response.body.code == 'MISSING_PROJECT'
-        verifyReportWasNotSent('nonexistent project')
+        with(response) {
+            status == NOT_FOUND
+            errors.size() == 1
+            with(errors[0]) {
+                code == 'MISSING_PROJECT'
+                message == "Error ending 'nonexistent project' project"
+            }
+        }
+        reportingService.verifyReportWasNotSent('nonexistent project')
     }
 }

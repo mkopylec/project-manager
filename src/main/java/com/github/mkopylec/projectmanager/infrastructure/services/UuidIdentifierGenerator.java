@@ -9,10 +9,10 @@ import static java.util.UUID.randomUUID;
  * Secondary adapter
  */
 @Service
-class UuidIdentifierGenerator implements UniqueIdentifierGenerator {
+class UuidIdentifierGenerator extends UniqueIdentifierGenerator {
 
     @Override
-    public String generateUniqueIdentifier() {
+    protected String generateUniqueIdentifier() {
         return randomUUID().toString();
     }
 }

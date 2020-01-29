@@ -6,27 +6,30 @@ class FeatureDocument {
     private String status;
     private String requirement;
 
-    public String getName() {
+    String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    FeatureDocument setName(String name) {
         this.name = name;
+        return this;
     }
 
-    public String getStatus() {
+    String getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    FeatureDocument setStatus(String status) {
         this.status = status;
+        return this;
     }
 
-    public String getRequirement() {
+    String getRequirement() {
         return requirement;
     }
 
-    public void setRequirement(String requirement) {
+    FeatureDocument setRequirement(String requirement) {
         this.requirement = requirement;
+        return this;
     }
 }

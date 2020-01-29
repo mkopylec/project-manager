@@ -6,27 +6,30 @@ class EmployeeDocument {
     private String lastName;
     private String jobPosition;
 
-    public String getFirstName() {
+    String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
+    EmployeeDocument setFirstName(String firstName) {
         this.firstName = firstName;
+        return this;
     }
 
-    public String getLastName() {
+    String getLastName() {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
+    EmployeeDocument setLastName(String lastName) {
         this.lastName = lastName;
+        return this;
     }
 
-    public String getJobPosition() {
+    String getJobPosition() {
         return jobPosition;
     }
 
-    public void setJobPosition(String jobPosition) {
+    EmployeeDocument setJobPosition(String jobPosition) {
         this.jobPosition = jobPosition;
+        return this;
     }
 }

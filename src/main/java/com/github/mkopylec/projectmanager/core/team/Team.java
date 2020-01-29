@@ -1,17 +1,11 @@
 package com.github.mkopylec.projectmanager.core.team;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.mkopylec.projectmanager.core.team.ErrorCode.EMPTY_MEMBER;
-import static com.github.mkopylec.projectmanager.core.team.ErrorCode.EMPTY_MEMBER_FIRST_NAME;
-import static com.github.mkopylec.projectmanager.core.team.ErrorCode.EMPTY_MEMBER_JOB_POSITION;
-import static com.github.mkopylec.projectmanager.core.team.ErrorCode.EMPTY_MEMBER_LAST_NAME;
-import static com.github.mkopylec.projectmanager.core.team.ErrorCode.EMPTY_TEAM_NAME;
-import static com.github.mkopylec.projectmanager.core.team.ErrorCode.INVALID_MEMBER_JOB_POSITION;
-import static com.github.mkopylec.projectmanager.core.team.PreCondition.when;
+import static com.github.mkopylec.projectmanager.core.common.Utilities.allEmpty;
+import static com.github.mkopylec.projectmanager.core.common.Utilities.neverNull;
+import static com.github.mkopylec.projectmanager.core.team.TeamRequirementsValidator.requirements;
 import static java.util.Collections.unmodifiableList;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class Team {
 
@@ -21,19 +15,36 @@ public class Team {
     private int currentlyImplementedProjects;
     private List<Employee> members;
 
-    Team(String name) {
-        validateName(name, "Error creating team");
-        this.name = name;
-        currentlyImplementedProjects = 0;
-        members = new ArrayList<>();
+    static Team team(String name) {
+        return new Team(name, 0, null);
     }
 
-    String getName() {
+    private Team(String name, int currentlyImplementedProjects, List<Employee> members) {
+        String message = "Error creating '" + name + "' team";
+        requirements()
+                .requireName(name, message)
+                .requireValidCurrentlyImplementedProjects(currentlyImplementedProjects, message)
+                .requireValidMembers(members, message)
+                .validate();
+        this.name = name;
+        this.currentlyImplementedProjects = currentlyImplementedProjects;
+        this.members = neverNull(members);
+    }
+
+    public String getName() {
         return name;
     }
 
-    int getCurrentlyImplementedProjects() {
+    public int getCurrentlyImplementedProjects() {
         return currentlyImplementedProjects;
+    }
+
+    public List<Employee> getMembers() {
+        return unmodifiableList(members);
+    }
+
+    public boolean isBusy() {
+        return currentlyImplementedProjects > BUSY_TEAM_THRESHOLD;
     }
 
     void addCurrentlyImplementedProject() {
@@ -44,37 +55,17 @@ public class Team {
         currentlyImplementedProjects--;
     }
 
-    List<Employee> getMembers() {
-        return unmodifiableList(members);
-    }
-
     void addMember(Employee member) {
-        validateMember(member, "Error adding member to '" + name + "' team");
+        requirements()
+                .requireValidMember(member, "Error adding member to '" + name + "' team")
+                .validate();
         members.add(member);
     }
 
-    boolean isBusy() {
-        return currentlyImplementedProjects > BUSY_TEAM_THRESHOLD;
-    }
+    public static class TeamPersistenceFactory {
 
-    private void validateName(String name, String message) {
-        when(isBlank(name))
-                .thenInvalidTeam(EMPTY_TEAM_NAME, message);
-    }
-
-    private void validateMember(Employee member, String message) {
-        when(member == null)
-                .thenInvalidTeam(EMPTY_MEMBER, message);
-        when(member.hasNoFirstName())
-                .thenInvalidTeam(EMPTY_MEMBER_FIRST_NAME, message);
-        when(member.hasNoLastName())
-                .thenInvalidTeam(EMPTY_MEMBER_LAST_NAME, message);
-        when(member.hasNoJobPosition())
-                .thenInvalidTeam(EMPTY_MEMBER_JOB_POSITION, message);
-        when(member.hasInvalidJobPosition())
-                .thenInvalidTeam(INVALID_MEMBER_JOB_POSITION, message);
-    }
-
-    private Team() {
+        public Team createTeam(String name, int currentlyImplementedProjects, List<Employee> members) {
+            return allEmpty(name, currentlyImplementedProjects, members) ? null : new Team(name, currentlyImplementedProjects, members);
+        }
     }
 }

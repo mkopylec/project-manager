@@ -2,11 +2,11 @@ package com.github.mkopylec.projectmanager.core.project;
 
 import java.util.List;
 
-interface FeatureChecker {
+abstract class FeatureChecker {
 
-    void checkFeatures(List<Feature> features, String errorMessage);
+    abstract void checkFeatures(List<Feature> features, String errorMessage);
 
-    static FeatureChecker resolveFeatureChecker(boolean onlyNecessaryFeatureDone) {
+    static FeatureChecker featureChecker(boolean onlyNecessaryFeatureDone) {
         return onlyNecessaryFeatureDone
                 ? new OnlyNecessaryFeatureDoneChecker()
                 : new AllFeatureDoneChecker();

@@ -1,50 +1,46 @@
 package com.github.mkopylec.projectmanager.infrastructure.persistence;
 
-import java.util.List;
-
 import com.github.mkopylec.projectmanager.core.project.Project;
 import com.github.mkopylec.projectmanager.core.project.ProjectRepository;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
-
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
-import static java.util.Collections.emptyList;
+import java.util.List;
+
+import static com.github.mkopylec.projectmanager.core.common.Utilities.isEmpty;
+import static com.github.mkopylec.projectmanager.core.common.Utilities.mapElements;
 
 /**
  * Secondary adapter
  */
 @Repository
-class MongoDbProjectRepository extends MongoDbRepository implements ProjectRepository {
+class MongoDbProjectRepository extends ProjectRepository {
 
-    MongoDbProjectRepository(MongoTemplate database, ModelMapper mapper) {
-        super(database, mapper);
+    private MongoTemplate database;
+    private ProjectPersistenceMapper mapper = new ProjectPersistenceMapper();
+
+    MongoDbProjectRepository(MongoTemplate database) {
+        this.database = database;
     }
 
     @Override
-    public Project findByIdentifier(String identifier) {
-        ProjectDocument document = getDatabase().findById(identifier, ProjectDocument.class);
-        if (document == null) {
+    protected Project findByIdentifier(String identifier) {
+        if (isEmpty(identifier)) {
             return null;
         }
-        return getMapper().map(document, Project.class);
+        ProjectDocument document = database.findById(identifier, ProjectDocument.class);
+        return mapper.map(document);
     }
 
     @Override
-    public List<Project> findAll() {
-        List<ProjectDocument> documents = getDatabase().findAll(ProjectDocument.class);
-        if (documents.isEmpty()) {
-            return emptyList();
-        }
-        return getMapper().map(documents, new TypeToken<List<Project>>() {
-
-        }.getType());
+    protected List<Project> findAll() {
+        List<ProjectDocument> documents = database.findAll(ProjectDocument.class);
+        return mapElements(documents, document -> mapper.map(document));
     }
 
     @Override
-    public void save(Project project) {
-        ProjectDocument document = getMapper().map(project, ProjectDocument.class);
-        getDatabase().save(document);
+    protected void save(Project project) {
+        ProjectDocument document = mapper.map(project);
+        database.save(document);
     }
 }

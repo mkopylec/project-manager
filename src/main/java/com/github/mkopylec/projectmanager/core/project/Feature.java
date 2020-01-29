@@ -1,72 +1,67 @@
 package com.github.mkopylec.projectmanager.core.project;
 
+import static com.github.mkopylec.projectmanager.core.common.Utilities.allEmpty;
+import static com.github.mkopylec.projectmanager.core.common.Utilities.isEmpty;
+import static com.github.mkopylec.projectmanager.core.project.Requirement.NECESSARY;
+import static com.github.mkopylec.projectmanager.core.project.Status.DONE;
 import static com.github.mkopylec.projectmanager.core.project.Status.TO_DO;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
-class Feature {
+public class Feature {
 
     private String name;
     private Status status;
     private Requirement requirement;
 
-    Feature(String name, Requirement requirement) {
-        this(name, TO_DO, requirement);
+    static Feature feature(String name, Requirement requirement) {
+        return allEmpty(name, requirement) ? null : new Feature(name, TO_DO, requirement);
     }
 
-    Feature(String name, Status status, Requirement requirement) {
+    static Feature feature(String name, Status status, Requirement requirement) {
+        return allEmpty(name, status, requirement) ? null : new Feature(name, status, requirement);
+    }
+
+    private Feature(String name, Status status, Requirement requirement) {
         this.name = name;
         this.status = status;
         this.requirement = requirement;
     }
 
-    String getName() {
+    public String getName() {
         return name;
     }
 
-    boolean isUnnamed() {
-        return isBlank(name);
-    }
-
-    Status getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    boolean hasNoStatus() {
-        return !hasStatus();
-    }
-
-    boolean hasInvalidStatus() {
-        return hasStatus() && status.isInvalid();
-    }
-
-    boolean isUndone() {
-        return hasStatus() && !status.isDone();
-    }
-
-    boolean isNecessaryAndUndone() {
-        return hasStatus() && !status.isDone() && hasRequirement() && requirement.isNecessary();
-    }
-
-    Requirement getRequirement() {
+    public Requirement getRequirement() {
         return requirement;
     }
 
+    boolean isUnnamed() {
+        return isEmpty(name);
+    }
+
+    boolean hasNoStatus() {
+        return isEmpty(status);
+    }
+
     boolean hasNoRequirement() {
-        return !hasRequirement();
+        return isEmpty(requirement);
     }
 
-    boolean hasInvalidRequirement() {
-        return hasRequirement() && requirement.isInvalid();
+    boolean isUndone() {
+        return status != DONE;
     }
 
-    private boolean hasStatus() {
-        return status != null;
+    boolean isNecessaryAndUndone() {
+        return requirement == NECESSARY && isUndone();
     }
 
-    private boolean hasRequirement() {
-        return requirement != null;
-    }
+    public static class FeaturePersistenceFactory {
 
-    private Feature() {
+        public Feature createFeature(String name, Status status, Requirement requirement) {
+            return allEmpty(name, status, requirement) ? null : new Feature(name, status, requirement);
+        }
     }
 }

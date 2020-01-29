@@ -1,51 +1,52 @@
 package com.github.mkopylec.projectmanager.core.team;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static com.github.mkopylec.projectmanager.core.common.Utilities.allEmpty;
+import static com.github.mkopylec.projectmanager.core.common.Utilities.isEmpty;
 
-class Employee {
+public class Employee {
 
     private String firstName;
     private String lastName;
     private JobPosition jobPosition;
 
-    Employee(String firstName, String lastName, JobPosition jobPosition) {
+    static Employee employee(String firstName, String lastName, JobPosition jobPosition) {
+        return allEmpty(firstName, lastName, jobPosition) ? null : new Employee(firstName, lastName, jobPosition);
+    }
+
+    private Employee(String firstName, String lastName, JobPosition jobPosition) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.jobPosition = jobPosition;
     }
 
-    String getFirstName() {
+    public String getFirstName() {
         return firstName;
     }
 
-    boolean hasNoFirstName() {
-        return isBlank(firstName);
-    }
-
-    String getLastName() {
+    public String getLastName() {
         return lastName;
     }
 
-    boolean hasNoLastName() {
-        return isBlank(lastName);
-    }
-
-    JobPosition getJobPosition() {
+    public JobPosition getJobPosition() {
         return jobPosition;
     }
 
+    boolean hasNoFirstName() {
+        return isEmpty(firstName);
+    }
+
+    boolean hasNoLastName() {
+        return isEmpty(lastName);
+    }
+
     boolean hasNoJobPosition() {
-        return !hasJobPosition();
+        return isEmpty(jobPosition);
     }
 
-    boolean hasInvalidJobPosition() {
-        return hasJobPosition() && jobPosition.isInvalid();
-    }
+    public static class EmployeePersistenceFactory {
 
-    private boolean hasJobPosition() {
-        return jobPosition != null;
-    }
-
-    private Employee() {
+        public Employee createEmployee(String firstName, String lastName, JobPosition jobPosition) {
+            return allEmpty(firstName, lastName, jobPosition) ? null : new Employee(firstName, lastName, jobPosition);
+        }
     }
 }

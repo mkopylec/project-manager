@@ -1,13 +1,16 @@
 package com.github.mkopylec.projectmanager.core.team;
 
-enum ErrorCode {
+import com.github.mkopylec.projectmanager.core.common.ValidationErrorCode;
 
-    EMPTY_TEAM_NAME,
-    TEAM_ALREADY_EXISTS,
+enum ErrorCode implements ValidationErrorCode {
+
+    TEAM_EXISTS,
     MISSING_TEAM,
-    EMPTY_MEMBER,
-    EMPTY_MEMBER_FIRST_NAME,
-    EMPTY_MEMBER_LAST_NAME,
-    EMPTY_MEMBER_JOB_POSITION,
-    INVALID_MEMBER_JOB_POSITION
+    MISSING_TEAM_ASSIGNED_TO_PROJECT,
+    EMPTY_TEAM_NAME,
+    INVALID_NUMBER_OF_CURRENTLY_IMPLEMENTED_PROJECT_BY_TEAM,
+    EMPTY_TEAM_MEMBER,
+    EMPTY_TEAM_MEMBER_FIRST_NAME,
+    EMPTY_TEAM_MEMBER_LAST_NAME,
+    EMPTY_TEAM_MEMBER_JOB_POSITION
 }
