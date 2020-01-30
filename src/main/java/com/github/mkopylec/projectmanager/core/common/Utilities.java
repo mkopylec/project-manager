@@ -11,7 +11,7 @@ import static java.util.stream.Stream.of;
 
 public class Utilities {
 
-    public static <O> boolean allEmpty(Object... objects) {
+    public static boolean allEmpty(Object... objects) {
         return of(objects).allMatch(Utilities::isEmpty);
     }
 
