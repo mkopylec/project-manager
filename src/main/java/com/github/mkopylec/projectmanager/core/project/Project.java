@@ -28,12 +28,11 @@ public class Project {
     }
 
     private Project(String identifier, String name, Status status, String assignedTeam, List<Feature> features) {
-        String message = "Error creating '" + name + "' project";
         requirements()
-                .requireIdentifier(identifier, message)
-                .requireName(name, message)
-                .requireValidStatus(status, message)
-                .requireValidFeatures(features, message)
+                .requireIdentifier(identifier)
+                .requireName(name)
+                .requireValidStatus(status)
+                .requireValidFeatures(features)
                 .validate();
         this.identifier = identifier;
         this.name = name;
@@ -68,7 +67,7 @@ public class Project {
 
     void rename(String name) {
         requirements()
-                .requireName(name, "Error renaming '" + identifier + "' project")
+                .requireName(name)
                 .validate();
         this.name = name;
     }
@@ -79,26 +78,24 @@ public class Project {
 
     void updateFeatures(List<Feature> features) {
         requirements()
-                .requireValidFeatures(features, "Error updating '" + identifier + "' project features")
+                .requireValidFeatures(features)
                 .validate();
         this.features = neverNull(features);
     }
 
     void start() {
-        String message = "Error starting '" + identifier + "' project";
         requirements()
-                .requireAssignedTeam(assignedTeam, message)
-                .requireToDoStatus(status, message)
+                .requireAssignedTeam(assignedTeam)
+                .requireToDoStatus(status)
                 .validate();
         status = IN_PROGRESS;
     }
 
     EndedProject end(FeatureChecker featureChecker) {
-        String message = "Error ending '" + identifier + "' project";
         requirements()
-                .requireInProgressStatus(status, message)
+                .requireInProgressStatus(status)
                 .validate();
-        featureChecker.checkFeatures(features, message);
+        featureChecker.checkFeatures(features);
         status = DONE;
         return new EndedProject(identifier);
     }
@@ -106,7 +103,11 @@ public class Project {
     public static class ProjectPersistenceFactory {
 
         public Project createProject(String identifier, String name, Status status, String assignedTeam, List<Feature> features) {
-            return allEmpty(identifier, name, status, assignedTeam, features) ? null : new Project(identifier, name, status, assignedTeam, features);
+            try {
+                return allEmpty(identifier, name, status, assignedTeam, features) ? null : new Project(identifier, name, status, assignedTeam, features);
+            } catch (Exception e) {
+                throw new IllegalStateException("Error creating project from persistent state", e);
+            }
         }
     }
 }

@@ -76,7 +76,7 @@ class ProjectManagerHttpClient {
         def entity = new HttpEntity<>(requestBody)
         def response = httpClient.exchange(uri, method, entity, String)
         def body = bodyRetriever.apply(response)
-        def errors = bodyReader.getErrors(response)
-        new HttpResponse<>(response.statusCode, body, errors)
+        def failure = bodyReader.getFailure(response)
+        new HttpResponse<>(response.statusCode, body, failure)
     }
 }

@@ -1,29 +1,29 @@
 package com.github.mkopylec.projectmanager.utils
 
-import com.github.mkopylec.projectmanager.presentation.Error
+import com.github.mkopylec.projectmanager.core.Failure
 import org.springframework.http.HttpStatus
 
 class HttpResponse<B> {
 
     private HttpStatus status
     private B body
-    private List<Error> errors
+    private Failure failure
 
-    protected HttpResponse(HttpStatus status, B body, List<Error> errors) {
+    protected HttpResponse(HttpStatus status, B body, Failure failure) {
         this.status = status
         this.body = body
-        this.errors = errors
+        this.failure = failure
     }
 
     HttpStatus getStatus() {
-        return status
+        status
     }
 
     B getBody() {
-        return body
+        body
     }
 
-    List<Error> getErrors() {
-        return errors
+    Failure getFailure() {
+        failure
     }
 }

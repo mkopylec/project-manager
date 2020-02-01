@@ -6,20 +6,20 @@ import java.util.function.Function;
 
 public abstract class RequirementsValidator {
 
-    private List<ValidationError> errors = new ArrayList<>();
-    private Function<List<ValidationError>, ? extends ProjectManagerException> exceptionCreator;
+    private List<Enum<? extends ValidationErrorCode>> errorCodes = new ArrayList<>();
+    private Function<List<Enum<? extends ValidationErrorCode>>, ? extends RequirementsValidationException> exceptionCreator;
 
-    protected RequirementsValidator(Function<List<ValidationError>, ? extends ProjectManagerException> exceptionCreator) {
+    protected RequirementsValidator(Function<List<Enum<? extends ValidationErrorCode>>, ? extends RequirementsValidationException> exceptionCreator) {
         this.exceptionCreator = exceptionCreator;
     }
 
-    protected final void addError(Enum<? extends ValidationErrorCode> code, String message) {
-        errors.add(new ValidationError(code, message));
+    protected final void addError(Enum<? extends ValidationErrorCode> code) {
+        errorCodes.add(code);
     }
 
     public final void validate() {
-        if (!errors.isEmpty()) {
-            throw exceptionCreator.apply(errors);
+        if (!errorCodes.isEmpty()) {
+            throw exceptionCreator.apply(errorCodes);
         }
     }
 }

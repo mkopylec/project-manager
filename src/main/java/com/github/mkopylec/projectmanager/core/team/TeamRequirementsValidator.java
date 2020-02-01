@@ -27,55 +27,55 @@ class TeamRequirementsValidator extends RequirementsValidator {
         super(TeamException::new);
     }
 
-    TeamRequirementsValidator requireTeam(Team team, String message) {
+    TeamRequirementsValidator requireTeam(Team team) {
         if (isEmpty(team)) {
-            addError(MISSING_TEAM, message);
+            addError(MISSING_TEAM);
         }
         return this;
     }
 
-    TeamRequirementsValidator requireTeamAssignedToProject(Team team, String message) {
+    TeamRequirementsValidator requireTeamAssignedToProject(Team team) {
         if (isEmpty(team)) {
-            addError(MISSING_TEAM_ASSIGNED_TO_PROJECT, message);
+            addError(MISSING_TEAM_ASSIGNED_TO_PROJECT);
         }
         return this;
     }
 
-    TeamRequirementsValidator requireNoTeam(Team team, String message) {
+    TeamRequirementsValidator requireNoTeam(Team team) {
         if (isNotEmpty(team)) {
-            addError(TEAM_EXISTS, message);
+            addError(TEAM_EXISTS);
         }
         return this;
     }
 
-    TeamRequirementsValidator requireName(String name, String message) {
+    TeamRequirementsValidator requireName(String name) {
         if (isEmpty(name)) {
-            addError(EMPTY_TEAM_NAME, message);
+            addError(EMPTY_TEAM_NAME);
         }
         return this;
     }
 
-    TeamRequirementsValidator requireValidCurrentlyImplementedProjects(int currentlyImplementedProjects, String message) {
+    TeamRequirementsValidator requireValidCurrentlyImplementedProjects(int currentlyImplementedProjects) {
         if (currentlyImplementedProjects < 0) {
-            addError(INVALID_NUMBER_OF_CURRENTLY_IMPLEMENTED_PROJECT_BY_TEAM, message);
+            addError(INVALID_NUMBER_OF_CURRENTLY_IMPLEMENTED_PROJECT_BY_TEAM);
         }
         return this;
     }
 
-    TeamRequirementsValidator requireValidMembers(List<Employee> members, String message) {
-        neverNull(members).forEach(employee -> requireValidMember(employee, message));
+    TeamRequirementsValidator requireValidMembers(List<Employee> members) {
+        neverNull(members).forEach(this::requireValidMember);
         return this;
     }
 
-    TeamRequirementsValidator requireValidMember(Employee member, String message) {
+    TeamRequirementsValidator requireValidMember(Employee member) {
         if (isEmpty(member)) {
-            addError(EMPTY_TEAM_MEMBER, message);
+            addError(EMPTY_TEAM_MEMBER);
         } else if (member.hasNoFirstName()) {
-            addError(EMPTY_TEAM_MEMBER_FIRST_NAME, message);
+            addError(EMPTY_TEAM_MEMBER_FIRST_NAME);
         } else if (member.hasNoLastName()) {
-            addError(EMPTY_TEAM_MEMBER_LAST_NAME, message);
+            addError(EMPTY_TEAM_MEMBER_LAST_NAME);
         } else if (member.hasNoJobPosition()) {
-            addError(EMPTY_TEAM_MEMBER_JOB_POSITION, message);
+            addError(EMPTY_TEAM_MEMBER_JOB_POSITION);
         }
         return this;
     }

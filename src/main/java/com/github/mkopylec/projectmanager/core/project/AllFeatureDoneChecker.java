@@ -7,9 +7,9 @@ import static com.github.mkopylec.projectmanager.core.project.ProjectRequirement
 class AllFeatureDoneChecker extends FeatureChecker {
 
     @Override
-    void checkFeatures(List<Feature> features, String errorMessage) {
+    void checkFeatures(List<Feature> features) {
         requirements()
-                .requireAllFeaturesDone(features, errorMessage)
+                .requireAllFeaturesDone(features)
                 .validate();
     }
 }

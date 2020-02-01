@@ -4,7 +4,7 @@ import java.util.List;
 
 abstract class FeatureChecker {
 
-    abstract void checkFeatures(List<Feature> features, String errorMessage);
+    abstract void checkFeatures(List<Feature> features);
 
     static FeatureChecker featureChecker(boolean onlyNecessaryFeatureDone) {
         return onlyNecessaryFeatureDone

@@ -17,7 +17,6 @@ ext.springBootVersion = '2.2.4.RELEASE'
 dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: springBootVersion
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb', version: springBootVersion
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: springBootVersion
     compile group: 'de.flapdoodle.embed', name: 'de.flapdoodle.embed.mongo', version: '2.2.0'
 
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVersion

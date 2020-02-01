@@ -12,7 +12,12 @@ import org.springframework.context.annotation.Configuration;
 class ProjectManagerConfiguration {
 
     @Bean
-    ProjectManager projectManager(UniqueIdentifierGenerator identifierGenerator, ProjectRepository projectRepository, EventPublisher eventPublisher, TeamRepository teamRepository) {
+    ProjectManager projectManager(
+            UniqueIdentifierGenerator identifierGenerator,
+            ProjectRepository projectRepository,
+            EventPublisher eventPublisher,
+            TeamRepository teamRepository
+    ) {
         return new ProjectManager(identifierGenerator, projectRepository, eventPublisher, teamRepository);
     }
 }

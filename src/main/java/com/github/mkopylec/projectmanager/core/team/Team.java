@@ -20,11 +20,10 @@ public class Team {
     }
 
     private Team(String name, int currentlyImplementedProjects, List<Employee> members) {
-        String message = "Error creating '" + name + "' team";
         requirements()
-                .requireName(name, message)
-                .requireValidCurrentlyImplementedProjects(currentlyImplementedProjects, message)
-                .requireValidMembers(members, message)
+                .requireName(name)
+                .requireValidCurrentlyImplementedProjects(currentlyImplementedProjects)
+                .requireValidMembers(members)
                 .validate();
         this.name = name;
         this.currentlyImplementedProjects = currentlyImplementedProjects;
@@ -57,7 +56,7 @@ public class Team {
 
     void addMember(Employee member) {
         requirements()
-                .requireValidMember(member, "Error adding member to '" + name + "' team")
+                .requireValidMember(member)
                 .validate();
         members.add(member);
     }
@@ -65,7 +64,11 @@ public class Team {
     public static class TeamPersistenceFactory {
 
         public Team createTeam(String name, int currentlyImplementedProjects, List<Employee> members) {
-            return allEmpty(name, currentlyImplementedProjects, members) ? null : new Team(name, currentlyImplementedProjects, members);
+            try {
+                return allEmpty(name, currentlyImplementedProjects, members) ? null : new Team(name, currentlyImplementedProjects, members);
+            } catch (Exception e) {
+                throw new IllegalStateException("Error creating team from persistent state", e);
+            }
         }
     }
 }

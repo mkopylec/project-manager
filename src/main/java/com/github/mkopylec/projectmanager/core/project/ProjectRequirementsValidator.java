@@ -32,88 +32,88 @@ class ProjectRequirementsValidator extends RequirementsValidator {
         super(ProjectException::new);
     }
 
-    ProjectRequirementsValidator requireProject(Project project, String message) {
+    ProjectRequirementsValidator requireProject(Project project) {
         if (isEmpty(project)) {
-            addError(MISSING_PROJECT, message);
+            addError(MISSING_PROJECT);
         }
         return this;
     }
 
-    ProjectRequirementsValidator requireIdentifier(String identifier, String message) {
+    ProjectRequirementsValidator requireIdentifier(String identifier) {
         if (isEmpty(identifier)) {
-            addError(EMPTY_PROJECT_IDENTIFIER, message);
+            addError(EMPTY_PROJECT_IDENTIFIER);
         }
         return this;
     }
 
-    ProjectRequirementsValidator requireName(String name, String message) {
+    ProjectRequirementsValidator requireName(String name) {
         if (isEmpty(name)) {
-            addError(EMPTY_PROJECT_NAME, message);
+            addError(EMPTY_PROJECT_NAME);
         }
         return this;
     }
 
-    ProjectRequirementsValidator requireValidStatus(Status status, String message) {
+    ProjectRequirementsValidator requireValidStatus(Status status) {
         if (isEmpty(status)) {
-            addError(EMPTY_PROJECT_STATUS, message);
+            addError(EMPTY_PROJECT_STATUS);
         }
         return this;
     }
 
-    ProjectRequirementsValidator requireValidFeatures(List<Feature> features, String message) {
+    ProjectRequirementsValidator requireValidFeatures(List<Feature> features) {
         neverNull(features).forEach(feature -> {
             if (isEmpty(feature)) {
-                addError(EMPTY_PROJECT_FEATURE, message);
+                addError(EMPTY_PROJECT_FEATURE);
             } else if (feature.isUnnamed()) {
-                addError(EMPTY_PROJECT_FEATURE_NAME, message);
+                addError(EMPTY_PROJECT_FEATURE_NAME);
             } else if (feature.hasNoStatus()) {
-                addError(EMPTY_PROJECT_FEATURE_STATUS, message);
+                addError(EMPTY_PROJECT_FEATURE_STATUS);
             } else if (feature.hasNoRequirement()) {
-                addError(EMPTY_PROJECT_FEATURE_REQUIREMENT, message);
+                addError(EMPTY_PROJECT_FEATURE_REQUIREMENT);
             }
         });
         return this;
     }
 
-    ProjectRequirementsValidator requireNecessaryFeaturesDone(List<Feature> features, String message) {
+    ProjectRequirementsValidator requireNecessaryFeaturesDone(List<Feature> features) {
         neverNull(features).forEach(feature -> {
             if (isEmpty(feature)) {
-                addError(EMPTY_PROJECT_FEATURE, message);
+                addError(EMPTY_PROJECT_FEATURE);
             } else if (feature.isNecessaryAndUndone()) {
-                addError(UNDONE_PROJECT_NECESSARY_FEATURE, message);
+                addError(UNDONE_PROJECT_NECESSARY_FEATURE);
             }
         });
         return this;
     }
 
-    ProjectRequirementsValidator requireAllFeaturesDone(List<Feature> features, String message) {
+    ProjectRequirementsValidator requireAllFeaturesDone(List<Feature> features) {
         neverNull(features).forEach(feature -> {
             if (isEmpty(feature)) {
-                addError(EMPTY_PROJECT_FEATURE, message);
+                addError(EMPTY_PROJECT_FEATURE);
             } else if (feature.isUndone()) {
-                addError(UNDONE_PROJECT_FEATURE, message);
+                addError(UNDONE_PROJECT_FEATURE);
             }
         });
         return this;
     }
 
-    ProjectRequirementsValidator requireAssignedTeam(String assignedTeam, String message) {
+    ProjectRequirementsValidator requireAssignedTeam(String assignedTeam) {
         if (isEmpty(assignedTeam)) {
-            addError(EMPTY_TEAM_ASSIGNED_TO_PROJECT, message);
+            addError(EMPTY_TEAM_ASSIGNED_TO_PROJECT);
         }
         return this;
     }
 
-    ProjectRequirementsValidator requireToDoStatus(Status status, String message) {
+    ProjectRequirementsValidator requireToDoStatus(Status status) {
         if (status != TO_DO) {
-            addError(PROJECT_STATUS_DIFFERENT_THAN_TO_DO, message);
+            addError(PROJECT_STATUS_DIFFERENT_THAN_TO_DO);
         }
         return this;
     }
 
-    ProjectRequirementsValidator requireInProgressStatus(Status status, String message) {
+    ProjectRequirementsValidator requireInProgressStatus(Status status) {
         if (status != IN_PROGRESS) {
-            addError(PROJECT_STATUS_DIFFERENT_THAN_IN_PROGRESS, message);
+            addError(PROJECT_STATUS_DIFFERENT_THAN_IN_PROGRESS);
         }
         return this;
     }

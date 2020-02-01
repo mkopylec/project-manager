@@ -1,13 +1,13 @@
-package com.github.mkopylec.projectmanager.core.team;
+package com.github.mkopylec.projectmanager.core;
 
 import com.github.mkopylec.projectmanager.core.common.RequirementsValidationException;
 import com.github.mkopylec.projectmanager.core.common.ValidationErrorCode;
 
 import java.util.List;
 
-class TeamException extends RequirementsValidationException {
+public class InputDataException extends RequirementsValidationException {
 
-    TeamException(List<Enum<? extends ValidationErrorCode>> errorCodes) {
+    InputDataException(List<Enum<? extends ValidationErrorCode>> errorCodes) {
         super(errorCodes);
     }
 }

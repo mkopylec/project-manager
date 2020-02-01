@@ -78,10 +78,9 @@ class ProjectSpecification extends BasicSpecification {
         then:
         with(response) {
             status == UNPROCESSABLE_ENTITY
-            errors.size() == 1
-            with(errors[0]) {
-                code == 'EMPTY_PROJECT_NAME'
-                message == "Error creating '$name' project"
+            with(failure) {
+                message == "Creating '$name' project has failed"
+                codes == ['EMPTY_PROJECT_NAME']
             }
         }
 
@@ -154,10 +153,9 @@ class ProjectSpecification extends BasicSpecification {
         then:
         with(response) {
             status == UNPROCESSABLE_ENTITY
-            errors.size() == 1
-            with(errors[0]) {
-                code == 'EMPTY_PROJECT_NAME'
-                message == "Error creating '$name' project"
+            with(failure) {
+                message == "Creating '$name' project has failed"
+                codes == ['EMPTY_PROJECT_NAME']
             }
         }
 
@@ -177,10 +175,9 @@ class ProjectSpecification extends BasicSpecification {
         then:
         with(response) {
             status == UNPROCESSABLE_ENTITY
-            errors.size() == 1
-            with(errors[0]) {
-                code == 'EMPTY_PROJECT_FEATURE_NAME'
-                message == "Error creating 'Project 1' project"
+            with(failure) {
+                message == "Creating 'Project 1' project has failed"
+                codes == ['EMPTY_PROJECT_FEATURE_NAME']
             }
         }
 
@@ -199,10 +196,9 @@ class ProjectSpecification extends BasicSpecification {
         then:
         with(response) {
             status == UNPROCESSABLE_ENTITY
-            errors.size() == 1
-            with(errors[0]) {
-                code == 'EMPTY_PROJECT_FEATURE_REQUIREMENT'
-                message == "Error creating 'Project 1' project"
+            with(failure) {
+                message == "Creating 'Project 1' project has failed"
+                codes == ['EMPTY_PROJECT_FEATURE_REQUIREMENT']
             }
         }
     }
@@ -281,10 +277,9 @@ class ProjectSpecification extends BasicSpecification {
         then:
         with(response) {
             status == UNPROCESSABLE_ENTITY
-            errors.size() == 1
-            with(errors[0]) {
-                code == 'EMPTY_PROJECT_NAME'
-                message == "Error renaming '$projectIdentifier' project"
+            with(failure) {
+                message == "Updating '$projectIdentifier' project has failed"
+                codes == ['EMPTY_PROJECT_NAME']
             }
         }
 
@@ -307,10 +302,9 @@ class ProjectSpecification extends BasicSpecification {
         then:
         with(response) {
             status == UNPROCESSABLE_ENTITY
-            errors.size() == 1
-            with(errors[0]) {
-                code == 'EMPTY_PROJECT_FEATURE_NAME'
-                message == "Error updating '$projectIdentifier' project features"
+            with(failure) {
+                message == "Updating '$projectIdentifier' project has failed"
+                codes == ['EMPTY_PROJECT_FEATURE_NAME']
             }
         }
 
@@ -333,10 +327,9 @@ class ProjectSpecification extends BasicSpecification {
         then:
         with(response) {
             status == UNPROCESSABLE_ENTITY
-            errors.size() == 1
-            with(errors[0]) {
-                code == errorCode
-                message == "Error updating '$projectIdentifier' project features"
+            with(failure) {
+                message == "Updating '$projectIdentifier' project has failed"
+                codes == [errorCode]
             }
         }
 
@@ -359,10 +352,9 @@ class ProjectSpecification extends BasicSpecification {
         then:
         with(response) {
             status == UNPROCESSABLE_ENTITY
-            errors.size() == 1
-            with(errors[0]) {
-                code == 'MISSING_TEAM_ASSIGNED_TO_PROJECT'
-                message == "Error updating '$projectIdentifier' project"
+            with(failure) {
+                message == "Updating '$projectIdentifier' project has failed"
+                codes == ['MISSING_TEAM_ASSIGNED_TO_PROJECT']
             }
         }
     }
@@ -385,10 +377,9 @@ class ProjectSpecification extends BasicSpecification {
         then:
         with(response) {
             status == NOT_FOUND
-            errors.size() == 1
-            with(errors[0]) {
-                code == 'MISSING_PROJECT'
-                message == "Error getting 'abc' project"
+            with(failure) {
+                message == "Getting 'abc' project has failed"
+                codes == ['MISSING_PROJECT']
             }
         }
     }
@@ -437,10 +428,9 @@ class ProjectSpecification extends BasicSpecification {
         then:
         with(response) {
             status == UNPROCESSABLE_ENTITY
-            errors.size() == 1
-            with(errors[0]) {
-                code == 'PROJECT_STATUS_DIFFERENT_THAN_TO_DO'
-                message == "Error starting '$projectIdentifier' project"
+            with(failure) {
+                message == "Starting '$projectIdentifier' project has failed"
+                codes == ['PROJECT_STATUS_DIFFERENT_THAN_TO_DO']
             }
         }
     }
@@ -457,10 +447,9 @@ class ProjectSpecification extends BasicSpecification {
         then:
         with(response) {
             status == UNPROCESSABLE_ENTITY
-            errors.size() == 1
-            with(errors[0]) {
-                code == 'EMPTY_TEAM_ASSIGNED_TO_PROJECT'
-                message == "Error starting '$projectIdentifier' project"
+            with(failure) {
+                message == "Starting '$projectIdentifier' project has failed"
+                codes == ['EMPTY_TEAM_ASSIGNED_TO_PROJECT']
             }
         }
     }
@@ -472,10 +461,9 @@ class ProjectSpecification extends BasicSpecification {
         then:
         with(response) {
             status == NOT_FOUND
-            errors.size() == 1
-            with(errors[0]) {
-                code == 'MISSING_PROJECT'
-                message == "Error starting 'nonexistent project' project"
+            with(failure) {
+                message == "Starting 'nonexistent project' project has failed"
+                codes == ['MISSING_PROJECT']
             }
         }
     }
@@ -549,10 +537,9 @@ class ProjectSpecification extends BasicSpecification {
         then:
         with(response) {
             status == UNPROCESSABLE_ENTITY
-            errors.size() == 1
-            with(errors[0]) {
-                code == errorCode
-                message == "Error ending '$projectIdentifier' project"
+            with(failure) {
+                message == "Ending '$projectIdentifier' project has failed"
+                codes == [errorCode]
             }
         }
         reportingService.verifyReportWasNotSent(projectIdentifier)
@@ -577,10 +564,9 @@ class ProjectSpecification extends BasicSpecification {
         then:
         with(response) {
             status == UNPROCESSABLE_ENTITY
-            errors.size() == 1
-            with(errors[0]) {
-                code == 'PROJECT_STATUS_DIFFERENT_THAN_IN_PROGRESS'
-                message == "Error ending '$projectIdentifier' project"
+            with(failure) {
+                message == "Ending '$projectIdentifier' project has failed"
+                codes == ['PROJECT_STATUS_DIFFERENT_THAN_IN_PROGRESS']
             }
         }
         reportingService.verifyReportWasNotSent(projectIdentifier)
@@ -608,10 +594,9 @@ class ProjectSpecification extends BasicSpecification {
         then:
         with(response) {
             status == UNPROCESSABLE_ENTITY
-            errors.size() == 1
-            with(errors[0]) {
-                code == 'PROJECT_STATUS_DIFFERENT_THAN_IN_PROGRESS'
-                message == "Error ending '$projectIdentifier' project"
+            with(failure) {
+                message == "Ending '$projectIdentifier' project has failed"
+                codes == ['PROJECT_STATUS_DIFFERENT_THAN_IN_PROGRESS']
             }
         }
         reportingService.verifyReportWasNotSent(projectIdentifier)
@@ -628,10 +613,9 @@ class ProjectSpecification extends BasicSpecification {
         then:
         with(response) {
             status == NOT_FOUND
-            errors.size() == 1
-            with(errors[0]) {
-                code == 'MISSING_PROJECT'
-                message == "Error ending 'nonexistent project' project"
+            with(failure) {
+                message == "Ending 'nonexistent project' project has failed"
+                codes == ['MISSING_PROJECT']
             }
         }
         reportingService.verifyReportWasNotSent('nonexistent project')

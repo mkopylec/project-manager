@@ -53,10 +53,9 @@ class TeamSpecification extends BasicSpecification {
         then:
         with(response) {
             status == UNPROCESSABLE_ENTITY
-            errors.size() == 1
-            with(errors[0]) {
-                code == 'EMPTY_TEAM_NAME'
-                message == "Error creating '$name' team"
+            with(failure) {
+                message == "Creating '$name' team has failed"
+                codes == ['EMPTY_TEAM_NAME']
             }
         }
 
@@ -75,10 +74,9 @@ class TeamSpecification extends BasicSpecification {
         then:
         with(response) {
             status == UNPROCESSABLE_ENTITY
-            errors.size() == 1
-            with(errors[0]) {
-                code == 'TEAM_EXISTS'
-                message == "Error creating team named 'Team 1'"
+            with(failure) {
+                message == "Creating 'Team 1' team has failed"
+                codes == ['TEAM_EXISTS']
             }
         }
     }
@@ -132,10 +130,9 @@ class TeamSpecification extends BasicSpecification {
         then:
         with(response) {
             status == UNPROCESSABLE_ENTITY
-            errors.size() == 1
-            with(errors[0]) {
-                code == 'EMPTY_TEAM_MEMBER_FIRST_NAME'
-                message == "Error adding member to 'Team 1' team"
+            with(failure) {
+                message == "Adding member to 'Team 1' team has failed"
+                codes == ['EMPTY_TEAM_MEMBER_FIRST_NAME']
             }
         }
 
@@ -156,10 +153,9 @@ class TeamSpecification extends BasicSpecification {
         then:
         with(response) {
             status == UNPROCESSABLE_ENTITY
-            errors.size() == 1
-            with(errors[0]) {
-                code == 'EMPTY_TEAM_MEMBER_LAST_NAME'
-                message == "Error adding member to 'Team 1' team"
+            with(failure) {
+                message == "Adding member to 'Team 1' team has failed"
+                codes == ['EMPTY_TEAM_MEMBER_LAST_NAME']
             }
         }
 
@@ -179,10 +175,9 @@ class TeamSpecification extends BasicSpecification {
         then:
         with(response) {
             status == UNPROCESSABLE_ENTITY
-            errors.size() == 1
-            with(errors[0]) {
-                code == 'EMPTY_TEAM_MEMBER_JOB_POSITION'
-                message == "Error adding member to 'Team 1' team"
+            with(failure) {
+                message == "Adding member to 'Team 1' team has failed"
+                codes == ['EMPTY_TEAM_MEMBER_JOB_POSITION']
             }
         }
     }
@@ -197,10 +192,9 @@ class TeamSpecification extends BasicSpecification {
         then:
         with(response) {
             status == NOT_FOUND
-            errors.size() == 1
-            with(errors[0]) {
-                code == 'MISSING_TEAM'
-                message == "Error adding member to 'Team 1' team"
+            with(failure) {
+                message == "Adding member to 'Team 1' team has failed"
+                codes == ['MISSING_TEAM']
             }
         }
     }

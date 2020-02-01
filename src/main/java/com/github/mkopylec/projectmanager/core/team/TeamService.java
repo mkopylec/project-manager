@@ -23,7 +23,7 @@ public class TeamService {
     public void createTeam(NewTeam newTeam) {
         Team existingTeam = repository.findByName(newTeam.getName());
         requirements()
-                .requireNoTeam(existingTeam, "Error creating team named '" + newTeam.getName() + "'")
+                .requireNoTeam(existingTeam)
                 .validate();
         Team team = factory.createTeam(newTeam);
         repository.save(team);
@@ -32,7 +32,7 @@ public class TeamService {
     public void addMemberToTeam(String teamName, NewTeamMember newTeamMember) {
         Team team = repository.findByName(teamName);
         requirements()
-                .requireTeam(team, "Error adding member to '" + teamName + "' team")
+                .requireTeam(team)
                 .validate();
         Employee member = factory.createMember(newTeamMember);
         team.addMember(member);
@@ -51,13 +51,13 @@ public class TeamService {
         updateTeamAssignedToProject(project, Team::removeCurrentlyImplementedProject);
     }
 
-    public void ensureTeamAssignedToProjectExists(String projectIdentifier, UpdatedProject updatedProject) {
+    public void ensureTeamAssignedToProjectExists(UpdatedProject updatedProject) {
         if (isEmpty(updatedProject.getTeam())) {
             return;
         }
         Team team = repository.findByName(updatedProject.getTeam());
         requirements()
-                .requireTeamAssignedToProject(team, "Error updating '" + projectIdentifier + "' project")
+                .requireTeamAssignedToProject(team)
                 .validate();
     }
 

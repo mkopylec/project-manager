@@ -40,7 +40,7 @@ public class ProjectService {
     public Project getProject(String projectIdentifier) {
         Project project = repository.findByIdentifier(projectIdentifier);
         requirements()
-                .requireProject(project, "Error getting '" + projectIdentifier + "' project")
+                .requireProject(project)
                 .validate();
         return project;
     }
@@ -48,7 +48,7 @@ public class ProjectService {
     public Project updateProject(String projectIdentifier, UpdatedProject updatedProject) {
         Project project = repository.findByIdentifier(projectIdentifier);
         requirements()
-                .requireProject(project, "Error updating '" + projectIdentifier + "' project")
+                .requireProject(project)
                 .validate();
         List<Feature> features = factory.createFeatures(updatedProject.getFeatures());
         project.rename(updatedProject.getName());
@@ -61,7 +61,7 @@ public class ProjectService {
     public void startProject(String projectIdentifier) {
         Project project = repository.findByIdentifier(projectIdentifier);
         requirements()
-                .requireProject(project, "Error starting '" + projectIdentifier + "' project")
+                .requireProject(project)
                 .validate();
         project.start();
         repository.save(project);
@@ -70,7 +70,7 @@ public class ProjectService {
     public Project endProject(String projectIdentifier, ProjectEndingCondition projectEndingCondition) {
         Project project = repository.findByIdentifier(projectIdentifier);
         requirements()
-                .requireProject(project, "Error ending '" + projectIdentifier + "' project")
+                .requireProject(project)
                 .validate();
         FeatureChecker featureChecker = featureChecker(projectEndingCondition.isOnlyNecessaryFeatureDone());
         EndedProject endedProject = project.end(featureChecker);

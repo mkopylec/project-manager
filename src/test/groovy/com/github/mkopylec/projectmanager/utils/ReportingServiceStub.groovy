@@ -45,6 +45,6 @@ class ReportingServiceStub implements MethodRule {
 
     @Override
     Statement apply(Statement base, FrameworkMethod method, Object target) {
-        return rule.apply(base, method, target)
+        rule.apply(base, method, target)
     }
 }
