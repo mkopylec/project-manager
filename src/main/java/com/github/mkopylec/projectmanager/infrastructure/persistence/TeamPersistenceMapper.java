@@ -6,8 +6,6 @@ import com.github.mkopylec.projectmanager.core.team.JobPosition;
 import com.github.mkopylec.projectmanager.core.team.Team;
 import com.github.mkopylec.projectmanager.core.team.Team.TeamPersistenceFactory;
 
-import java.util.List;
-
 import static com.github.mkopylec.projectmanager.core.common.Utilities.isEmpty;
 import static com.github.mkopylec.projectmanager.core.common.Utilities.mapElements;
 import static com.github.mkopylec.projectmanager.core.common.Utilities.toEnum;
@@ -28,7 +26,7 @@ class TeamPersistenceMapper {
         if (isEmpty(document)) {
             return null;
         }
-        List<Employee> employees = mapElements(document.getMembers(), this::map);
+        var employees = mapElements(document.getMembers(), this::map);
         return teamFactory.createTeam(document.getName(), document.getCurrentlyImplementedProjects(), employees);
     }
 
@@ -43,7 +41,7 @@ class TeamPersistenceMapper {
         if (isEmpty(document)) {
             return null;
         }
-        JobPosition jobPosition = toEnum(document.getJobPosition(), JobPosition.class);
+        var jobPosition = toEnum(document.getJobPosition(), JobPosition.class);
         return employeeFactory.createEmployee(document.getFirstName(), document.getLastName(), jobPosition);
     }
 }

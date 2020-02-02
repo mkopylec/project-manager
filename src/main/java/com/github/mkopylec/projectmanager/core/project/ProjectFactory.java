@@ -22,13 +22,13 @@ class ProjectFactory {
     }
 
     Project createProjectDraft(NewProjectDraft newProjectDraft) {
-        String identifier = identifierGenerator.generateUniqueIdentifier();
+        var identifier = identifierGenerator.generateUniqueIdentifier();
         return project(identifier, newProjectDraft.getName());
     }
 
     Project createFullProject(NewProject newProject) {
-        String identifier = identifierGenerator.generateUniqueIdentifier();
-        List<Feature> features = mapElements(newProject.getFeatures(), this::createFeature);
+        var identifier = identifierGenerator.generateUniqueIdentifier();
+        var features = mapElements(newProject.getFeatures(), this::createFeature);
         return project(identifier, newProject.getName(), features);
     }
 
@@ -40,7 +40,7 @@ class ProjectFactory {
         if (isEmpty(newFeature)) {
             return null;
         }
-        Requirement requirement = convertEnum(newFeature.getRequirement(), Requirement.class);
+        var requirement = convertEnum(newFeature.getRequirement(), Requirement.class);
         return feature(newFeature.getName(), requirement);
     }
 
@@ -48,8 +48,8 @@ class ProjectFactory {
         if (isEmpty(projectFeature)) {
             return null;
         }
-        Status status = convertEnum(projectFeature.getStatus(), Status.class);
-        Requirement requirement = convertEnum(projectFeature.getRequirement(), Requirement.class);
+        var status = convertEnum(projectFeature.getStatus(), Status.class);
+        var requirement = convertEnum(projectFeature.getRequirement(), Requirement.class);
         return feature(projectFeature.getName(), status, requirement);
     }
 }

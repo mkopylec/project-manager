@@ -28,19 +28,19 @@ class MongoDbTeamRepository extends TeamRepository {
         if (isEmpty(name)) {
             return null;
         }
-        TeamDocument document = database.findById(name, TeamDocument.class);
+        var document = database.findById(name, TeamDocument.class);
         return mapper.map(document);
     }
 
     @Override
     protected List<Team> findAll() {
-        List<TeamDocument> documents = database.findAll(TeamDocument.class);
+        var documents = database.findAll(TeamDocument.class);
         return mapElements(documents, document -> mapper.map(document));
     }
 
     @Override
     protected void save(Team team) {
-        TeamDocument document = mapper.map(team);
+        var document = mapper.map(team);
         database.save(document);
     }
 }

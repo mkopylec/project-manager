@@ -28,19 +28,19 @@ class MongoDbProjectRepository extends ProjectRepository {
         if (isEmpty(identifier)) {
             return null;
         }
-        ProjectDocument document = database.findById(identifier, ProjectDocument.class);
+        var document = database.findById(identifier, ProjectDocument.class);
         return mapper.map(document);
     }
 
     @Override
     protected List<Project> findAll() {
-        List<ProjectDocument> documents = database.findAll(ProjectDocument.class);
+        var documents = database.findAll(ProjectDocument.class);
         return mapElements(documents, document -> mapper.map(document));
     }
 
     @Override
     protected void save(Project project) {
-        ProjectDocument document = mapper.map(project);
+        var document = mapper.map(project);
         database.save(document);
     }
 }

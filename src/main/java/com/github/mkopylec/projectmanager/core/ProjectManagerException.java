@@ -7,7 +7,7 @@ public class ProjectManagerException extends RuntimeException {
     private Failure failure;
 
     static ProjectManagerException projectManagerException(Exception e, String errorMessage) {
-        Failure failure = new Failure().setMessage(errorMessage);
+        var failure = new Failure().setMessage(errorMessage);
         if (e instanceof RequirementsValidationException) {
             failure.setCodes(((RequirementsValidationException) e).mapErrorCodes(Enum::name));
         } else {

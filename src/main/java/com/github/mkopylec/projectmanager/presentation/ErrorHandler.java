@@ -23,14 +23,14 @@ class ErrorHandler {
 
     @ExceptionHandler(ProjectManagerException.class)
     ResponseEntity<Failure> mapToResponse(ProjectManagerException ex, HttpServletRequest request) {
-        HttpStatus status = getStatus(ex);
+        var status = getStatus(ex);
         log(ex, status, request);
         return status(status)
                 .body(ex.getFailure());
     }
 
     private HttpStatus getStatus(ProjectManagerException ex) {
-        Failure failure = ex.getFailure();
+        var failure = ex.getFailure();
         if (failure.containsUnexpectedErrorCode()) {
             return INTERNAL_SERVER_ERROR;
         }

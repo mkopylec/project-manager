@@ -7,8 +7,6 @@ import com.github.mkopylec.projectmanager.core.project.Project.ProjectPersistenc
 import com.github.mkopylec.projectmanager.core.project.Requirement;
 import com.github.mkopylec.projectmanager.core.project.Status;
 
-import java.util.List;
-
 import static com.github.mkopylec.projectmanager.core.common.Utilities.isEmpty;
 import static com.github.mkopylec.projectmanager.core.common.Utilities.mapElements;
 import static com.github.mkopylec.projectmanager.core.common.Utilities.toEnum;
@@ -31,8 +29,8 @@ class ProjectPersistenceMapper {
         if (isEmpty(document)) {
             return null;
         }
-        Status status = toEnum(document.getStatus(), Status.class);
-        List<Feature> features = mapElements(document.getFeatures(), this::map);
+        var status = toEnum(document.getStatus(), Status.class);
+        var features = mapElements(document.getFeatures(), this::map);
         return projectFactory.createProject(document.getIdentifier(), document.getName(), status, document.getAssignedTeam(), features);
     }
 
@@ -47,8 +45,8 @@ class ProjectPersistenceMapper {
         if (isEmpty(document)) {
             return null;
         }
-        Status status = toEnum(document.getStatus(), Status.class);
-        Requirement requirement = toEnum(document.getRequirement(), Requirement.class);
+        var status = toEnum(document.getStatus(), Status.class);
+        var requirement = toEnum(document.getRequirement(), Requirement.class);
         return featureFactory.createFeature(document.getName(), status, requirement);
     }
 }

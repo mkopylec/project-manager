@@ -14,7 +14,7 @@ class TeamFactory {
     }
 
     Employee createMember(NewTeamMember newTeamMember) {
-        JobPosition jobPosition = convertEnum(newTeamMember.getJobPosition(), JobPosition.class);
+        var jobPosition = convertEnum(newTeamMember.getJobPosition(), JobPosition.class);
         return employee(newTeamMember.getFirstName(), newTeamMember.getLastName(), jobPosition);
     }
 }

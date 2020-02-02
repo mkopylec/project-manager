@@ -24,12 +24,12 @@ public class ProjectService {
     }
 
     public void createProject(NewProjectDraft newProjectDraft) {
-        Project project = factory.createProjectDraft(newProjectDraft);
+        var project = factory.createProjectDraft(newProjectDraft);
         repository.save(project);
     }
 
     public void createProject(NewProject newProject) {
-        Project project = factory.createFullProject(newProject);
+        var project = factory.createFullProject(newProject);
         repository.save(project);
     }
 
@@ -38,7 +38,7 @@ public class ProjectService {
     }
 
     public Project getProject(String projectIdentifier) {
-        Project project = repository.findByIdentifier(projectIdentifier);
+        var project = repository.findByIdentifier(projectIdentifier);
         requirements()
                 .requireProject(project)
                 .validate();
@@ -46,11 +46,11 @@ public class ProjectService {
     }
 
     public Project updateProject(String projectIdentifier, UpdatedProject updatedProject) {
-        Project project = repository.findByIdentifier(projectIdentifier);
+        var project = repository.findByIdentifier(projectIdentifier);
         requirements()
                 .requireProject(project)
                 .validate();
-        List<Feature> features = factory.createFeatures(updatedProject.getFeatures());
+        var features = factory.createFeatures(updatedProject.getFeatures());
         project.rename(updatedProject.getName());
         project.updateFeatures(features);
         project.assignTeam(updatedProject.getTeam());
@@ -59,7 +59,7 @@ public class ProjectService {
     }
 
     public void startProject(String projectIdentifier) {
-        Project project = repository.findByIdentifier(projectIdentifier);
+        var project = repository.findByIdentifier(projectIdentifier);
         requirements()
                 .requireProject(project)
                 .validate();
@@ -68,12 +68,12 @@ public class ProjectService {
     }
 
     public Project endProject(String projectIdentifier, ProjectEndingCondition projectEndingCondition) {
-        Project project = repository.findByIdentifier(projectIdentifier);
+        var project = repository.findByIdentifier(projectIdentifier);
         requirements()
                 .requireProject(project)
                 .validate();
-        FeatureChecker featureChecker = featureChecker(projectEndingCondition.isOnlyNecessaryFeatureDone());
-        EndedProject endedProject = project.end(featureChecker);
+        var featureChecker = featureChecker(projectEndingCondition.isOnlyNecessaryFeatureDone());
+        var endedProject = project.end(featureChecker);
         repository.save(project);
         eventPublisher.publish(endedProject);
         return project;

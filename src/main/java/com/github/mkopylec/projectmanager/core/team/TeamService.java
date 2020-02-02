@@ -21,20 +21,20 @@ public class TeamService {
     }
 
     public void createTeam(NewTeam newTeam) {
-        Team existingTeam = repository.findByName(newTeam.getName());
+        var existingTeam = repository.findByName(newTeam.getName());
         requirements()
                 .requireNoTeam(existingTeam)
                 .validate();
-        Team team = factory.createTeam(newTeam);
+        var team = factory.createTeam(newTeam);
         repository.save(team);
     }
 
     public void addMemberToTeam(String teamName, NewTeamMember newTeamMember) {
-        Team team = repository.findByName(teamName);
+        var team = repository.findByName(teamName);
         requirements()
                 .requireTeam(team)
                 .validate();
-        Employee member = factory.createMember(newTeamMember);
+        var member = factory.createMember(newTeamMember);
         team.addMember(member);
         repository.save(team);
     }
@@ -55,7 +55,7 @@ public class TeamService {
         if (isEmpty(updatedProject.getTeam())) {
             return;
         }
-        Team team = repository.findByName(updatedProject.getTeam());
+        var team = repository.findByName(updatedProject.getTeam());
         requirements()
                 .requireTeamAssignedToProject(team)
                 .validate();
@@ -65,7 +65,7 @@ public class TeamService {
         if (project.hasNoTeamAssigned()) {
             return;
         }
-        Team team = repository.findByName(project.getAssignedTeam());
+        var team = repository.findByName(project.getAssignedTeam());
         update.accept(team);
         repository.save(team);
     }
