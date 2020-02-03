@@ -4,6 +4,9 @@ import com.github.mkopylec.projectmanager.core.common.EventPublisher;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
+/**
+ * Secondary adapter
+ */
 @Component
 class SpringEventPublisher extends EventPublisher {
 
