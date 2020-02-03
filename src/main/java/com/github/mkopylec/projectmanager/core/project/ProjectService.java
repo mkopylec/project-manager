@@ -8,6 +8,7 @@ import com.github.mkopylec.projectmanager.core.common.EventPublisher;
 
 import java.util.List;
 
+import static com.github.mkopylec.projectmanager.core.common.Utilities.isNotEmpty;
 import static com.github.mkopylec.projectmanager.core.project.FeatureChecker.featureChecker;
 import static com.github.mkopylec.projectmanager.core.project.ProjectRequirementsValidator.requirements;
 
@@ -23,14 +24,12 @@ public class ProjectService {
         this.eventPublisher = eventPublisher;
     }
 
-    public void createProject(NewProjectDraft newProjectDraft) {
-        var project = factory.createProjectDraft(newProjectDraft);
-        repository.save(project);
+    public Project createProject(NewProjectDraft newProjectDraft) {
+        return factory.createProjectDraft(newProjectDraft);
     }
 
-    public void createProject(NewProject newProject) {
-        var project = factory.createFullProject(newProject);
-        repository.save(project);
+    public Project createProject(NewProject newProject) {
+        return factory.createFullProject(newProject);
     }
 
     public List<Project> getProjects() {
@@ -45,7 +44,7 @@ public class ProjectService {
         return project;
     }
 
-    public Project updateProject(String projectIdentifier, UpdatedProject updatedProject) {
+    public Project getUpdatedProject(String projectIdentifier, UpdatedProject updatedProject) {
         var project = repository.findByIdentifier(projectIdentifier);
         requirements()
                 .requireProject(project)
@@ -54,28 +53,32 @@ public class ProjectService {
         project.rename(updatedProject.getName());
         project.updateFeatures(features);
         project.assignTeam(updatedProject.getTeam());
-        repository.save(project);
         return project;
     }
 
-    public void startProject(String projectIdentifier) {
+    public Project getStartedProject(String projectIdentifier) {
         var project = repository.findByIdentifier(projectIdentifier);
         requirements()
                 .requireProject(project)
                 .validate();
         project.start();
-        repository.save(project);
+        return project;
     }
 
-    public Project endProject(String projectIdentifier, ProjectEndingCondition projectEndingCondition) {
+    public Project getEndedProject(String projectIdentifier, ProjectEndingCondition projectEndingCondition) {
         var project = repository.findByIdentifier(projectIdentifier);
         requirements()
                 .requireProject(project)
                 .validate();
         var featureChecker = featureChecker(projectEndingCondition.isOnlyNecessaryFeatureDone());
         var endedProject = project.end(featureChecker);
-        repository.save(project);
         eventPublisher.publish(endedProject);
         return project;
+    }
+
+    public void saveProject(Project project) {
+        if (isNotEmpty(project)) {
+            repository.save(project);
+        }
     }
 }

@@ -25,13 +25,12 @@ import static com.github.mkopylec.projectmanager.core.ProjectManagerException.pr
  */
 public class ProjectManager {
 
-    private ProjectService projectService;
-    private TeamService teamService;
-    private OutgoingDtoMapper dtoMapper = new OutgoingDtoMapper();
+    private ProjectManagerService service;
 
     public ProjectManager(UniqueIdentifierGenerator identifierGenerator, ProjectRepository projectRepository, EventPublisher eventPublisher, TeamRepository teamRepository) {
-        projectService = new ProjectService(identifierGenerator, projectRepository, eventPublisher);
-        teamService = new TeamService(teamRepository);
+        var projectService = new ProjectService(identifierGenerator, projectRepository, eventPublisher);
+        var teamService = new TeamService(teamRepository);
+        service = new ProjectManagerService(projectService, teamService);
     }
 
     public void createProject(NewProjectDraft newProjectDraft) {
@@ -39,7 +38,7 @@ public class ProjectManager {
             requirements()
                     .require(newProjectDraft, EMPTY_NEW_PROJECT_DRAFT)
                     .validate();
-            projectService.createProject(newProjectDraft);
+            service.createProject(newProjectDraft);
         } catch (Exception e) {
             throw projectManagerException(e, "Creating '" + newProjectDraft.getName() + "' project has failed");
         }
@@ -50,7 +49,7 @@ public class ProjectManager {
             requirements()
                     .require(newProject, EMPTY_NEW_PROJECT)
                     .validate();
-            projectService.createProject(newProject);
+            service.createProject(newProject);
         } catch (Exception e) {
             throw projectManagerException(e, "Creating '" + newProject.getName() + "' project has failed");
         }
@@ -58,8 +57,7 @@ public class ProjectManager {
 
     public List<ExistingProjectDraft> getProjects() {
         try {
-            var projects = projectService.getProjects();
-            return dtoMapper.mapToExistingProjectDrafts(projects);
+            return service.getProjects();
         } catch (Exception e) {
             throw projectManagerException(e, "Getting projects has failed");
         }
@@ -70,8 +68,7 @@ public class ProjectManager {
             requirements()
                     .require(projectIdentifier, EMPTY_PROJECT_IDENTIFIER)
                     .validate();
-            var project = projectService.getProject(projectIdentifier);
-            return dtoMapper.mapToExistingProject(project);
+            return service.getProject(projectIdentifier);
         } catch (Exception e) {
             throw projectManagerException(e, "Getting '" + projectIdentifier + "' project has failed");
         }
@@ -83,9 +80,7 @@ public class ProjectManager {
                     .require(projectIdentifier, EMPTY_PROJECT_IDENTIFIER)
                     .require(updatedProject, EMPTY_UPDATED_PROJECT)
                     .validate();
-            teamService.ensureTeamAssignedToProjectExists(updatedProject);
-            var project = projectService.updateProject(projectIdentifier, updatedProject);
-            teamService.addImplementedProjectToTeam(project);
+            service.updateProject(projectIdentifier, updatedProject);
         } catch (Exception e) {
             throw projectManagerException(e, "Updating '" + projectIdentifier + "' project has failed");
         }
@@ -96,7 +91,7 @@ public class ProjectManager {
             requirements()
                     .require(projectIdentifier, EMPTY_PROJECT_IDENTIFIER)
                     .validate();
-            projectService.startProject(projectIdentifier);
+            service.startProject(projectIdentifier);
         } catch (Exception e) {
             throw projectManagerException(e, "Starting '" + projectIdentifier + "' project has failed");
         }
@@ -108,8 +103,7 @@ public class ProjectManager {
                     .require(projectIdentifier, EMPTY_PROJECT_IDENTIFIER)
                     .require(projectEndingCondition, EMPTY_PROJECT_ENDING_CONDITION)
                     .validate();
-            var project = projectService.endProject(projectIdentifier, projectEndingCondition);
-            teamService.removeImplementedProjectFromTeam(project);
+            service.endProject(projectIdentifier, projectEndingCondition);
         } catch (Exception e) {
             throw projectManagerException(e, "Ending '" + projectIdentifier + "' project has failed");
         }
@@ -120,7 +114,7 @@ public class ProjectManager {
             requirements()
                     .require(newTeam, EMPTY_NEW_TEAM)
                     .validate();
-            teamService.createTeam(newTeam);
+            service.createTeam(newTeam);
         } catch (Exception e) {
             throw projectManagerException(e, "Creating '" + newTeam.getName() + "' team has failed");
         }
@@ -132,7 +126,7 @@ public class ProjectManager {
                     .require(teamName, EMPTY_TEAM_NAME)
                     .require(newTeamMember, EMPTY_NEW_TEAM_MEMBER)
                     .validate();
-            teamService.addMemberToTeam(teamName, newTeamMember);
+            service.addMemberToTeam(teamName, newTeamMember);
         } catch (Exception e) {
             throw projectManagerException(e, "Adding member to '" + teamName + "' team has failed");
         }
@@ -140,8 +134,7 @@ public class ProjectManager {
 
     public List<ExistingTeam> getTeams() {
         try {
-            var teams = teamService.getTeams();
-            return dtoMapper.mapToExistingTeams(teams);
+            return service.getTeams();
         } catch (Exception e) {
             throw projectManagerException(e, "Getting teams has failed");
         }
