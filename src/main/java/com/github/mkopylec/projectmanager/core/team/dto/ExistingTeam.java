@@ -1,6 +1,10 @@
 package com.github.mkopylec.projectmanager.core.team.dto;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.util.List;
+
+import static org.apache.commons.lang3.builder.ToStringStyle.SHORT_PREFIX_STYLE;
 
 public class ExistingTeam {
 
@@ -30,6 +34,16 @@ public class ExistingTeam {
 
     public List<ExistingTeamMember> getMembers() {
         return members;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, SHORT_PREFIX_STYLE)
+                .append("name", name)
+                .append("currentlyImplementedProjects", currentlyImplementedProjects)
+                .append("busy", busy)
+                .append("members", members)
+                .toString();
     }
 
     private ExistingTeam() {

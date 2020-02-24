@@ -1,5 +1,9 @@
 package com.github.mkopylec.projectmanager.core.project.dto;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import static org.apache.commons.lang3.builder.ToStringStyle.SHORT_PREFIX_STYLE;
+
 public class UpdatedProjectFeature {
 
     private String name;
@@ -22,6 +26,15 @@ public class UpdatedProjectFeature {
 
     public Requirement getRequirement() {
         return requirement;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, SHORT_PREFIX_STYLE)
+                .append("name", name)
+                .append("status", status)
+                .append("requirement", requirement)
+                .toString();
     }
 
     private UpdatedProjectFeature() {

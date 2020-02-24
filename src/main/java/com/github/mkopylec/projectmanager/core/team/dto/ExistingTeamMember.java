@@ -1,5 +1,9 @@
 package com.github.mkopylec.projectmanager.core.team.dto;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import static org.apache.commons.lang3.builder.ToStringStyle.SHORT_PREFIX_STYLE;
+
 public class ExistingTeamMember {
 
     private String firstName;
@@ -22,6 +26,15 @@ public class ExistingTeamMember {
 
     public JobPosition getJobPosition() {
         return jobPosition;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, SHORT_PREFIX_STYLE)
+                .append("firstName", firstName)
+                .append("lastName", lastName)
+                .append("jobPosition", jobPosition)
+                .toString();
     }
 
     private ExistingTeamMember() {
