@@ -1,12 +1,12 @@
 package com.github.mkopylec.projectmanager.specification
 
-import com.github.mkopylec.projectmanager.core.NewTeam
-import com.github.mkopylec.projectmanager.core.NewTeamMember
+import com.github.mkopylec.projectmanager.core.team.dto.NewTeam
+import com.github.mkopylec.projectmanager.core.team.dto.NewTeamMember
 import spock.lang.Unroll
 
-import static com.github.mkopylec.projectmanager.core.JobPosition.DEVELOPER
-import static com.github.mkopylec.projectmanager.core.JobPosition.PRODUCT_OWNER
-import static com.github.mkopylec.projectmanager.core.JobPosition.SCRUM_MASTER
+import static com.github.mkopylec.projectmanager.core.team.dto.JobPosition.DEVELOPER
+import static com.github.mkopylec.projectmanager.core.team.dto.JobPosition.PRODUCT_OWNER
+import static com.github.mkopylec.projectmanager.core.team.dto.JobPosition.SCRUM_MASTER
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.OK
@@ -54,7 +54,7 @@ class TeamSpecification extends BasicSpecification {
         with(response) {
             status == UNPROCESSABLE_ENTITY
             with(failure) {
-                message == "Creating '$name' team has failed"
+                message == "Use case 'create team' has failed"
                 codes == ['EMPTY_TEAM_NAME']
             }
         }
@@ -75,7 +75,7 @@ class TeamSpecification extends BasicSpecification {
         with(response) {
             status == UNPROCESSABLE_ENTITY
             with(failure) {
-                message == "Creating 'Team 1' team has failed"
+                message == "Use case 'create team' has failed"
                 codes == ['TEAM_EXISTS']
             }
         }
@@ -86,7 +86,7 @@ class TeamSpecification extends BasicSpecification {
         given:
         def newTeam = new NewTeam('Team 1')
         httpClient.createTeam(newTeam)
-        def member = new NewTeamMember('Mariusz', 'Kopylec', memberJobPosition)
+        def member = new NewTeamMember(null, 'Mariusz', 'Kopylec', memberJobPosition)
 
         when:
         def response = httpClient.addMemberToTeam('Team 1', member)
@@ -122,7 +122,7 @@ class TeamSpecification extends BasicSpecification {
         given:
         def newTeam = new NewTeam('Team 1')
         httpClient.createTeam(newTeam)
-        def member = new NewTeamMember(firstName, 'Kopylec', DEVELOPER)
+        def member = new NewTeamMember(null, firstName, 'Kopylec', DEVELOPER)
 
         when:
         def response = httpClient.addMemberToTeam('Team 1', member)
@@ -131,7 +131,7 @@ class TeamSpecification extends BasicSpecification {
         with(response) {
             status == UNPROCESSABLE_ENTITY
             with(failure) {
-                message == "Adding member to 'Team 1' team has failed"
+                message == "Use case 'add member to team' has failed"
                 codes == ['EMPTY_TEAM_MEMBER_FIRST_NAME']
             }
         }
@@ -145,7 +145,7 @@ class TeamSpecification extends BasicSpecification {
         given:
         def newTeam = new NewTeam('Team 1')
         httpClient.createTeam(newTeam)
-        def member = new NewTeamMember('Mariusz', lastName, DEVELOPER)
+        def member = new NewTeamMember(null, 'Mariusz', lastName, DEVELOPER)
 
         when:
         def response = httpClient.addMemberToTeam('Team 1', member)
@@ -154,7 +154,7 @@ class TeamSpecification extends BasicSpecification {
         with(response) {
             status == UNPROCESSABLE_ENTITY
             with(failure) {
-                message == "Adding member to 'Team 1' team has failed"
+                message == "Use case 'add member to team' has failed"
                 codes == ['EMPTY_TEAM_MEMBER_LAST_NAME']
             }
         }
@@ -167,7 +167,7 @@ class TeamSpecification extends BasicSpecification {
         given:
         def newTeam = new NewTeam('Team 1')
         httpClient.createTeam(newTeam)
-        def member = new NewTeamMember('Mariusz', 'Kopylec', null)
+        def member = new NewTeamMember(null, 'Mariusz', 'Kopylec', null)
 
         when:
         def response = httpClient.addMemberToTeam('Team 1', member)
@@ -176,7 +176,7 @@ class TeamSpecification extends BasicSpecification {
         with(response) {
             status == UNPROCESSABLE_ENTITY
             with(failure) {
-                message == "Adding member to 'Team 1' team has failed"
+                message == "Use case 'add member to team' has failed"
                 codes == ['EMPTY_TEAM_MEMBER_JOB_POSITION']
             }
         }
@@ -184,7 +184,7 @@ class TeamSpecification extends BasicSpecification {
 
     def "Should not add a new member to a nonexistent team"() {
         given:
-        def member = new NewTeamMember('Mariusz', 'Kopylec', DEVELOPER)
+        def member = new NewTeamMember(null, 'Mariusz', 'Kopylec', DEVELOPER)
 
         when:
         def response = httpClient.addMemberToTeam('Team 1', member)
@@ -193,7 +193,7 @@ class TeamSpecification extends BasicSpecification {
         with(response) {
             status == NOT_FOUND
             with(failure) {
-                message == "Adding member to 'Team 1' team has failed"
+                message == "Use case 'add member to team' has failed"
                 codes == ['MISSING_TEAM']
             }
         }

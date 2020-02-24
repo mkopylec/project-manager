@@ -1,84 +1,118 @@
 package com.github.mkopylec.projectmanager.core.project;
 
-import com.github.mkopylec.projectmanager.core.NewProject;
-import com.github.mkopylec.projectmanager.core.NewProjectDraft;
-import com.github.mkopylec.projectmanager.core.ProjectEndingCondition;
-import com.github.mkopylec.projectmanager.core.UpdatedProject;
-import com.github.mkopylec.projectmanager.core.common.EventPublisher;
+import com.github.mkopylec.projectmanager.core.common.UseCaseService;
+import com.github.mkopylec.projectmanager.core.project.dto.ExistingProject;
+import com.github.mkopylec.projectmanager.core.project.dto.ExistingProjectDraft;
+import com.github.mkopylec.projectmanager.core.project.dto.NewProject;
+import com.github.mkopylec.projectmanager.core.project.dto.NewProjectDraft;
+import com.github.mkopylec.projectmanager.core.project.dto.ProjectEndingCondition;
+import com.github.mkopylec.projectmanager.core.project.dto.UpdatedProject;
 
 import java.util.List;
 
 import static com.github.mkopylec.projectmanager.core.common.Utilities.isNotEmpty;
+import static com.github.mkopylec.projectmanager.core.project.AssignedTeamRequirementsValidator.assignedTeamRequirements;
 import static com.github.mkopylec.projectmanager.core.project.FeatureChecker.featureChecker;
-import static com.github.mkopylec.projectmanager.core.project.ProjectRequirementsValidator.requirements;
+import static com.github.mkopylec.projectmanager.core.project.ProjectRequirementsValidator.projectRequirements;
 
-public class ProjectService {
+public class ProjectService extends UseCaseService {
 
-    private ProjectFactory factory;
-    private ProjectRepository repository;
+    private OutgoingDtoMapper dtoMapper = new OutgoingDtoMapper();
+    private ProjectFactory projectFactory;
+    private ProjectRepository projectRepository;
+    private AssignedTeamRepository teamRepository;
     private EventPublisher eventPublisher;
 
-    public ProjectService(UniqueIdentifierGenerator identifierGenerator, ProjectRepository repository, EventPublisher eventPublisher) {
-        factory = new ProjectFactory(identifierGenerator);
-        this.repository = repository;
+    public ProjectService(UniqueIdentifierGenerator identifierGenerator, ProjectRepository projectRepository, AssignedTeamRepository teamRepository, EventPublisher eventPublisher) {
+        projectFactory = new ProjectFactory(identifierGenerator);
+        this.projectRepository = projectRepository;
+        this.teamRepository = teamRepository;
         this.eventPublisher = eventPublisher;
     }
 
-    public Project createProject(NewProjectDraft newProjectDraft) {
-        return factory.createProjectDraft(newProjectDraft);
+    public void createProject(NewProjectDraft newProjectDraft) {
+        executeUseCase("create project draft", newProjectDraft, () -> {
+            var project = projectFactory.createProjectDraft(newProjectDraft);
+            projectRepository.save(project);
+        });
     }
 
-    public Project createProject(NewProject newProject) {
-        return factory.createFullProject(newProject);
+    public void createProject(NewProject newProject) {
+        executeUseCase("create project", newProject, () -> {
+            var project = projectFactory.createFullProject(newProject);
+            projectRepository.save(project);
+        });
     }
 
-    public List<Project> getProjects() {
-        return repository.findAll();
+    public List<ExistingProjectDraft> getProjects() {
+        return executeUseCase("get projects", () -> {
+            var projects = projectRepository.findAll();
+            return dtoMapper.mapToExistingProjectDrafts(projects);
+        });
     }
 
-    public Project getProject(String projectIdentifier) {
-        var project = repository.findByIdentifier(projectIdentifier);
-        requirements()
-                .requireProject(project)
+    public ExistingProject getProject(String projectIdentifier) {
+        return executeUseCase("get project", projectIdentifier, () -> {
+            var project = requireProject(projectIdentifier);
+            return dtoMapper.mapToExistingProject(project);
+        });
+    }
+
+    public void updateProject(UpdatedProject updatedProject) {
+        executeUseCase("update project", updatedProject, () -> {
+            var project = requireProject(updatedProject.getIdentifier());
+            var features = projectFactory.createFeatures(updatedProject.getFeatures());
+            project.rename(updatedProject.getName());
+            project.updateFeatures(features);
+            project.assignTeam(updatedProject.getTeam());
+            var team = getTeamAssignedToProject(project);
+            if (isNotEmpty(team)) {
+                team.addCurrentlyImplementedProject();
+                teamRepository.save(team);
+            }
+            projectRepository.save(project);
+        });
+    }
+
+    public void startProject(String projectIdentifier) {
+        executeUseCase("start project", projectIdentifier, () -> {
+            var project = requireProject(projectIdentifier);
+            project.start();
+            projectRepository.save(project);
+        });
+    }
+
+    public void endProject(ProjectEndingCondition projectEndingCondition) {
+        executeUseCase("end project", projectEndingCondition, () -> {
+            var project = requireProject(projectEndingCondition.getIdentifier());
+            var featureChecker = featureChecker(projectEndingCondition.isOnlyNecessaryFeatureDone());
+            var endedProject = project.end(featureChecker);
+            var team = getTeamAssignedToProject(project);
+            if (isNotEmpty(team)) {
+                team.removeCurrentlyImplementedProject();
+                teamRepository.save(team);
+            }
+            projectRepository.save(project);
+            eventPublisher.publish(endedProject);
+        });
+    }
+
+    private Project requireProject(String projectIdentifier) {
+        var project = projectRepository.findByIdentifier(projectIdentifier);
+        projectRequirements()
+                .require(project)
                 .validate();
         return project;
     }
 
-    public Project getUpdatedProject(String projectIdentifier, UpdatedProject updatedProject) {
-        var project = repository.findByIdentifier(projectIdentifier);
-        requirements()
-                .requireProject(project)
-                .validate();
-        var features = factory.createFeatures(updatedProject.getFeatures());
-        project.rename(updatedProject.getName());
-        project.updateFeatures(features);
-        project.assignTeam(updatedProject.getTeam());
-        return project;
-    }
-
-    public Project getStartedProject(String projectIdentifier) {
-        var project = repository.findByIdentifier(projectIdentifier);
-        requirements()
-                .requireProject(project)
-                .validate();
-        project.start();
-        return project;
-    }
-
-    public Project getEndedProject(String projectIdentifier, ProjectEndingCondition projectEndingCondition) {
-        var project = repository.findByIdentifier(projectIdentifier);
-        requirements()
-                .requireProject(project)
-                .validate();
-        var featureChecker = featureChecker(projectEndingCondition.isOnlyNecessaryFeatureDone());
-        var endedProject = project.end(featureChecker);
-        eventPublisher.publish(endedProject);
-        return project;
-    }
-
-    public void saveProject(Project project) {
-        if (isNotEmpty(project)) {
-            repository.save(project);
+    private AssignedTeam getTeamAssignedToProject(Project project) {
+        if (project.hasNoTeamAssigned()) {
+            return null;
         }
+        var team = teamRepository.findByName(project.getAssignedTeam());
+        assignedTeamRequirements()
+                .require(team)
+                .validate();
+        return team;
     }
 }

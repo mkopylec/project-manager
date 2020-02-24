@@ -1,30 +1,30 @@
 package com.github.mkopylec.projectmanager.core.project;
 
-import com.github.mkopylec.projectmanager.core.common.RequirementsValidator;
+import com.github.mkopylec.projectmanager.core.common.Validator;
 
 import java.util.List;
 
 import static com.github.mkopylec.projectmanager.core.common.Utilities.isEmpty;
 import static com.github.mkopylec.projectmanager.core.common.Utilities.neverNull;
-import static com.github.mkopylec.projectmanager.core.project.ErrorCode.EMPTY_PROJECT_FEATURE;
-import static com.github.mkopylec.projectmanager.core.project.ErrorCode.EMPTY_PROJECT_FEATURE_NAME;
-import static com.github.mkopylec.projectmanager.core.project.ErrorCode.EMPTY_PROJECT_FEATURE_REQUIREMENT;
-import static com.github.mkopylec.projectmanager.core.project.ErrorCode.EMPTY_PROJECT_FEATURE_STATUS;
-import static com.github.mkopylec.projectmanager.core.project.ErrorCode.EMPTY_PROJECT_IDENTIFIER;
-import static com.github.mkopylec.projectmanager.core.project.ErrorCode.EMPTY_PROJECT_NAME;
-import static com.github.mkopylec.projectmanager.core.project.ErrorCode.EMPTY_PROJECT_STATUS;
-import static com.github.mkopylec.projectmanager.core.project.ErrorCode.EMPTY_TEAM_ASSIGNED_TO_PROJECT;
-import static com.github.mkopylec.projectmanager.core.project.ErrorCode.MISSING_PROJECT;
-import static com.github.mkopylec.projectmanager.core.project.ErrorCode.PROJECT_STATUS_DIFFERENT_THAN_IN_PROGRESS;
-import static com.github.mkopylec.projectmanager.core.project.ErrorCode.PROJECT_STATUS_DIFFERENT_THAN_TO_DO;
-import static com.github.mkopylec.projectmanager.core.project.ErrorCode.UNDONE_PROJECT_FEATURE;
-import static com.github.mkopylec.projectmanager.core.project.ErrorCode.UNDONE_PROJECT_NECESSARY_FEATURE;
+import static com.github.mkopylec.projectmanager.core.project.ProjectErrorCode.EMPTY_PROJECT_ASSIGNED_TEAM;
+import static com.github.mkopylec.projectmanager.core.project.ProjectErrorCode.EMPTY_PROJECT_FEATURE;
+import static com.github.mkopylec.projectmanager.core.project.ProjectErrorCode.EMPTY_PROJECT_FEATURE_NAME;
+import static com.github.mkopylec.projectmanager.core.project.ProjectErrorCode.EMPTY_PROJECT_FEATURE_REQUIREMENT;
+import static com.github.mkopylec.projectmanager.core.project.ProjectErrorCode.EMPTY_PROJECT_FEATURE_STATUS;
+import static com.github.mkopylec.projectmanager.core.project.ProjectErrorCode.EMPTY_PROJECT_IDENTIFIER;
+import static com.github.mkopylec.projectmanager.core.project.ProjectErrorCode.EMPTY_PROJECT_NAME;
+import static com.github.mkopylec.projectmanager.core.project.ProjectErrorCode.EMPTY_PROJECT_STATUS;
+import static com.github.mkopylec.projectmanager.core.project.ProjectErrorCode.MISSING_PROJECT;
+import static com.github.mkopylec.projectmanager.core.project.ProjectErrorCode.PROJECT_STATUS_DIFFERENT_THAN_IN_PROGRESS;
+import static com.github.mkopylec.projectmanager.core.project.ProjectErrorCode.PROJECT_STATUS_DIFFERENT_THAN_TO_DO;
+import static com.github.mkopylec.projectmanager.core.project.ProjectErrorCode.UNDONE_PROJECT_FEATURE;
+import static com.github.mkopylec.projectmanager.core.project.ProjectErrorCode.UNDONE_PROJECT_NECESSARY_FEATURE;
 import static com.github.mkopylec.projectmanager.core.project.Status.IN_PROGRESS;
 import static com.github.mkopylec.projectmanager.core.project.Status.TO_DO;
 
-class ProjectRequirementsValidator extends RequirementsValidator {
+class ProjectRequirementsValidator extends Validator<ProjectErrorCode> {
 
-    static ProjectRequirementsValidator requirements() {
+    static ProjectRequirementsValidator projectRequirements() {
         return new ProjectRequirementsValidator();
     }
 
@@ -32,32 +32,20 @@ class ProjectRequirementsValidator extends RequirementsValidator {
         super(ProjectException::new);
     }
 
-    ProjectRequirementsValidator requireProject(Project project) {
-        if (isEmpty(project)) {
-            addError(MISSING_PROJECT);
-        }
-        return this;
+    ProjectRequirementsValidator require(Project project) {
+        return require(project, MISSING_PROJECT);
     }
 
     ProjectRequirementsValidator requireIdentifier(String identifier) {
-        if (isEmpty(identifier)) {
-            addError(EMPTY_PROJECT_IDENTIFIER);
-        }
-        return this;
+        return require(identifier, EMPTY_PROJECT_IDENTIFIER);
     }
 
     ProjectRequirementsValidator requireName(String name) {
-        if (isEmpty(name)) {
-            addError(EMPTY_PROJECT_NAME);
-        }
-        return this;
+        return require(name, EMPTY_PROJECT_NAME);
     }
 
-    ProjectRequirementsValidator requireValidStatus(Status status) {
-        if (isEmpty(status)) {
-            addError(EMPTY_PROJECT_STATUS);
-        }
-        return this;
+    ProjectRequirementsValidator requireStatus(Status status) {
+        return require(status, EMPTY_PROJECT_STATUS);
     }
 
     ProjectRequirementsValidator requireValidFeatures(List<Feature> features) {
@@ -98,10 +86,7 @@ class ProjectRequirementsValidator extends RequirementsValidator {
     }
 
     ProjectRequirementsValidator requireAssignedTeam(String assignedTeam) {
-        if (isEmpty(assignedTeam)) {
-            addError(EMPTY_TEAM_ASSIGNED_TO_PROJECT);
-        }
-        return this;
+        return require(assignedTeam, EMPTY_PROJECT_ASSIGNED_TEAM);
     }
 
     ProjectRequirementsValidator requireToDoStatus(Status status) {

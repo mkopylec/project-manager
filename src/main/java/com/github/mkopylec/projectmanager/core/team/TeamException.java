@@ -1,13 +1,20 @@
 package com.github.mkopylec.projectmanager.core.team;
 
-import com.github.mkopylec.projectmanager.core.common.RequirementsValidationException;
 import com.github.mkopylec.projectmanager.core.common.ValidationErrorCode;
+import com.github.mkopylec.projectmanager.core.common.ValidationException;
 
 import java.util.List;
 
-class TeamException extends RequirementsValidationException {
+import static com.github.mkopylec.projectmanager.core.team.TeamErrorCode.MISSING_TEAM;
 
-    TeamException(List<Enum<? extends ValidationErrorCode>> errorCodes) {
+class TeamException extends ValidationException {
+
+    TeamException(List<? extends Enum<? extends ValidationErrorCode>> errorCodes) {
         super(errorCodes);
+    }
+
+    @Override
+    protected boolean indicatesMissingEntity() {
+        return containsErrorCode(MISSING_TEAM);
     }
 }

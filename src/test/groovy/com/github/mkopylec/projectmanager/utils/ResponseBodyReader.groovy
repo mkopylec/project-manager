@@ -2,10 +2,10 @@ package com.github.mkopylec.projectmanager.utils
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.json.JsonMapper
-import com.github.mkopylec.projectmanager.core.ExistingProject
-import com.github.mkopylec.projectmanager.core.ExistingProjectDraft
-import com.github.mkopylec.projectmanager.core.ExistingTeam
-import com.github.mkopylec.projectmanager.core.Failure
+import com.github.mkopylec.projectmanager.core.project.dto.ExistingProject
+import com.github.mkopylec.projectmanager.core.project.dto.ExistingProjectDraft
+import com.github.mkopylec.projectmanager.core.team.dto.ExistingTeam
+import com.github.mkopylec.projectmanager.presentation.Failure
 import org.springframework.http.ResponseEntity
 
 class ResponseBodyReader {

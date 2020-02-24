@@ -4,7 +4,7 @@ import java.util.List;
 
 import static com.github.mkopylec.projectmanager.core.common.Utilities.allEmpty;
 import static com.github.mkopylec.projectmanager.core.common.Utilities.neverNull;
-import static com.github.mkopylec.projectmanager.core.team.TeamRequirementsValidator.requirements;
+import static com.github.mkopylec.projectmanager.core.team.TeamRequirementsValidator.teamRequirements;
 import static java.util.Collections.unmodifiableList;
 
 public class Team {
@@ -20,7 +20,7 @@ public class Team {
     }
 
     private Team(String name, int currentlyImplementedProjects, List<Employee> members) {
-        requirements()
+        teamRequirements()
                 .requireName(name)
                 .requireValidCurrentlyImplementedProjects(currentlyImplementedProjects)
                 .requireValidMembers(members)
@@ -30,38 +30,30 @@ public class Team {
         this.members = neverNull(members);
     }
 
-    public String getName() {
+    String getName() {
         return name;
     }
 
-    public int getCurrentlyImplementedProjects() {
+    int getCurrentlyImplementedProjects() {
         return currentlyImplementedProjects;
     }
 
-    public List<Employee> getMembers() {
+    List<Employee> getMembers() {
         return unmodifiableList(members);
     }
 
-    public boolean isBusy() {
+    boolean isBusy() {
         return currentlyImplementedProjects > BUSY_TEAM_THRESHOLD;
     }
 
-    void addCurrentlyImplementedProject() {
-        currentlyImplementedProjects++;
-    }
-
-    void removeCurrentlyImplementedProject() {
-        currentlyImplementedProjects--;
-    }
-
     void addMember(Employee member) {
-        requirements()
+        teamRequirements()
                 .requireValidMember(member)
                 .validate();
         members.add(member);
     }
 
-    public static class TeamPersistenceFactory {
+    public static class TeamPersistenceHelper {
 
         public Team createTeam(String name, int currentlyImplementedProjects, List<Employee> members) {
             try {
@@ -69,6 +61,18 @@ public class Team {
             } catch (Exception e) {
                 throw new IllegalStateException("Error creating team from persistent state", e);
             }
+        }
+
+        public String getName(Team team) {
+            return team.name;
+        }
+
+        public int getCurrentlyImplementedProjects(Team team) {
+            return team.currentlyImplementedProjects;
+        }
+
+        public List<Employee> getMembers(Team team) {
+            return unmodifiableList(team.members);
         }
     }
 }

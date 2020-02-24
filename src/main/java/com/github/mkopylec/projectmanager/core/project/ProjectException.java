@@ -1,13 +1,20 @@
 package com.github.mkopylec.projectmanager.core.project;
 
-import com.github.mkopylec.projectmanager.core.common.RequirementsValidationException;
 import com.github.mkopylec.projectmanager.core.common.ValidationErrorCode;
+import com.github.mkopylec.projectmanager.core.common.ValidationException;
 
 import java.util.List;
 
-class ProjectException extends RequirementsValidationException {
+import static com.github.mkopylec.projectmanager.core.project.ProjectErrorCode.MISSING_PROJECT;
 
-    ProjectException(List<Enum<? extends ValidationErrorCode>> errorCodes) {
+class ProjectException extends ValidationException {
+
+    ProjectException(List<? extends Enum<? extends ValidationErrorCode>> errorCodes) {
         super(errorCodes);
+    }
+
+    @Override
+    protected boolean indicatesMissingEntity() {
+        return containsErrorCode(MISSING_PROJECT);
     }
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import static com.github.mkopylec.projectmanager.core.common.Utilities.allEmpty;
 import static com.github.mkopylec.projectmanager.core.common.Utilities.isEmpty;
 import static com.github.mkopylec.projectmanager.core.common.Utilities.neverNull;
-import static com.github.mkopylec.projectmanager.core.project.ProjectRequirementsValidator.requirements;
+import static com.github.mkopylec.projectmanager.core.project.ProjectRequirementsValidator.projectRequirements;
 import static com.github.mkopylec.projectmanager.core.project.Status.DONE;
 import static com.github.mkopylec.projectmanager.core.project.Status.IN_PROGRESS;
 import static com.github.mkopylec.projectmanager.core.project.Status.TO_DO;
@@ -28,10 +28,10 @@ public class Project {
     }
 
     private Project(String identifier, String name, Status status, String assignedTeam, List<Feature> features) {
-        requirements()
+        projectRequirements()
                 .requireIdentifier(identifier)
                 .requireName(name)
-                .requireValidStatus(status)
+                .requireStatus(status)
                 .requireValidFeatures(features)
                 .validate();
         this.identifier = identifier;
@@ -41,32 +41,32 @@ public class Project {
         this.features = neverNull(features);
     }
 
-    public String getIdentifier() {
+    String getIdentifier() {
         return identifier;
     }
 
-    public String getName() {
+    String getName() {
         return name;
     }
 
-    public Status getStatus() {
+    Status getStatus() {
         return status;
     }
 
-    public String getAssignedTeam() {
+    String getAssignedTeam() {
         return assignedTeam;
     }
 
-    public boolean hasNoTeamAssigned() {
+    boolean hasNoTeamAssigned() {
         return isEmpty(assignedTeam);
     }
 
-    public List<Feature> getFeatures() {
+    List<Feature> getFeatures() {
         return unmodifiableList(features);
     }
 
     void rename(String name) {
-        requirements()
+        projectRequirements()
                 .requireName(name)
                 .validate();
         this.name = name;
@@ -77,14 +77,14 @@ public class Project {
     }
 
     void updateFeatures(List<Feature> features) {
-        requirements()
+        projectRequirements()
                 .requireValidFeatures(features)
                 .validate();
         this.features = neverNull(features);
     }
 
     void start() {
-        requirements()
+        projectRequirements()
                 .requireAssignedTeam(assignedTeam)
                 .requireToDoStatus(status)
                 .validate();
@@ -92,7 +92,7 @@ public class Project {
     }
 
     EndedProject end(FeatureChecker featureChecker) {
-        requirements()
+        projectRequirements()
                 .requireInProgressStatus(status)
                 .validate();
         featureChecker.checkFeatures(features);
@@ -100,7 +100,7 @@ public class Project {
         return new EndedProject(identifier);
     }
 
-    public static class ProjectPersistenceFactory {
+    public static class ProjectPersistenceHelper {
 
         public Project createProject(String identifier, String name, Status status, String assignedTeam, List<Feature> features) {
             try {
@@ -108,6 +108,26 @@ public class Project {
             } catch (Exception e) {
                 throw new IllegalStateException("Error creating project from persistent state", e);
             }
+        }
+
+        public String getIdentifier(Project project) {
+            return project.identifier;
+        }
+
+        public String getName(Project project) {
+            return project.name;
+        }
+
+        public Status getStatus(Project project) {
+            return project.status;
+        }
+
+        public String getAssignedTeam(Project project) {
+            return project.assignedTeam;
+        }
+
+        public List<Feature> getFeatures(Project project) {
+            return unmodifiableList(project.features);
         }
     }
 }

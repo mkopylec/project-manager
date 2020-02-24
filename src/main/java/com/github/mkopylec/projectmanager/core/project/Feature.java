@@ -26,15 +26,15 @@ public class Feature {
         this.requirement = requirement;
     }
 
-    public String getName() {
+    String getName() {
         return name;
     }
 
-    public Status getStatus() {
+    Status getStatus() {
         return status;
     }
 
-    public Requirement getRequirement() {
+    Requirement getRequirement() {
         return requirement;
     }
 
@@ -58,10 +58,22 @@ public class Feature {
         return requirement == NECESSARY && isUndone();
     }
 
-    public static class FeaturePersistenceFactory {
+    public static class FeaturePersistenceHelper {
 
         public Feature createFeature(String name, Status status, Requirement requirement) {
             return allEmpty(name, status, requirement) ? null : new Feature(name, status, requirement);
+        }
+
+        public String getName(Feature feature) {
+            return feature.name;
+        }
+
+        public Status getStatus(Feature feature) {
+            return feature.status;
+        }
+
+        public Requirement getRequirement(Feature feature) {
+            return feature.requirement;
         }
     }
 }

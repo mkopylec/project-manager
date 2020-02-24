@@ -1,9 +1,9 @@
 package com.github.mkopylec.projectmanager.infrastructure.persistence;
 
 import com.github.mkopylec.projectmanager.core.project.Feature;
-import com.github.mkopylec.projectmanager.core.project.Feature.FeaturePersistenceFactory;
+import com.github.mkopylec.projectmanager.core.project.Feature.FeaturePersistenceHelper;
 import com.github.mkopylec.projectmanager.core.project.Project;
-import com.github.mkopylec.projectmanager.core.project.Project.ProjectPersistenceFactory;
+import com.github.mkopylec.projectmanager.core.project.Project.ProjectPersistenceHelper;
 import com.github.mkopylec.projectmanager.core.project.Requirement;
 import com.github.mkopylec.projectmanager.core.project.Status;
 
@@ -13,16 +13,16 @@ import static com.github.mkopylec.projectmanager.core.common.Utilities.toEnum;
 
 class ProjectPersistenceMapper {
 
-    private ProjectPersistenceFactory projectFactory = new ProjectPersistenceFactory();
-    private FeaturePersistenceFactory featureFactory = new FeaturePersistenceFactory();
+    private ProjectPersistenceHelper projectHelper = new ProjectPersistenceHelper();
+    private FeaturePersistenceHelper featureHelper = new FeaturePersistenceHelper();
 
     ProjectDocument map(Project project) {
         return new ProjectDocument()
-                .setIdentifier(project.getIdentifier())
-                .setName(project.getName())
-                .setStatus(project.getStatus().name())
-                .setAssignedTeam(project.getAssignedTeam())
-                .setFeatures(mapElements(project.getFeatures(), this::map));
+                .setIdentifier(projectHelper.getIdentifier(project))
+                .setName(projectHelper.getName(project))
+                .setStatus(projectHelper.getStatus(project).name())
+                .setAssignedTeam(projectHelper.getAssignedTeam(project))
+                .setFeatures(mapElements(projectHelper.getFeatures(project), this::map));
     }
 
     Project map(ProjectDocument document) {
@@ -31,14 +31,14 @@ class ProjectPersistenceMapper {
         }
         var status = toEnum(document.getStatus(), Status.class);
         var features = mapElements(document.getFeatures(), this::map);
-        return projectFactory.createProject(document.getIdentifier(), document.getName(), status, document.getAssignedTeam(), features);
+        return projectHelper.createProject(document.getIdentifier(), document.getName(), status, document.getAssignedTeam(), features);
     }
 
     private FeatureDocument map(Feature feature) {
         return new FeatureDocument()
-                .setName(feature.getName())
-                .setStatus(feature.getStatus().name())
-                .setRequirement(feature.getRequirement().name());
+                .setName(featureHelper.getName(feature))
+                .setStatus(featureHelper.getStatus(feature).name())
+                .setRequirement(featureHelper.getRequirement(feature).name());
     }
 
     private Feature map(FeatureDocument document) {
@@ -47,6 +47,6 @@ class ProjectPersistenceMapper {
         }
         var status = toEnum(document.getStatus(), Status.class);
         var requirement = toEnum(document.getRequirement(), Requirement.class);
-        return featureFactory.createFeature(document.getName(), status, requirement);
+        return featureHelper.createFeature(document.getName(), status, requirement);
     }
 }

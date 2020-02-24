@@ -1,0 +1,20 @@
+package com.github.mkopylec.projectmanager.core.project;
+
+import com.github.mkopylec.projectmanager.core.common.ValidationErrorCode;
+
+enum ProjectErrorCode implements ValidationErrorCode {
+
+    EMPTY_PROJECT_IDENTIFIER,
+    EMPTY_PROJECT_NAME,
+    EMPTY_PROJECT_STATUS,
+    EMPTY_PROJECT_FEATURE,
+    EMPTY_PROJECT_FEATURE_NAME,
+    EMPTY_PROJECT_FEATURE_STATUS,
+    EMPTY_PROJECT_FEATURE_REQUIREMENT,
+    MISSING_PROJECT,
+    PROJECT_STATUS_DIFFERENT_THAN_TO_DO,
+    PROJECT_STATUS_DIFFERENT_THAN_IN_PROGRESS,
+    UNDONE_PROJECT_NECESSARY_FEATURE,
+    UNDONE_PROJECT_FEATURE,
+    EMPTY_PROJECT_ASSIGNED_TEAM
+}

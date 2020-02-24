@@ -1,7 +1,7 @@
 package com.github.mkopylec.projectmanager.core.team;
 
-import com.github.mkopylec.projectmanager.core.NewTeam;
-import com.github.mkopylec.projectmanager.core.NewTeamMember;
+import com.github.mkopylec.projectmanager.core.team.dto.NewTeam;
+import com.github.mkopylec.projectmanager.core.team.dto.NewTeamMember;
 
 import static com.github.mkopylec.projectmanager.core.common.Utilities.convertEnum;
 import static com.github.mkopylec.projectmanager.core.team.Employee.employee;

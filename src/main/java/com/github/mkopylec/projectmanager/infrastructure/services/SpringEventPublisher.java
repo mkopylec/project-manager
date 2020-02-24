@@ -1,6 +1,7 @@
 package com.github.mkopylec.projectmanager.infrastructure.services;
 
-import com.github.mkopylec.projectmanager.core.common.EventPublisher;
+import com.github.mkopylec.projectmanager.core.project.EndedProject;
+import com.github.mkopylec.projectmanager.core.project.EventPublisher;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +18,7 @@ class SpringEventPublisher extends EventPublisher {
     }
 
     @Override
-    public void publish(Object event) {
+    protected void publish(EndedProject event) {
         publisher.publishEvent(event);
     }
 }

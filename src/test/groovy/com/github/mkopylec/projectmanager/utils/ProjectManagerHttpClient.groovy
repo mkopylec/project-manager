@@ -1,14 +1,14 @@
 package com.github.mkopylec.projectmanager.utils
 
-import com.github.mkopylec.projectmanager.core.ExistingProject
-import com.github.mkopylec.projectmanager.core.ExistingProjectDraft
-import com.github.mkopylec.projectmanager.core.ExistingTeam
-import com.github.mkopylec.projectmanager.core.NewProject
-import com.github.mkopylec.projectmanager.core.NewProjectDraft
-import com.github.mkopylec.projectmanager.core.NewTeam
-import com.github.mkopylec.projectmanager.core.NewTeamMember
-import com.github.mkopylec.projectmanager.core.ProjectEndingCondition
-import com.github.mkopylec.projectmanager.core.UpdatedProject
+import com.github.mkopylec.projectmanager.core.project.dto.ExistingProject
+import com.github.mkopylec.projectmanager.core.project.dto.ExistingProjectDraft
+import com.github.mkopylec.projectmanager.core.project.dto.NewProject
+import com.github.mkopylec.projectmanager.core.project.dto.NewProjectDraft
+import com.github.mkopylec.projectmanager.core.project.dto.ProjectEndingCondition
+import com.github.mkopylec.projectmanager.core.project.dto.UpdatedProject
+import com.github.mkopylec.projectmanager.core.team.dto.ExistingTeam
+import com.github.mkopylec.projectmanager.core.team.dto.NewTeam
+import com.github.mkopylec.projectmanager.core.team.dto.NewTeamMember
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod

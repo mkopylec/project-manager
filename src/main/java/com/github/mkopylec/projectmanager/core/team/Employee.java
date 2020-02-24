@@ -19,15 +19,15 @@ public class Employee {
         this.jobPosition = jobPosition;
     }
 
-    public String getFirstName() {
+    String getFirstName() {
         return firstName;
     }
 
-    public String getLastName() {
+    String getLastName() {
         return lastName;
     }
 
-    public JobPosition getJobPosition() {
+    JobPosition getJobPosition() {
         return jobPosition;
     }
 
@@ -43,10 +43,22 @@ public class Employee {
         return isEmpty(jobPosition);
     }
 
-    public static class EmployeePersistenceFactory {
+    public static class EmployeePersistenceHelper {
 
         public Employee createEmployee(String firstName, String lastName, JobPosition jobPosition) {
             return allEmpty(firstName, lastName, jobPosition) ? null : new Employee(firstName, lastName, jobPosition);
+        }
+
+        public String getFirstName(Employee employee) {
+            return employee.firstName;
+        }
+
+        public String getLastName(Employee employee) {
+            return employee.lastName;
+        }
+
+        public JobPosition getJobPosition(Employee employee) {
+            return employee.jobPosition;
         }
     }
 }

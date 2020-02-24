@@ -1,9 +1,9 @@
 package com.github.mkopylec.projectmanager.core.project;
 
-import com.github.mkopylec.projectmanager.core.NewFeature;
-import com.github.mkopylec.projectmanager.core.NewProject;
-import com.github.mkopylec.projectmanager.core.NewProjectDraft;
-import com.github.mkopylec.projectmanager.core.UpdatedProjectFeature;
+import com.github.mkopylec.projectmanager.core.project.dto.NewFeature;
+import com.github.mkopylec.projectmanager.core.project.dto.NewProject;
+import com.github.mkopylec.projectmanager.core.project.dto.NewProjectDraft;
+import com.github.mkopylec.projectmanager.core.project.dto.UpdatedProjectFeature;
 
 import java.util.List;
 

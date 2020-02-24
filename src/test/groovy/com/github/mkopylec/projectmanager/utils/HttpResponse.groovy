@@ -1,6 +1,6 @@
 package com.github.mkopylec.projectmanager.utils
 
-import com.github.mkopylec.projectmanager.core.Failure
+import com.github.mkopylec.projectmanager.presentation.Failure
 import org.springframework.http.HttpStatus
 
 class HttpResponse<B> {

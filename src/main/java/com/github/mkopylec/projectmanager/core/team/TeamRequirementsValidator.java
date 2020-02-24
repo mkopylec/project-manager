@@ -1,25 +1,23 @@
 package com.github.mkopylec.projectmanager.core.team;
 
-import com.github.mkopylec.projectmanager.core.common.RequirementsValidator;
+import com.github.mkopylec.projectmanager.core.common.Validator;
 
 import java.util.List;
 
 import static com.github.mkopylec.projectmanager.core.common.Utilities.isEmpty;
-import static com.github.mkopylec.projectmanager.core.common.Utilities.isNotEmpty;
 import static com.github.mkopylec.projectmanager.core.common.Utilities.neverNull;
-import static com.github.mkopylec.projectmanager.core.team.ErrorCode.EMPTY_TEAM_MEMBER;
-import static com.github.mkopylec.projectmanager.core.team.ErrorCode.EMPTY_TEAM_MEMBER_FIRST_NAME;
-import static com.github.mkopylec.projectmanager.core.team.ErrorCode.EMPTY_TEAM_MEMBER_JOB_POSITION;
-import static com.github.mkopylec.projectmanager.core.team.ErrorCode.EMPTY_TEAM_MEMBER_LAST_NAME;
-import static com.github.mkopylec.projectmanager.core.team.ErrorCode.EMPTY_TEAM_NAME;
-import static com.github.mkopylec.projectmanager.core.team.ErrorCode.INVALID_NUMBER_OF_CURRENTLY_IMPLEMENTED_PROJECT_BY_TEAM;
-import static com.github.mkopylec.projectmanager.core.team.ErrorCode.MISSING_TEAM;
-import static com.github.mkopylec.projectmanager.core.team.ErrorCode.MISSING_TEAM_ASSIGNED_TO_PROJECT;
-import static com.github.mkopylec.projectmanager.core.team.ErrorCode.TEAM_EXISTS;
+import static com.github.mkopylec.projectmanager.core.team.TeamErrorCode.EMPTY_TEAM_MEMBER;
+import static com.github.mkopylec.projectmanager.core.team.TeamErrorCode.EMPTY_TEAM_MEMBER_FIRST_NAME;
+import static com.github.mkopylec.projectmanager.core.team.TeamErrorCode.EMPTY_TEAM_MEMBER_JOB_POSITION;
+import static com.github.mkopylec.projectmanager.core.team.TeamErrorCode.EMPTY_TEAM_MEMBER_LAST_NAME;
+import static com.github.mkopylec.projectmanager.core.team.TeamErrorCode.EMPTY_TEAM_NAME;
+import static com.github.mkopylec.projectmanager.core.team.TeamErrorCode.INVALID_NUMBER_OF_CURRENTLY_IMPLEMENTED_PROJECT_BY_TEAM;
+import static com.github.mkopylec.projectmanager.core.team.TeamErrorCode.MISSING_TEAM;
+import static com.github.mkopylec.projectmanager.core.team.TeamErrorCode.TEAM_EXISTS;
 
-class TeamRequirementsValidator extends RequirementsValidator {
+class TeamRequirementsValidator extends Validator<TeamErrorCode> {
 
-    static TeamRequirementsValidator requirements() {
+    static TeamRequirementsValidator teamRequirements() {
         return new TeamRequirementsValidator();
     }
 
@@ -28,31 +26,15 @@ class TeamRequirementsValidator extends RequirementsValidator {
     }
 
     TeamRequirementsValidator requireTeam(Team team) {
-        if (isEmpty(team)) {
-            addError(MISSING_TEAM);
-        }
-        return this;
-    }
-
-    TeamRequirementsValidator requireTeamAssignedToProject(Team team) {
-        if (isEmpty(team)) {
-            addError(MISSING_TEAM_ASSIGNED_TO_PROJECT);
-        }
-        return this;
+        return require(team, MISSING_TEAM);
     }
 
     TeamRequirementsValidator requireNoTeam(Team team) {
-        if (isNotEmpty(team)) {
-            addError(TEAM_EXISTS);
-        }
-        return this;
+        return requireNo(team, TEAM_EXISTS);
     }
 
     TeamRequirementsValidator requireName(String name) {
-        if (isEmpty(name)) {
-            addError(EMPTY_TEAM_NAME);
-        }
-        return this;
+        return require(name, EMPTY_TEAM_NAME);
     }
 
     TeamRequirementsValidator requireValidCurrentlyImplementedProjects(int currentlyImplementedProjects) {

@@ -1,9 +1,9 @@
 package com.github.mkopylec.projectmanager.presentation;
 
-import com.github.mkopylec.projectmanager.core.ExistingTeam;
-import com.github.mkopylec.projectmanager.core.NewTeam;
-import com.github.mkopylec.projectmanager.core.NewTeamMember;
-import com.github.mkopylec.projectmanager.core.ProjectManager;
+import com.github.mkopylec.projectmanager.core.team.TeamService;
+import com.github.mkopylec.projectmanager.core.team.dto.ExistingTeam;
+import com.github.mkopylec.projectmanager.core.team.dto.NewTeam;
+import com.github.mkopylec.projectmanager.core.team.dto.NewTeamMember;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,27 +24,27 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("/teams")
 class TeamController {
 
-    private ProjectManager projectManager;
+    private TeamService teamService;
 
-    TeamController(ProjectManager projectManager) {
-        this.projectManager = projectManager;
+    TeamController(TeamService teamService) {
+        this.teamService = teamService;
     }
 
     @ResponseStatus(CREATED)
     @PostMapping
     void createTeam(@RequestBody NewTeam newTeam) {
-        projectManager.createTeam(newTeam);
+        teamService.createTeam(newTeam);
     }
 
     @ResponseStatus(CREATED)
     @PostMapping("/{teamName}/members")
     void addMemberToTeam(@PathVariable String teamName, @RequestBody NewTeamMember newTeamMember) {
-        projectManager.addMemberToTeam(teamName, newTeamMember);
+        teamService.addMemberToTeam(new NewTeamMember(teamName, newTeamMember.getFirstName(), newTeamMember.getLastName(), newTeamMember.getJobPosition()));
     }
 
     @ResponseStatus(OK)
     @GetMapping
     List<ExistingTeam> getTeams() {
-        return projectManager.getTeams();
+        return teamService.getTeams();
     }
 }
