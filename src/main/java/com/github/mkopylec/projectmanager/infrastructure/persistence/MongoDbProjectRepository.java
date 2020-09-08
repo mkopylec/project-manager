@@ -5,10 +5,12 @@ import com.github.mkopylec.projectmanager.core.project.ProjectRepository;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.github.mkopylec.projectmanager.core.common.Utilities.isEmpty;
 import static com.github.mkopylec.projectmanager.core.common.Utilities.mapElements;
+import static java.lang.ThreadLocal.withInitial;
 
 /**
  * Secondary adapter
@@ -18,6 +20,7 @@ class MongoDbProjectRepository extends ProjectRepository {
 
     private MongoTemplate database;
     private ProjectPersistenceMapper mapper = new ProjectPersistenceMapper();
+    private ThreadLocal<List<Project>> projectsToSave = withInitial(ArrayList::new);
 
     MongoDbProjectRepository(MongoTemplate database) {
         this.database = database;
@@ -40,7 +43,19 @@ class MongoDbProjectRepository extends ProjectRepository {
 
     @Override
     protected void save(Project project) {
-        var document = mapper.map(project);
-        database.save(document);
+        projectsToSave.get().add(project);
+    }
+
+    @Override
+    public void commit() {
+        projectsToSave.get().forEach(project -> {
+            var document = mapper.map(project);
+            database.save(document);
+        });
+    }
+
+    @Override
+    public void dispose() {
+        projectsToSave.remove();
     }
 }

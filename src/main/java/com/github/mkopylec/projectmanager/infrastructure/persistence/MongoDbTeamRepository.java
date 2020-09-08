@@ -5,10 +5,12 @@ import com.github.mkopylec.projectmanager.core.team.TeamRepository;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.github.mkopylec.projectmanager.core.common.Utilities.isEmpty;
 import static com.github.mkopylec.projectmanager.core.common.Utilities.mapElements;
+import static java.lang.ThreadLocal.withInitial;
 
 /**
  * Secondary adapter
@@ -18,6 +20,7 @@ class MongoDbTeamRepository extends TeamRepository {
 
     private MongoTemplate database;
     private TeamPersistenceMapper mapper = new TeamPersistenceMapper();
+    private ThreadLocal<List<Team>> modifiedTeams = withInitial(ArrayList::new);
 
     MongoDbTeamRepository(MongoTemplate database) {
         this.database = database;
@@ -40,7 +43,19 @@ class MongoDbTeamRepository extends TeamRepository {
 
     @Override
     protected void save(Team team) {
-        var document = mapper.map(team);
-        database.save(document);
+        modifiedTeams.get().add(team);
+    }
+
+    @Override
+    public void commit() {
+        modifiedTeams.get().forEach(team -> {
+            var document = mapper.map(team);
+            database.save(document);
+        });
+    }
+
+    @Override
+    public void dispose() {
+        modifiedTeams.remove();
     }
 }

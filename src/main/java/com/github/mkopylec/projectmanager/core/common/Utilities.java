@@ -32,6 +32,10 @@ public class Utilities {
         return false;
     }
 
+    public static <O, I> O ifNotEmpty(I object, Function<I, O> retriever) {
+        return isNotEmpty(object) ? retriever.apply(object) : null;
+    }
+
     public static <E> List<E> neverNull(List<E> list) {
         return list == null ? new ArrayList<>() : new ArrayList<>(list);
     }

@@ -1,6 +1,8 @@
 package com.github.mkopylec.projectmanager.core.project;
 
-public class EndedProject {
+import com.github.mkopylec.projectmanager.core.common.Event;
+
+public class EndedProject implements Event {
 
     private String projectIdentifier;
 

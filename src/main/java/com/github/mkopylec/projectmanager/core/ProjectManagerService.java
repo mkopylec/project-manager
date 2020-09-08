@@ -5,6 +5,16 @@ import com.github.mkopylec.projectmanager.core.team.TeamService;
 
 import java.util.List;
 
+import static com.github.mkopylec.projectmanager.core.ErrorCode.EMPTY_NEW_PROJECT;
+import static com.github.mkopylec.projectmanager.core.ErrorCode.EMPTY_NEW_PROJECT_DRAFT;
+import static com.github.mkopylec.projectmanager.core.ErrorCode.EMPTY_NEW_TEAM;
+import static com.github.mkopylec.projectmanager.core.ErrorCode.EMPTY_NEW_TEAM_MEMBER;
+import static com.github.mkopylec.projectmanager.core.ErrorCode.EMPTY_PROJECT_ENDING_CONDITION;
+import static com.github.mkopylec.projectmanager.core.ErrorCode.EMPTY_PROJECT_IDENTIFIER;
+import static com.github.mkopylec.projectmanager.core.ErrorCode.EMPTY_TEAM_NAME;
+import static com.github.mkopylec.projectmanager.core.ErrorCode.EMPTY_UPDATED_PROJECT;
+import static com.github.mkopylec.projectmanager.core.InputDataRequirementsValidator.requirements;
+
 class ProjectManagerService {
 
     private ProjectService projectService;
@@ -17,13 +27,17 @@ class ProjectManagerService {
     }
 
     void createProject(NewProjectDraft newProjectDraft) {
-        var project = projectService.createProject(newProjectDraft);
-        projectService.saveProject(project);
+        requirements()
+                .require(newProjectDraft, EMPTY_NEW_PROJECT_DRAFT)
+                .validate();
+        projectService.createProject(newProjectDraft);
     }
 
     void createProject(NewProject newProject) {
-        var project = projectService.createProject(newProject);
-        projectService.saveProject(project);
+        requirements()
+                .require(newProject, EMPTY_NEW_PROJECT)
+                .validate();
+        projectService.createProject(newProject);
     }
 
     List<ExistingProjectDraft> getProjects() {
@@ -32,37 +46,51 @@ class ProjectManagerService {
     }
 
     ExistingProject getProject(String projectIdentifier) {
+        requirements()
+                .require(projectIdentifier, EMPTY_PROJECT_IDENTIFIER)
+                .validate();
         var project = projectService.getProject(projectIdentifier);
         return dtoMapper.mapToExistingProject(project);
     }
 
     void updateProject(String projectIdentifier, UpdatedProject updatedProject) {
-        var project = projectService.getUpdatedProject(projectIdentifier, updatedProject);
-        var team = teamService.getTeamWithAddedImplementedProject(project);
-        projectService.saveProject(project); // Cannot save inside previous invocations cause they may fail because of validation errors
-        teamService.saveTeam(team);
+        requirements()
+                .require(projectIdentifier, EMPTY_PROJECT_IDENTIFIER)
+                .require(updatedProject, EMPTY_UPDATED_PROJECT)
+                .validate();
+        var project = projectService.updateProject(projectIdentifier, updatedProject); // Breaks CQS because of saving inside the service method.
+        teamService.addImplementedProjectToTeam(project);
     }
 
     void startProject(String projectIdentifier) {
-        var project = projectService.getStartedProject(projectIdentifier);
-        projectService.saveProject(project);
+        requirements()
+                .require(projectIdentifier, EMPTY_PROJECT_IDENTIFIER)
+                .validate();
+        projectService.startProject(projectIdentifier);
     }
 
     void endProject(String projectIdentifier, ProjectEndingCondition projectEndingCondition) {
-        var project = projectService.getEndedProject(projectIdentifier, projectEndingCondition);
-        var team = teamService.getTeamWithRemovedImplementedProject(project);
-        projectService.saveProject(project);
-        teamService.saveTeam(team);
+        requirements()
+                .require(projectIdentifier, EMPTY_PROJECT_IDENTIFIER)
+                .require(projectEndingCondition, EMPTY_PROJECT_ENDING_CONDITION)
+                .validate();
+        var project = projectService.endProject(projectIdentifier, projectEndingCondition); // Breaks CQS because of saving inside the service method.
+        teamService.removeImplementedProjectFromTeam(project);
     }
 
     void createTeam(NewTeam newTeam) {
-        var team = teamService.createTeam(newTeam);
-        teamService.saveTeam(team);
+        requirements()
+                .require(newTeam, EMPTY_NEW_TEAM)
+                .validate();
+        teamService.createTeam(newTeam);
     }
 
     void addMemberToTeam(String teamName, NewTeamMember newTeamMember) {
-        var team = teamService.getTeamWithAddedMember(teamName, newTeamMember);
-        teamService.saveTeam(team);
+        requirements()
+                .require(teamName, EMPTY_TEAM_NAME)
+                .require(newTeamMember, EMPTY_NEW_TEAM_MEMBER)
+                .validate();
+        teamService.getTeamWithAddedMember(teamName, newTeamMember);
     }
 
     List<ExistingTeam> getTeams() {
