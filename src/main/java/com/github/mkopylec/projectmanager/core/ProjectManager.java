@@ -26,7 +26,7 @@ public class ProjectManager {
         var projectService = new ProjectService(identifierGenerator, projectRepository, eventPublisher);
         var teamService = new TeamService(teamRepository);
         service = new ProjectManagerService(projectService, teamService);
-        unitOfWork = new UnitOfWork(of(projectRepository, teamRepository, eventPublisher));
+        unitOfWork = new UnitOfWork(of(projectRepository, teamRepository, eventPublisher)); // Order is important cause events must be published after saving aggregates
     }
 
     public void createProject(NewProjectDraft newProjectDraft) {
