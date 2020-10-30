@@ -1,35 +1,32 @@
 package com.github.mkopylec.projectmanager.specification
 
+import com.github.mkopylec.projectmanager.api.ProjectManager
 import com.github.mkopylec.projectmanager.utils.MongoDb
 import com.github.mkopylec.projectmanager.utils.ProjectManagerHttpClient
-import com.github.mkopylec.projectmanager.utils.ReportingServiceStub
-import org.junit.Rule
+import com.github.mkopylec.projectmanager.utils.ReportingService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.data.mongodb.core.MongoOperations
+import org.springframework.web.client.RestOperations
 import spock.lang.Specification
 
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
-
-@SpringBootTest(webEnvironment = RANDOM_PORT)
+@SpringBootTest
+@AutoConfigureMockMvc
 abstract class BasicSpecification extends Specification {
 
-    @Rule
-    public ReportingServiceStub reportingService = new ReportingServiceStub()
     @Autowired
-    protected ProjectManagerHttpClient httpClient
+    protected ProjectManagerHttpClient http
     @Autowired
-    private MongoDb mongoDb
+    protected ProjectManager projectManager
+    @Autowired
+    protected MongoDb mongoDb
+    @Autowired
+    protected ReportingService reportingService
 
-    void setupSpec() {
-        fixWireMock()
-    }
-
-    void setup() {
-        mongoDb.clear()
-    }
-
-    private static void fixWireMock() {
-        System.setProperty('http.keepAlive', 'false')
-        System.setProperty('http.maxConnections', '1')
-    }
+    @MockBean
+    private RestOperations restOperations
+    @MockBean
+    private MongoOperations mongo
 }

@@ -1,20 +1,18 @@
 package com.github.mkopylec.projectmanager.core.team;
 
-import com.github.mkopylec.projectmanager.core.NewTeam;
-import com.github.mkopylec.projectmanager.core.NewTeamMember;
+import com.github.mkopylec.projectmanager.api.dto.NewTeam;
+import com.github.mkopylec.projectmanager.api.dto.NewTeamMember;
+import org.springframework.stereotype.Component;
 
-import static com.github.mkopylec.projectmanager.core.common.Utilities.convertEnum;
-import static com.github.mkopylec.projectmanager.core.team.Employee.employee;
-import static com.github.mkopylec.projectmanager.core.team.Team.team;
-
+@Component
 class TeamFactory {
 
     Team createTeam(NewTeam newTeam) {
-        return team(newTeam.getName());
+        return new Team(newTeam.getName());
     }
 
-    Employee createMember(NewTeamMember newTeamMember) {
-        var jobPosition = convertEnum(newTeamMember.getJobPosition(), JobPosition.class);
-        return employee(newTeamMember.getFirstName(), newTeamMember.getLastName(), jobPosition);
+    Member createMember(NewTeamMember newTeamMember) {
+        var jobPosition = JobPosition.from(newTeamMember.getJobPosition());
+        return new Member(newTeamMember.getFirstName(), newTeamMember.getLastName(), jobPosition);
     }
 }

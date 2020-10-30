@@ -1,14 +1,16 @@
 package com.github.mkopylec.projectmanager.core.project;
 
+import java.util.UUID;
+
 public class EndedProject {
 
-    private String projectIdentifier;
+    private UUID projectIdentifier;
 
-    EndedProject(String projectIdentifier) {
+    EndedProject(UUID projectIdentifier) {
         this.projectIdentifier = projectIdentifier;
     }
 
-    public String getProjectIdentifier() {
+    UUID getProjectIdentifier() {
         return projectIdentifier;
     }
 }

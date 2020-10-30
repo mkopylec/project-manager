@@ -1,30 +1,39 @@
 package com.github.mkopylec.projectmanager.core.team;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.List;
 
-import static com.github.mkopylec.projectmanager.core.common.Utilities.allEmpty;
-import static com.github.mkopylec.projectmanager.core.common.Utilities.neverNull;
-import static com.github.mkopylec.projectmanager.core.team.TeamRequirementsValidator.requirements;
+import static com.github.mkopylec.projectmanager.api.exception.InvalidEntityException.require;
+import static com.github.mkopylec.projectmanager.core.team.TeamViolation.EMPTY_TEAM_MEMBER;
+import static com.github.mkopylec.projectmanager.core.team.TeamViolation.EMPTY_TEAM_NAME;
+import static com.github.mkopylec.projectmanager.core.team.TeamViolation.INVALID_NUMBER_OF_CURRENTLY_IMPLEMENTED_PROJECT_BY_TEAM;
+import static com.github.mkopylec.projectmanager.core.utils.Utilities.isNotEmpty;
+import static com.github.mkopylec.projectmanager.core.utils.Utilities.neverNull;
+import static com.github.mkopylec.projectmanager.core.utils.Utilities.noneEmpty;
 import static java.util.Collections.unmodifiableList;
 
+@Document(collection = "teams")
 public class Team {
 
     private static final int BUSY_TEAM_THRESHOLD = 3;
 
+    @Id
     private String name;
     private int currentlyImplementedProjects;
-    private List<Employee> members;
+    private List<Member> members;
 
-    static Team team(String name) {
-        return new Team(name, 0, null);
+    Team(String name) {
+        this(name, 0, null);
     }
 
-    private Team(String name, int currentlyImplementedProjects, List<Employee> members) {
-        requirements()
-                .requireName(name)
-                .requireValidCurrentlyImplementedProjects(currentlyImplementedProjects)
-                .requireValidMembers(members)
-                .validate();
+    @PersistenceConstructor
+    private Team(String name, int currentlyImplementedProjects, List<Member> members) {
+        require(isNotEmpty(name), EMPTY_TEAM_NAME);
+        require(currentlyImplementedProjects >= 0, INVALID_NUMBER_OF_CURRENTLY_IMPLEMENTED_PROJECT_BY_TEAM);
+        require(noneEmpty(members), EMPTY_TEAM_MEMBER);
         this.name = name;
         this.currentlyImplementedProjects = currentlyImplementedProjects;
         this.members = neverNull(members);
@@ -38,7 +47,7 @@ public class Team {
         return currentlyImplementedProjects;
     }
 
-    public List<Employee> getMembers() {
+    public List<Member> getMembers() {
         return unmodifiableList(members);
     }
 
@@ -54,21 +63,8 @@ public class Team {
         currentlyImplementedProjects--;
     }
 
-    void addMember(Employee member) {
-        requirements()
-                .requireValidMember(member)
-                .validate();
+    void addMember(Member member) {
+        require(isNotEmpty(member), EMPTY_TEAM_MEMBER);
         members.add(member);
-    }
-
-    public static class TeamPersistenceFactory {
-
-        public Team createTeam(String name, int currentlyImplementedProjects, List<Employee> members) {
-            try {
-                return allEmpty(name, currentlyImplementedProjects, members) ? null : new Team(name, currentlyImplementedProjects, members);
-            } catch (Exception e) {
-                throw new IllegalStateException("Error creating team from persistent state", e);
-            }
-        }
     }
 }

@@ -1,15 +1,15 @@
-# Project Manager - Domain-Driven Design workshop application
+# Project Manager - Domain-Driven Design workshop projectManager
 Project Manager is a sample REST service implemented using Domain-Driven Design technique.
 Its primary goal is to help me to conduct a Domain-Driven Design workshops.
-During the workshop developers implement the application on their own, following the steps in right order.
+During the workshop developers implement the projectManager on their own, following the steps in right order.
 
 ## Application summary
-The Project Manager is a simple application for managing business projects at IT company.
-The application is directed to project managers.
-Using the application they can add projects, monitor their progress and assign teams to work on the projects.
+The Project Manager is a simple projectManager for managing business projects at IT company.
+The projectManager is directed to project managers.
+Using the projectManager they can add projects, monitor their progress and assign teams to work on the projects.
 
-## Working with application
-To run the application execute:
+## Working with projectManager
+To run the projectManager execute:
 ```bash
 ./gradlew bootRun
 ```
@@ -22,7 +22,7 @@ To run tests execute:
 Each branch of the repository represents a subsequent step of the overall task.
 The task is to implement each step using Domain-Driven Design rules, so the unit tests can successfully pass.
 Checkout the _master_ branch.
-Get known with the starting code, it contains the parts that are not focused on Domain-Driven Design modelling but are necessary for application to work properly.
+Get known with the starting code, it contains the parts that are not focused on Domain-Driven Design modelling but are necessary for projectManager to work properly.
 
 The following describes steps to implement using an ubiquitous language.
 The description contains hints on how to design a model from the business requirements.
@@ -40,7 +40,7 @@ The [layers](src/main/java/layers) package contains examples on how to properly 
 The user can create a new **team**<sub>_(E)_</sub>.
 Every team must be **named**<sub>_(EP)_</sub>.
 To manage teams more efficient the user will need an information on how busy a team currently is.
-To fulfil this requirement the application must display **how many projects a team is currently implementing**<sub>_(EP)_</sub>.
+To fulfil this requirement the projectManager must display **how many projects a team is currently implementing**<sub>_(EP)_</sub>.
 A team cannot be created if it already exists.
 
 ##### To do
@@ -137,7 +137,7 @@ Compare your solution with the _step-9-finish_ branch.
 The user can end a started project when **all of the features in the project are done**<sub>_(?)_</sub>.
 Sometimes the users manager can give him a permission to end a project when **only the necessary features are done**<sub>_(?)_</sub>.
 Ended projects needs to be reported in the company's end year review.
-To do that the application needs to inform a Reporting Service about the **ended project**<sub>_(?)_</sub> by sending its **identifier**<sub>_(?)_</sub>.
+To do that the projectManager needs to inform a Reporting Service about the **ended project**<sub>_(?)_</sub> by sending its **identifier**<sub>_(?)_</sub>.
 
 ##### To do
 Checkout the _step-10-start_ branch.

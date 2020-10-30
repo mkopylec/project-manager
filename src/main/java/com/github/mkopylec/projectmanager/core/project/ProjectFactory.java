@@ -1,35 +1,26 @@
 package com.github.mkopylec.projectmanager.core.project;
 
-import com.github.mkopylec.projectmanager.core.NewFeature;
-import com.github.mkopylec.projectmanager.core.NewProject;
-import com.github.mkopylec.projectmanager.core.NewProjectDraft;
-import com.github.mkopylec.projectmanager.core.UpdatedProjectFeature;
+import com.github.mkopylec.projectmanager.api.dto.NewFeature;
+import com.github.mkopylec.projectmanager.api.dto.NewProject;
+import com.github.mkopylec.projectmanager.api.dto.NewProjectDraft;
+import com.github.mkopylec.projectmanager.api.dto.UpdatedProjectFeature;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static com.github.mkopylec.projectmanager.core.common.Utilities.convertEnum;
-import static com.github.mkopylec.projectmanager.core.common.Utilities.isEmpty;
-import static com.github.mkopylec.projectmanager.core.common.Utilities.mapElements;
-import static com.github.mkopylec.projectmanager.core.project.Feature.feature;
-import static com.github.mkopylec.projectmanager.core.project.Project.project;
+import static com.github.mkopylec.projectmanager.core.utils.Utilities.isEmpty;
+import static com.github.mkopylec.projectmanager.core.utils.Utilities.mapElements;
 
+@Component
 class ProjectFactory {
 
-    private UniqueIdentifierGenerator identifierGenerator;
-
-    ProjectFactory(UniqueIdentifierGenerator identifierGenerator) {
-        this.identifierGenerator = identifierGenerator;
-    }
-
     Project createProjectDraft(NewProjectDraft newProjectDraft) {
-        var identifier = identifierGenerator.generateUniqueIdentifier();
-        return project(identifier, newProjectDraft.getName());
+        return new Project(newProjectDraft.getName());
     }
 
     Project createFullProject(NewProject newProject) {
-        var identifier = identifierGenerator.generateUniqueIdentifier();
         var features = mapElements(newProject.getFeatures(), this::createFeature);
-        return project(identifier, newProject.getName(), features);
+        return new Project(newProject.getName(), features);
     }
 
     List<Feature> createFeatures(List<UpdatedProjectFeature> projectFeatures) {
@@ -40,16 +31,16 @@ class ProjectFactory {
         if (isEmpty(newFeature)) {
             return null;
         }
-        var requirement = convertEnum(newFeature.getRequirement(), Requirement.class);
-        return feature(newFeature.getName(), requirement);
+        var requirement = Requirement.from(newFeature.getRequirement());
+        return new Feature(newFeature.getName(), requirement);
     }
 
     private Feature createFeature(UpdatedProjectFeature projectFeature) {
         if (isEmpty(projectFeature)) {
             return null;
         }
-        var status = convertEnum(projectFeature.getStatus(), Status.class);
-        var requirement = convertEnum(projectFeature.getRequirement(), Requirement.class);
-        return feature(projectFeature.getName(), status, requirement);
+        var status = Status.from(projectFeature.getStatus());
+        var requirement = Requirement.from(projectFeature.getRequirement());
+        return new Feature(projectFeature.getName(), status, requirement);
     }
 }

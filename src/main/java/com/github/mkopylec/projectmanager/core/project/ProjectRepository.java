@@ -1,15 +1,34 @@
 package com.github.mkopylec.projectmanager.core.project;
 
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
+import java.util.UUID;
 
-/**
- * Secondary port
- */
-public abstract class ProjectRepository {
+import static com.github.mkopylec.projectmanager.core.utils.Utilities.isEmpty;
 
-    protected abstract Project findByIdentifier(String identifier);
+@Repository
+class ProjectRepository {
 
-    protected abstract List<Project> findAll();
+    private MongoOperations database;
 
-    protected abstract void save(Project project);
+    ProjectRepository(MongoOperations database) {
+        this.database = database;
+    }
+
+    Project findByIdentifier(UUID identifier) {
+        if (isEmpty(identifier)) {
+            return null;
+        }
+        return database.findById(identifier, Project.class);
+    }
+
+    List<Project> findAll() {
+        return database.findAll(Project.class);
+    }
+
+    void save(Project project) {
+        database.save(project);
+    }
 }

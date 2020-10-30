@@ -1,7 +1,9 @@
 package com.github.mkopylec.projectmanager.utils
 
-import com.github.mkopylec.projectmanager.core.Failure
+import com.github.mkopylec.projectmanager.api.dto.Failure
 import org.springframework.http.HttpStatus
+
+import static org.springframework.http.HttpStatus.valueOf
 
 class HttpResponse<B> {
 
@@ -9,8 +11,8 @@ class HttpResponse<B> {
     private B body
     private Failure failure
 
-    protected HttpResponse(HttpStatus status, B body, Failure failure) {
-        this.status = status
+    protected HttpResponse(int status, B body, Failure failure) {
+        this.status = valueOf(status)
         this.body = body
         this.failure = failure
     }

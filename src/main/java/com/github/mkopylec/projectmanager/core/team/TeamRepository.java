@@ -1,15 +1,33 @@
 package com.github.mkopylec.projectmanager.core.team;
 
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
-/**
- * Secondary port
- */
-public abstract class TeamRepository {
+import static com.github.mkopylec.projectmanager.core.utils.Utilities.isEmpty;
 
-    protected abstract Team findByName(String name);
+@Repository
+class TeamRepository {
 
-    protected abstract List<Team> findAll();
+    private MongoOperations database;
 
-    protected abstract void save(Team team);
+    TeamRepository(MongoOperations database) {
+        this.database = database;
+    }
+
+    Team findByName(String name) {
+        if (isEmpty(name)) {
+            return null;
+        }
+        return database.findById(name, Team.class);
+    }
+
+    List<Team> findAll() {
+        return database.findAll(Team.class);
+    }
+
+    void save(Team team) {
+        database.save(team);
+    }
 }

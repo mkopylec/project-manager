@@ -1,10 +1,15 @@
 package com.github.mkopylec.projectmanager.core.project;
 
-import static com.github.mkopylec.projectmanager.core.common.Utilities.allEmpty;
-import static com.github.mkopylec.projectmanager.core.common.Utilities.isEmpty;
+import org.springframework.data.annotation.PersistenceConstructor;
+
+import static com.github.mkopylec.projectmanager.api.exception.InvalidEntityException.require;
+import static com.github.mkopylec.projectmanager.core.project.ProjectViolation.EMPTY_FEATURE_NAME;
+import static com.github.mkopylec.projectmanager.core.project.ProjectViolation.EMPTY_FEATURE_REQUIREMENT;
+import static com.github.mkopylec.projectmanager.core.project.ProjectViolation.EMPTY_FEATURE_STATUS;
 import static com.github.mkopylec.projectmanager.core.project.Requirement.NECESSARY;
 import static com.github.mkopylec.projectmanager.core.project.Status.DONE;
 import static com.github.mkopylec.projectmanager.core.project.Status.TO_DO;
+import static com.github.mkopylec.projectmanager.core.utils.Utilities.isNotEmpty;
 
 public class Feature {
 
@@ -12,15 +17,15 @@ public class Feature {
     private Status status;
     private Requirement requirement;
 
-    static Feature feature(String name, Requirement requirement) {
-        return allEmpty(name, requirement) ? null : new Feature(name, TO_DO, requirement);
+    Feature(String name, Requirement requirement) {
+        this(name, TO_DO, requirement);
     }
 
-    static Feature feature(String name, Status status, Requirement requirement) {
-        return allEmpty(name, status, requirement) ? null : new Feature(name, status, requirement);
-    }
-
-    private Feature(String name, Status status, Requirement requirement) {
+    @PersistenceConstructor
+    Feature(String name, Status status, Requirement requirement) {
+        require(isNotEmpty(name), EMPTY_FEATURE_NAME);
+        require(isNotEmpty(status), EMPTY_FEATURE_STATUS);
+        require(isNotEmpty(requirement), EMPTY_FEATURE_REQUIREMENT);
         this.name = name;
         this.status = status;
         this.requirement = requirement;
@@ -38,30 +43,11 @@ public class Feature {
         return requirement;
     }
 
-    boolean isUnnamed() {
-        return isEmpty(name);
-    }
-
-    boolean hasNoStatus() {
-        return isEmpty(status);
-    }
-
-    boolean hasNoRequirement() {
-        return isEmpty(requirement);
-    }
-
-    boolean isUndone() {
-        return status != DONE;
+    boolean isDone() {
+        return status == DONE;
     }
 
     boolean isNecessaryAndUndone() {
-        return requirement == NECESSARY && isUndone();
-    }
-
-    public static class FeaturePersistenceFactory {
-
-        public Feature createFeature(String name, Status status, Requirement requirement) {
-            return allEmpty(name, status, requirement) ? null : new Feature(name, status, requirement);
-        }
+        return requirement == NECESSARY && status != DONE;
     }
 }

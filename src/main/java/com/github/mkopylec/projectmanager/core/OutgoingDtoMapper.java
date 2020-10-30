@@ -1,15 +1,21 @@
 package com.github.mkopylec.projectmanager.core;
 
+import com.github.mkopylec.projectmanager.api.dto.ExistingProject;
+import com.github.mkopylec.projectmanager.api.dto.ExistingProjectDraft;
+import com.github.mkopylec.projectmanager.api.dto.ExistingProjectFeature;
+import com.github.mkopylec.projectmanager.api.dto.ExistingTeam;
+import com.github.mkopylec.projectmanager.api.dto.ExistingTeamMember;
 import com.github.mkopylec.projectmanager.core.project.Feature;
 import com.github.mkopylec.projectmanager.core.project.Project;
-import com.github.mkopylec.projectmanager.core.team.Employee;
+import com.github.mkopylec.projectmanager.core.team.Member;
 import com.github.mkopylec.projectmanager.core.team.Team;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static com.github.mkopylec.projectmanager.core.common.Utilities.convertEnum;
-import static com.github.mkopylec.projectmanager.core.common.Utilities.mapElements;
+import static com.github.mkopylec.projectmanager.core.utils.Utilities.mapElements;
 
+@Component
 class OutgoingDtoMapper {
 
     List<ExistingProjectDraft> mapToExistingProjectDrafts(List<Project> projects) {
@@ -20,7 +26,7 @@ class OutgoingDtoMapper {
         return new ExistingProject()
                 .setIdentifier(project.getIdentifier())
                 .setName(project.getName())
-                .setStatus(convertEnum(project.getStatus(), Status.class))
+                .setStatus(project.getStatus().name())
                 .setTeam(project.getAssignedTeam())
                 .setFeatures(mapElements(project.getFeatures(), this::mapToExistingProjectFeature));
     }
@@ -37,11 +43,11 @@ class OutgoingDtoMapper {
                 .setMembers(mapElements(team.getMembers(), this::mapToExistingTeamMember));
     }
 
-    private ExistingTeamMember mapToExistingTeamMember(Employee employee) {
+    private ExistingTeamMember mapToExistingTeamMember(Member member) {
         return new ExistingTeamMember()
-                .setFirstName(employee.getFirstName())
-                .setLastName(employee.getLastName())
-                .setJobPosition(convertEnum(employee.getJobPosition(), JobPosition.class));
+                .setFirstName(member.getFirstName())
+                .setLastName(member.getLastName())
+                .setJobPosition(member.getJobPosition().name());
     }
 
     private ExistingProjectDraft mapToExistingProjectDraft(Project project) {
@@ -53,7 +59,7 @@ class OutgoingDtoMapper {
     private ExistingProjectFeature mapToExistingProjectFeature(Feature feature) {
         return new ExistingProjectFeature()
                 .setName(feature.getName())
-                .setStatus(convertEnum(feature.getStatus(), Status.class))
-                .setRequirement(convertEnum(feature.getRequirement(), Requirement.class));
+                .setStatus(feature.getStatus().name())
+                .setRequirement(feature.getRequirement().name());
     }
 }

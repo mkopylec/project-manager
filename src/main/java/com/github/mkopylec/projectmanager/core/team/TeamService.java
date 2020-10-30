@@ -1,37 +1,41 @@
 package com.github.mkopylec.projectmanager.core.team;
 
-import com.github.mkopylec.projectmanager.core.NewTeam;
-import com.github.mkopylec.projectmanager.core.NewTeamMember;
+import com.github.mkopylec.projectmanager.api.dto.NewTeam;
+import com.github.mkopylec.projectmanager.api.dto.NewTeamMember;
 import com.github.mkopylec.projectmanager.core.project.Project;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.function.Consumer;
 
-import static com.github.mkopylec.projectmanager.core.common.Utilities.isNotEmpty;
-import static com.github.mkopylec.projectmanager.core.team.TeamRequirementsValidator.requirements;
+import static com.github.mkopylec.projectmanager.api.exception.InvalidEntityException.require;
+import static com.github.mkopylec.projectmanager.api.exception.MissingEntityException.requireExisting;
+import static com.github.mkopylec.projectmanager.core.team.TeamViolation.MISSING_TEAM;
+import static com.github.mkopylec.projectmanager.core.team.TeamViolation.MISSING_TEAM_ASSIGNED_TO_PROJECT;
+import static com.github.mkopylec.projectmanager.core.team.TeamViolation.TEAM_EXISTS;
+import static com.github.mkopylec.projectmanager.core.utils.Utilities.isEmpty;
+import static com.github.mkopylec.projectmanager.core.utils.Utilities.isNotEmpty;
 
+@Service
 public class TeamService {
 
-    private TeamFactory factory = new TeamFactory();
+    private TeamFactory factory;
     private TeamRepository repository;
 
-    public TeamService(TeamRepository repository) {
+    public TeamService(TeamFactory factory, TeamRepository repository) {
+        this.factory = factory;
         this.repository = repository;
     }
 
     public Team createTeam(NewTeam newTeam) {
         var existingTeam = repository.findByName(newTeam.getName());
-        requirements()
-                .requireNoTeam(existingTeam)
-                .validate();
+        require(isEmpty(existingTeam), TEAM_EXISTS);
         return factory.createTeam(newTeam);
     }
 
     public Team getTeamWithAddedMember(String teamName, NewTeamMember newTeamMember) {
         var team = repository.findByName(teamName);
-        requirements()
-                .requireTeam(team)
-                .validate();
+        requireExisting(team, MISSING_TEAM);
         var member = factory.createMember(newTeamMember);
         team.addMember(member);
         return team;
@@ -60,9 +64,7 @@ public class TeamService {
             return null;
         }
         var team = repository.findByName(project.getAssignedTeam());
-        requirements()
-                .requireTeamAssignedToProject(team)
-                .validate();
+        requireExisting(team, MISSING_TEAM_ASSIGNED_TO_PROJECT);
         update.accept(team);
         return team;
     }

@@ -1,19 +1,19 @@
 package com.github.mkopylec.projectmanager.utils
 
-import com.github.mkopylec.projectmanager.core.ExistingProject
-import com.github.mkopylec.projectmanager.core.ExistingProjectDraft
-import com.github.mkopylec.projectmanager.core.ExistingTeam
-import com.github.mkopylec.projectmanager.core.NewProject
-import com.github.mkopylec.projectmanager.core.NewProjectDraft
-import com.github.mkopylec.projectmanager.core.NewTeam
-import com.github.mkopylec.projectmanager.core.NewTeamMember
-import com.github.mkopylec.projectmanager.core.ProjectEndingCondition
-import com.github.mkopylec.projectmanager.core.UpdatedProject
-import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.http.HttpEntity
+import com.fasterxml.jackson.databind.json.JsonMapper
+import com.github.mkopylec.projectmanager.api.dto.ExistingProject
+import com.github.mkopylec.projectmanager.api.dto.ExistingProjectDraft
+import com.github.mkopylec.projectmanager.api.dto.ExistingTeam
+import com.github.mkopylec.projectmanager.api.dto.NewProject
+import com.github.mkopylec.projectmanager.api.dto.NewProjectDraft
+import com.github.mkopylec.projectmanager.api.dto.NewTeam
+import com.github.mkopylec.projectmanager.api.dto.NewTeamMember
+import com.github.mkopylec.projectmanager.api.dto.ProjectEndingCondition
+import com.github.mkopylec.projectmanager.api.dto.UpdatedProject
 import org.springframework.http.HttpMethod
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.MvcResult
 
 import java.util.function.Function
 
@@ -21,15 +21,18 @@ import static org.springframework.http.HttpMethod.GET
 import static org.springframework.http.HttpMethod.PATCH
 import static org.springframework.http.HttpMethod.POST
 import static org.springframework.http.HttpMethod.PUT
+import static org.springframework.http.MediaType.APPLICATION_JSON
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request
 
 @Component
 class ProjectManagerHttpClient {
 
-    private TestRestTemplate httpClient
+    private MockMvc mvc
     private ResponseBodyReader bodyReader = new ResponseBodyReader()
+    private JsonMapper mapper = new JsonMapper()
 
-    ProjectManagerHttpClient(TestRestTemplate httpClient) {
-        this.httpClient = httpClient
+    ProjectManagerHttpClient(MockMvc mvc) {
+        this.mvc = mvc
     }
 
     HttpResponse<Void> createProject(NewProjectDraft newProjectDraft) {
@@ -44,19 +47,19 @@ class ProjectManagerHttpClient {
         sendRequest('/projects', GET, null) { bodyReader.getExistingProjectDrafts(it) }
     }
 
-    HttpResponse<ExistingProject> getProject(String projectIdentifier) {
+    HttpResponse<ExistingProject> getProject(UUID projectIdentifier) {
         sendRequest("/projects/$projectIdentifier", GET, null) { bodyReader.getExistingProject(it) }
     }
 
-    HttpResponse<Void> updateProject(String projectIdentifier, UpdatedProject updatedProject) {
+    HttpResponse<Void> updateProject(UUID projectIdentifier, UpdatedProject updatedProject) {
         sendRequest("/projects/$projectIdentifier", PUT, updatedProject)
     }
 
-    HttpResponse<Void> startProject(String projectIdentifier) {
+    HttpResponse<Void> startProject(UUID projectIdentifier) {
         sendRequest("/projects/$projectIdentifier/started", PATCH, null)
     }
 
-    HttpResponse<Void> endProject(String projectIdentifier, ProjectEndingCondition endingCondition) {
+    HttpResponse<Void> endProject(UUID projectIdentifier, ProjectEndingCondition endingCondition) {
         sendRequest("/projects/$projectIdentifier/ended", PATCH, endingCondition)
     }
 
@@ -72,11 +75,13 @@ class ProjectManagerHttpClient {
         sendRequest('/teams', GET, null) { bodyReader.getExistingTeams(it) }
     }
 
-    private <B> HttpResponse<B> sendRequest(String uri, HttpMethod method, Object requestBody, Function<ResponseEntity<String>, B> bodyRetriever = { null }) {
-        def entity = new HttpEntity<>(requestBody)
-        def response = httpClient.exchange(uri, method, entity, String)
-        def body = bodyRetriever.apply(response)
-        def failure = bodyReader.getFailure(response)
-        new HttpResponse<>(response.statusCode, body, failure)
+    private <B> HttpResponse<B> sendRequest(String uri, HttpMethod method, Object requestBody, Function<MvcResult, B> bodyRetriever = { null }) {
+        def result = mvc.perform(request(method, uri)
+                .contentType(APPLICATION_JSON)
+                .content(mapper.writeValueAsString(requestBody)))
+                .andReturn()
+        def body = bodyRetriever.apply(result)
+        def failure = bodyReader.getFailure(result)
+        new HttpResponse<>(result.response.status, body, failure)
     }
 }

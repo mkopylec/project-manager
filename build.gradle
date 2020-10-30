@@ -12,17 +12,17 @@ repositories {
     mavenCentral()
 }
 
-ext.springBootVersion = '2.2.4.RELEASE'
+ext.springBootVersion = '2.3.4.RELEASE'
 
 dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: springBootVersion
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: springBootVersion
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb', version: springBootVersion
     compile group: 'de.flapdoodle.embed', name: 'de.flapdoodle.embed.mongo', version: '2.2.0'
 
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVersion
     testCompile group: 'org.spockframework', name: 'spock-spring', version: '1.3-groovy-2.5'
-    testCompile group: 'com.github.tomakehurst', name: 'wiremock-jre8', version: '2.25.1'
-    testCompile group: 'org.awaitility', name: 'awaitility-groovy', version: '4.0.2'
+    testCompile group: 'org.assertj', name: 'assertj-core', version: '3.17.2'
 }
 
 wrapper {
