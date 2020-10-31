@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.github.mkopylec.projectmanager.api.exception.InvalidEntityException.require;
+import static com.github.mkopylec.projectmanager.core.common.Utilities.isEmpty;
+import static com.github.mkopylec.projectmanager.core.common.Utilities.isNotEmpty;
+import static com.github.mkopylec.projectmanager.core.common.Utilities.neverNull;
+import static com.github.mkopylec.projectmanager.core.common.Utilities.noneEmpty;
 import static com.github.mkopylec.projectmanager.core.project.ProjectViolation.EMPTY_PROJECT_FEATURE;
 import static com.github.mkopylec.projectmanager.core.project.ProjectViolation.EMPTY_PROJECT_IDENTIFIER;
 import static com.github.mkopylec.projectmanager.core.project.ProjectViolation.EMPTY_PROJECT_NAME;
@@ -18,10 +22,6 @@ import static com.github.mkopylec.projectmanager.core.project.ProjectViolation.P
 import static com.github.mkopylec.projectmanager.core.project.Status.DONE;
 import static com.github.mkopylec.projectmanager.core.project.Status.IN_PROGRESS;
 import static com.github.mkopylec.projectmanager.core.project.Status.TO_DO;
-import static com.github.mkopylec.projectmanager.core.utils.Utilities.isEmpty;
-import static com.github.mkopylec.projectmanager.core.utils.Utilities.isNotEmpty;
-import static com.github.mkopylec.projectmanager.core.utils.Utilities.neverNull;
-import static com.github.mkopylec.projectmanager.core.utils.Utilities.noneEmpty;
 import static java.util.Collections.unmodifiableList;
 import static java.util.UUID.randomUUID;
 

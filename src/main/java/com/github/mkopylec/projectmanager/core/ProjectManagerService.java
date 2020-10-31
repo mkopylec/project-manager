@@ -32,14 +32,12 @@ public class ProjectManagerService implements ProjectManager {
 
     @Override
     public void createProject(NewProjectDraft newProjectDraft) {
-        var project = projectService.createProject(newProjectDraft);
-        projectService.saveProject(project);
+        projectService.createProject(newProjectDraft);
     }
 
     @Override
     public void createProject(NewProject newProject) {
-        var project = projectService.createProject(newProject);
-        projectService.saveProject(project);
+        projectService.createProject(newProject);
     }
 
     @Override
@@ -56,36 +54,29 @@ public class ProjectManagerService implements ProjectManager {
 
     @Override
     public void updateProject(UUID projectIdentifier, UpdatedProject updatedProject) {
-        var project = projectService.getUpdatedProject(projectIdentifier, updatedProject);
-        var team = teamService.getTeamWithAddedImplementedProject(project);
-        projectService.saveProject(project); // Cannot save inside previous invocations cause they may fail because of validation errors. Use "unit of work" pattern
-        teamService.saveTeam(team);
+        var project = projectService.updateProject(projectIdentifier, updatedProject);
+        teamService.addTeamImplementedProject(project);
     }
 
     @Override
     public void startProject(UUID projectIdentifier) {
-        var project = projectService.getStartedProject(projectIdentifier);
-        projectService.saveProject(project);
+        projectService.startProject(projectIdentifier);
     }
 
     @Override
     public void endProject(UUID projectIdentifier, ProjectEndingCondition projectEndingCondition) {
-        var project = projectService.getEndedProject(projectIdentifier, projectEndingCondition);
-        var team = teamService.getTeamWithRemovedImplementedProject(project);
-        projectService.saveProject(project);
-        teamService.saveTeam(team);
+        var project = projectService.endProject(projectIdentifier, projectEndingCondition);
+        teamService.removeTeamImplementedProject(project);
     }
 
     @Override
     public void createTeam(NewTeam newTeam) {
-        var team = teamService.createTeam(newTeam);
-        teamService.saveTeam(team);
+        teamService.createTeam(newTeam);
     }
 
     @Override
     public void addMemberToTeam(String teamName, NewTeamMember newTeamMember) {
-        var team = teamService.getTeamWithAddedMember(teamName, newTeamMember);
-        teamService.saveTeam(team);
+        teamService.addTeamMember(teamName, newTeamMember);
     }
 
     @Override

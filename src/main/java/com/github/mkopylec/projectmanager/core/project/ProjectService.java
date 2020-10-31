@@ -12,7 +12,6 @@ import java.util.UUID;
 import static com.github.mkopylec.projectmanager.api.exception.MissingEntityException.requireExisting;
 import static com.github.mkopylec.projectmanager.core.project.FeatureChecker.featureChecker;
 import static com.github.mkopylec.projectmanager.core.project.ProjectViolation.MISSING_PROJECT;
-import static com.github.mkopylec.projectmanager.core.utils.Utilities.isNotEmpty;
 
 @Service
 public class ProjectService {
@@ -27,12 +26,14 @@ public class ProjectService {
         this.endedProjectsReporter = endedProjectsReporter;
     }
 
-    public Project createProject(NewProjectDraft newProjectDraft) {
-        return factory.createProjectDraft(newProjectDraft);
+    public void createProject(NewProjectDraft newProjectDraft) {
+        var project = factory.createProjectDraft(newProjectDraft);
+        repository.save(project);
     }
 
-    public Project createProject(NewProject newProject) {
-        return factory.createFullProject(newProject);
+    public void createProject(NewProject newProject) {
+        var project = factory.createFullProject(newProject);
+        repository.save(project);
     }
 
     public List<Project> getProjects() {
@@ -45,32 +46,28 @@ public class ProjectService {
         return project;
     }
 
-    public Project getUpdatedProject(UUID projectIdentifier, UpdatedProject updatedProject) {
+    public Project updateProject(UUID projectIdentifier, UpdatedProject updatedProject) {
         var project = getProject(projectIdentifier);
         var features = factory.createFeatures(updatedProject.getFeatures());
         project.rename(updatedProject.getName());
         project.updateFeatures(features);
         project.assignTeam(updatedProject.getTeam());
+        repository.save(project);
         return project;
     }
 
-    public Project getStartedProject(UUID projectIdentifier) {
+    public void startProject(UUID projectIdentifier) {
         var project = getProject(projectIdentifier);
         project.start();
-        return project;
+        repository.save(project);
     }
 
-    public Project getEndedProject(UUID projectIdentifier, ProjectEndingCondition projectEndingCondition) {
+    public Project endProject(UUID projectIdentifier, ProjectEndingCondition projectEndingCondition) {
         var project = getProject(projectIdentifier);
         var featureChecker = featureChecker(projectEndingCondition.isOnlyNecessaryFeatureDone());
         var endedProject = project.end(featureChecker);
+        repository.save(project);
         endedProjectsReporter.report(endedProject);
         return project;
-    }
-
-    public void saveProject(Project project) {
-        if (isNotEmpty(project)) {
-            repository.save(project);
-        }
     }
 }

@@ -3,10 +3,10 @@ package com.github.mkopylec.projectmanager.core.team;
 import org.springframework.data.annotation.PersistenceConstructor;
 
 import static com.github.mkopylec.projectmanager.api.exception.InvalidEntityException.require;
+import static com.github.mkopylec.projectmanager.core.common.Utilities.isNotEmpty;
 import static com.github.mkopylec.projectmanager.core.team.TeamViolation.EMPTY_MEMBER_FIRST_NAME;
 import static com.github.mkopylec.projectmanager.core.team.TeamViolation.EMPTY_MEMBER_JOB_POSITION;
 import static com.github.mkopylec.projectmanager.core.team.TeamViolation.EMPTY_MEMBER_LAST_NAME;
-import static com.github.mkopylec.projectmanager.core.utils.Utilities.isNotEmpty;
 
 public class Member {
 

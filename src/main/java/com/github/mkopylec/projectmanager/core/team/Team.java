@@ -7,12 +7,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.List;
 
 import static com.github.mkopylec.projectmanager.api.exception.InvalidEntityException.require;
+import static com.github.mkopylec.projectmanager.core.common.Utilities.isNotEmpty;
+import static com.github.mkopylec.projectmanager.core.common.Utilities.neverNull;
+import static com.github.mkopylec.projectmanager.core.common.Utilities.noneEmpty;
 import static com.github.mkopylec.projectmanager.core.team.TeamViolation.EMPTY_TEAM_MEMBER;
 import static com.github.mkopylec.projectmanager.core.team.TeamViolation.EMPTY_TEAM_NAME;
 import static com.github.mkopylec.projectmanager.core.team.TeamViolation.INVALID_NUMBER_OF_CURRENTLY_IMPLEMENTED_PROJECT_BY_TEAM;
-import static com.github.mkopylec.projectmanager.core.utils.Utilities.isNotEmpty;
-import static com.github.mkopylec.projectmanager.core.utils.Utilities.neverNull;
-import static com.github.mkopylec.projectmanager.core.utils.Utilities.noneEmpty;
 import static java.util.Collections.unmodifiableList;
 
 @Document(collection = "teams")

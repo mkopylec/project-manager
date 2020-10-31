@@ -1,9 +1,9 @@
 package com.github.mkopylec.projectmanager.core.team;
 
 import static com.github.mkopylec.projectmanager.api.exception.InvalidEntityException.require;
+import static com.github.mkopylec.projectmanager.core.common.Utilities.isEmpty;
+import static com.github.mkopylec.projectmanager.core.common.Utilities.isValueOfEnum;
 import static com.github.mkopylec.projectmanager.core.team.TeamViolation.INVALID_JOB_POSITION;
-import static com.github.mkopylec.projectmanager.core.utils.Utilities.isEmpty;
-import static com.github.mkopylec.projectmanager.core.utils.Utilities.isValueOfEnum;
 
 public enum JobPosition {
 

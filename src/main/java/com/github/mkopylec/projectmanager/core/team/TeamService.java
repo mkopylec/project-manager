@@ -10,11 +10,10 @@ import java.util.function.Consumer;
 
 import static com.github.mkopylec.projectmanager.api.exception.InvalidEntityException.require;
 import static com.github.mkopylec.projectmanager.api.exception.MissingEntityException.requireExisting;
+import static com.github.mkopylec.projectmanager.core.common.Utilities.isEmpty;
 import static com.github.mkopylec.projectmanager.core.team.TeamViolation.MISSING_TEAM;
 import static com.github.mkopylec.projectmanager.core.team.TeamViolation.MISSING_TEAM_ASSIGNED_TO_PROJECT;
 import static com.github.mkopylec.projectmanager.core.team.TeamViolation.TEAM_EXISTS;
-import static com.github.mkopylec.projectmanager.core.utils.Utilities.isEmpty;
-import static com.github.mkopylec.projectmanager.core.utils.Utilities.isNotEmpty;
 
 @Service
 public class TeamService {
@@ -27,45 +26,40 @@ public class TeamService {
         this.repository = repository;
     }
 
-    public Team createTeam(NewTeam newTeam) {
+    public void createTeam(NewTeam newTeam) {
         var existingTeam = repository.findByName(newTeam.getName());
         require(isEmpty(existingTeam), TEAM_EXISTS);
-        return factory.createTeam(newTeam);
+        var team = factory.createTeam(newTeam);
+        repository.save(team);
     }
 
-    public Team getTeamWithAddedMember(String teamName, NewTeamMember newTeamMember) {
+    public void addTeamMember(String teamName, NewTeamMember newTeamMember) {
         var team = repository.findByName(teamName);
         requireExisting(team, MISSING_TEAM);
         var member = factory.createMember(newTeamMember);
         team.addMember(member);
-        return team;
+        repository.save(team);
     }
 
     public List<Team> getTeams() {
         return repository.findAll();
     }
 
-    public Team getTeamWithAddedImplementedProject(Project project) {
-        return getUpdatedTeamAssignedToProject(project, Team::addCurrentlyImplementedProject);
+    public void addTeamImplementedProject(Project project) {
+        updateTeamAssignedToProject(project, Team::addCurrentlyImplementedProject);
     }
 
-    public Team getTeamWithRemovedImplementedProject(Project project) {
-        return getUpdatedTeamAssignedToProject(project, Team::removeCurrentlyImplementedProject);
+    public void removeTeamImplementedProject(Project project) {
+        updateTeamAssignedToProject(project, Team::removeCurrentlyImplementedProject);
     }
 
-    public void saveTeam(Team team) {
-        if (isNotEmpty(team)) {
-            repository.save(team);
-        }
-    }
-
-    private Team getUpdatedTeamAssignedToProject(Project project, Consumer<Team> update) {
+    private void updateTeamAssignedToProject(Project project, Consumer<Team> update) {
         if (project.hasNoTeamAssigned()) {
-            return null;
+            return;
         }
         var team = repository.findByName(project.getAssignedTeam());
         requireExisting(team, MISSING_TEAM_ASSIGNED_TO_PROJECT);
         update.accept(team);
-        return team;
+        repository.save(team);
     }
 }

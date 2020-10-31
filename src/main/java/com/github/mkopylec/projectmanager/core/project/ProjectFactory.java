@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static com.github.mkopylec.projectmanager.core.utils.Utilities.isEmpty;
-import static com.github.mkopylec.projectmanager.core.utils.Utilities.mapElements;
+import static com.github.mkopylec.projectmanager.core.common.Utilities.isEmpty;
+import static com.github.mkopylec.projectmanager.core.common.Utilities.mapElements;
 
 @Component
 class ProjectFactory {

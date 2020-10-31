@@ -1,18 +1,21 @@
 package com.github.mkopylec.projectmanager.core.team;
 
+import com.github.mkopylec.projectmanager.core.common.OperationsDelayer;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Repository;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-import static com.github.mkopylec.projectmanager.core.utils.Utilities.isEmpty;
+import static com.github.mkopylec.projectmanager.core.common.Utilities.isEmpty;
 
 @Repository
-class TeamRepository {
+class TeamRepository extends OperationsDelayer {
 
     private MongoOperations database;
 
-    TeamRepository(MongoOperations database) {
+    TeamRepository(HttpServletRequest request, MongoOperations database) {
+        super(request);
         this.database = database;
     }
 
@@ -28,6 +31,6 @@ class TeamRepository {
     }
 
     void save(Team team) {
-        database.save(team);
+        addDelayedOperation(() -> database.save(team));
     }
 }

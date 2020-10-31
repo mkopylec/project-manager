@@ -3,13 +3,13 @@ package com.github.mkopylec.projectmanager.core.project;
 import org.springframework.data.annotation.PersistenceConstructor;
 
 import static com.github.mkopylec.projectmanager.api.exception.InvalidEntityException.require;
+import static com.github.mkopylec.projectmanager.core.common.Utilities.isNotEmpty;
 import static com.github.mkopylec.projectmanager.core.project.ProjectViolation.EMPTY_FEATURE_NAME;
 import static com.github.mkopylec.projectmanager.core.project.ProjectViolation.EMPTY_FEATURE_REQUIREMENT;
 import static com.github.mkopylec.projectmanager.core.project.ProjectViolation.EMPTY_FEATURE_STATUS;
 import static com.github.mkopylec.projectmanager.core.project.Requirement.NECESSARY;
 import static com.github.mkopylec.projectmanager.core.project.Status.DONE;
 import static com.github.mkopylec.projectmanager.core.project.Status.TO_DO;
-import static com.github.mkopylec.projectmanager.core.utils.Utilities.isNotEmpty;
 
 public class Feature {
 

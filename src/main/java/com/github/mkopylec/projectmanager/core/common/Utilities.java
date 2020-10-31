@@ -1,4 +1,4 @@
-package com.github.mkopylec.projectmanager.core.utils;
+package com.github.mkopylec.projectmanager.core.common;
 
 import java.util.ArrayList;
 import java.util.Collection;
