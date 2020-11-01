@@ -13,7 +13,7 @@ abstract class ApplicationException extends RuntimeException {
         this.responseStatus = responseStatus;
     }
 
-    public ApplicationViolation getViolation() {
+    ApplicationViolation getViolation() {
         return violation;
     }
 

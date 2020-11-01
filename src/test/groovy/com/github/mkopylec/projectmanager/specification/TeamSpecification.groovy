@@ -56,7 +56,7 @@ class TeamSpecification extends BasicSpecification {
 
         then:
         def e = thrown(InvalidEntityException)
-        e.violation.get() == 'EMPTY_TEAM_NAME'
+        e.message == 'EMPTY_TEAM_NAME'
         mongoDb.expectNotSaved(Team)
 
         where:
@@ -138,7 +138,7 @@ class TeamSpecification extends BasicSpecification {
 
         then:
         def e = thrown(InvalidEntityException)
-        e.violation.get() == 'EMPTY_MEMBER_FIRST_NAME'
+        e.message == 'EMPTY_MEMBER_FIRST_NAME'
         mongoDb.expectNotSaved(Team)
 
         where:
@@ -171,7 +171,7 @@ class TeamSpecification extends BasicSpecification {
 
         then:
         def e = thrown(InvalidEntityException)
-        e.violation.get() == 'EMPTY_MEMBER_LAST_NAME'
+        e.message == 'EMPTY_MEMBER_LAST_NAME'
         mongoDb.expectNotSaved(Team)
 
         where:
@@ -203,7 +203,7 @@ class TeamSpecification extends BasicSpecification {
 
         then:
         def e = thrown(InvalidEntityException)
-        e.violation.get() == 'EMPTY_MEMBER_JOB_POSITION'
+        e.message == 'EMPTY_MEMBER_JOB_POSITION'
         mongoDb.expectNotSaved(Team)
     }
 

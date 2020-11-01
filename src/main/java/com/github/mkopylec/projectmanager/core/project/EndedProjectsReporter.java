@@ -1,6 +1,6 @@
 package com.github.mkopylec.projectmanager.core.project;
 
-import com.github.mkopylec.projectmanager.core.common.OperationsDelayer;
+import com.github.mkopylec.projectmanager.core.common.UnitOfWork;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
-class EndedProjectsReporter extends OperationsDelayer {
+class EndedProjectsReporter extends UnitOfWork {
 
     private static final Logger log = getLogger(EndedProjectsReporter.class);
 
@@ -23,7 +23,7 @@ class EndedProjectsReporter extends OperationsDelayer {
     }
 
     void report(EndedProject endedProject) {
-        addDelayedOperation(() -> {
+        addWriteOperation(() -> {
             try {
                 httpClient.postForObject("http://localhost:8081/reports/projects", endedProject, Void.class);
             } catch (RestClientException ex) {

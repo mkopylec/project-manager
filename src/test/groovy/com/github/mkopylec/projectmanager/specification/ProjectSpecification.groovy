@@ -70,7 +70,7 @@ class ProjectSpecification extends BasicSpecification {
 
         then:
         def e = thrown(InvalidEntityException)
-        e.violation.get() == 'EMPTY_PROJECT_NAME'
+        e.message == 'EMPTY_PROJECT_NAME'
         mongoDb.expectNotSaved(Project)
 
         where:
@@ -125,7 +125,7 @@ class ProjectSpecification extends BasicSpecification {
 
         then:
         def e = thrown(InvalidEntityException)
-        e.violation.get() == 'EMPTY_PROJECT_NAME'
+        e.message == 'EMPTY_PROJECT_NAME'
         mongoDb.expectNotSaved(Project)
 
         where:
@@ -155,7 +155,7 @@ class ProjectSpecification extends BasicSpecification {
 
         then:
         def e = thrown(InvalidEntityException)
-        e.violation.get() == 'EMPTY_FEATURE_NAME'
+        e.message == 'EMPTY_FEATURE_NAME'
         mongoDb.expectNotSaved(Project)
 
         where:
@@ -184,7 +184,7 @@ class ProjectSpecification extends BasicSpecification {
 
         then:
         def e = thrown(InvalidEntityException)
-        e.violation.get() == 'EMPTY_FEATURE_REQUIREMENT'
+        e.message == 'EMPTY_FEATURE_REQUIREMENT'
         mongoDb.expectNotSaved(Project)
     }
 
@@ -365,7 +365,7 @@ class ProjectSpecification extends BasicSpecification {
 
         then:
         def e = thrown(InvalidEntityException)
-        e.violation.get() == 'EMPTY_PROJECT_NAME'
+        e.message == 'EMPTY_PROJECT_NAME'
         mongoDb.expectNotSaved(Project)
 
         where:
@@ -402,7 +402,7 @@ class ProjectSpecification extends BasicSpecification {
 
         then:
         def e = thrown(InvalidEntityException)
-        e.violation.get() == 'EMPTY_FEATURE_NAME'
+        e.message == 'EMPTY_FEATURE_NAME'
         mongoDb.expectNotSaved(Project)
 
         where:
@@ -439,7 +439,7 @@ class ProjectSpecification extends BasicSpecification {
 
         then:
         def e = thrown(InvalidEntityException)
-        e.violation.get() == applicationErrorCode
+        e.message == applicationErrorCode
         mongoDb.expectNotSaved(Project)
 
         where:

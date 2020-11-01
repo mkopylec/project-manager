@@ -11,12 +11,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class OperationsDelayer extends OncePerRequestFilter implements Ordered {
+public abstract class UnitOfWork extends OncePerRequestFilter implements Ordered {
 
-    private String saveOperationsAttribute = "delayedOperations_" + getClass().getSimpleName();
+    private String writeOperationsAttribute = "writeOperations_" + getClass().getSimpleName();
     private HttpServletRequest request;
 
-    protected OperationsDelayer(HttpServletRequest request) {
+    protected UnitOfWork(HttpServletRequest request) {
         this.request = request;
     }
 
@@ -27,17 +27,17 @@ public abstract class OperationsDelayer extends OncePerRequestFilter implements 
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-        request.setAttribute(saveOperationsAttribute, new ArrayList<Runnable>());
+        request.setAttribute(writeOperationsAttribute, new ArrayList<Runnable>());
         filterChain.doFilter(request, response);
-        getDelayedOperations().forEach(Runnable::run);
+        getWriteOperations().forEach(Runnable::run);
     }
 
-    protected void addDelayedOperation(Runnable operation) {
-        getDelayedOperations().add(operation);
+    protected void addWriteOperation(Runnable operation) {
+        getWriteOperations().add(operation);
     }
 
     @SuppressWarnings("unchecked")
-    private List<Runnable> getDelayedOperations() {
-        return (List<Runnable>) request.getAttribute(saveOperationsAttribute);
+    private List<Runnable> getWriteOperations() {
+        return (List<Runnable>) request.getAttribute(writeOperationsAttribute);
     }
 }

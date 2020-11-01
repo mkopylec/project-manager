@@ -1,6 +1,6 @@
 package com.github.mkopylec.projectmanager.core.project;
 
-import com.github.mkopylec.projectmanager.core.common.OperationsDelayer;
+import com.github.mkopylec.projectmanager.core.common.UnitOfWork;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +11,7 @@ import java.util.UUID;
 import static com.github.mkopylec.projectmanager.core.common.Utilities.isEmpty;
 
 @Repository
-class ProjectRepository extends OperationsDelayer {
+class ProjectRepository extends UnitOfWork {
 
     private MongoOperations database;
 
@@ -32,6 +32,6 @@ class ProjectRepository extends OperationsDelayer {
     }
 
     void save(Project project) {
-        addDelayedOperation(() -> database.save(project));
+        addWriteOperation(() -> database.save(project));
     }
 }
