@@ -45,7 +45,7 @@ class ProjectSpecification extends BasicSpecification {
                 name: projectDraft.name,
                 status: TO_DO,
                 assignedTeam: null,
-                features: null))
+                features: []))
     }
 
     @Unroll
