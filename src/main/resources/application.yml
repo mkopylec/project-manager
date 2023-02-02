@@ -1,0 +1,18 @@
+project-manager:
+  common:
+    outbound:
+      mongodb:
+        timeout:
+          connect: 100ms
+          read: 1s
+
+spring:
+  jackson:
+    visibility:
+      field: any
+
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 6.0.3

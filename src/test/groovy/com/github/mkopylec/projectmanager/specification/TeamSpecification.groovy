@@ -1,9 +1,9 @@
 package com.github.mkopylec.projectmanager.specification
 
-import com.github.mkopylec.projectmanager.BasicSpecification
 import com.github.mkopylec.projectmanager.application.dto.ExistingTeam
 import com.github.mkopylec.projectmanager.application.dto.NewTeam
 import com.github.mkopylec.projectmanager.application.dto.TeamMember
+import com.github.mkopylec.projectmanager.common.Specification
 import org.springframework.core.ParameterizedTypeReference
 import spock.lang.Unroll
 
@@ -12,7 +12,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.OK
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 
-class TeamSpecification extends BasicSpecification {
+class TeamSpecification extends Specification {
 
     def "Should create new team and browse it"() {
         given:

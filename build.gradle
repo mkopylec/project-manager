@@ -1,33 +1,51 @@
 plugins {
     id 'groovy'
-    id 'org.springframework.boot' version '2.0.2.RELEASE'
+    id 'org.springframework.boot' version '3.0.2'
 }
 
-group  = 'com.github.mkopylec'
-version  = '1.0'
+group = 'com.github.mkopylec'
+version = '1.0'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 17
 
 repositories {
     mavenCentral()
 }
 
-ext.springBootVersion = '2.0.2.RELEASE'
+ext.springBootVersion = '3.0.2'
 
 dependencies {
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: springBootVersion
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb', version: springBootVersion
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: springBootVersion
-    compile group: 'de.flapdoodle.embed', name: 'de.flapdoodle.embed.mongo', version: '2.0.3'
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
-    compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.1'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: springBootVersion
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb', version: springBootVersion
+    implementation group: 'de.flapdoodle.embed', name: 'de.flapdoodle.embed.mongo.spring30x', version: '4.3.2'
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+    implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
+    implementation group: 'org.apache.httpcomponents.client5', name: 'httpclient5', version: '5.2.1'
 
-    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVersion
-    testCompile group: 'org.spockframework', name: 'spock-spring', version: '1.1-groovy-2.4'
-    testCompile group: 'com.github.tomakehurst', name: 'wiremock', version: '2.17.0'
-    testCompile group: 'org.awaitility', name: 'awaitility-groovy', version: '3.1.0'
+    annotationProcessor group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: springBootVersion
+
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVersion
+    testImplementation group: 'org.spockframework', name: 'spock-spring', version: '2.4-M1-groovy-4.0'
+    testImplementation group: 'com.github.tomakehurst', name: 'wiremock-jre8', version: '2.27.2'
+    testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.2.0'
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.7'
+wrapper {
+    gradleVersion = '7.6'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs += '--enable-preview'
+}
+
+tasks.withType(Test) {
+    jvmArgs += '--enable-preview'
+}
+
+tasks.withType(JavaExec) {
+    jvmArgs += '--enable-preview'
 }
